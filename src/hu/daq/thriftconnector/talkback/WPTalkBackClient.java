@@ -21,7 +21,8 @@ public class WPTalkBackClient extends ThriftClient{
     private WPTalkBack.Client client;
 
     public WPTalkBackClient(String url, Integer remoteport, Integer listeningport) {
-        super(url.substring(4), remoteport, listeningport);
+        //super(url.substring(4), remoteport, listeningport);
+        super(url, remoteport, listeningport);        
         System.out.println("Talkback client has been made"+url+":"+remoteport);        
     }
     
