@@ -53,7 +53,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.player = player;
         this.setMaxHeight(35);
         this.setMinHeight(35);
-        Font sizeing = new Font(18);
+        Font sizeing = new Font(24);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();

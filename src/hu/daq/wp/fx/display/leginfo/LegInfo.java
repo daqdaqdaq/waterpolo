@@ -47,7 +47,7 @@ public class LegInfo extends VBox {
         TimeDisplay td = WatchFactory.getSimpleWatchDisplay(this.legtime);
         //HBox td = new HBox();
         //td.getChildren().addAll(new Label("0"),new Label(":"),new Label("00"));
-        td.setFontSize(30);
+        td.setFontSize(45);
         //td.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setAlignment(Pos.CENTER);
         //this.add(legname, 0, 0);

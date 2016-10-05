@@ -62,10 +62,10 @@ public abstract class TeamDisplayFX {
          this.teamnamelabel.setWrapText(true);
         this.teamnamelabel.setTextAlignment(TextAlignment.CENTER);
         this.teamnamelabel.textProperty().bind(this.getTeamName());
-        this.teamnamelabel.setFont(new Font(32));
+        this.teamnamelabel.setFont(new Font(40));
         this.goalslabel = new Label("");
         this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
-        this.goalslabel.setFont(new Font(32));        
+        this.goalslabel.setFont(new Font(40));        
 
     }
 

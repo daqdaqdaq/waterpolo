@@ -125,13 +125,13 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         VBox centerinfobox = new VBox(20);
         centerinfobox.setAlignment(Pos.CENTER);
         Label locationnamelabel = new Label("Dunaújváros");
-        locationnamelabel.setFont(new Font(32));
+        locationnamelabel.setFont(new Font(24));
         TimeEngine datetime = new TimeEngine();
         datetime.init();
 
         centerinfobox.getChildren().addAll(locationnamelabel,
-                new DateFX(datetime, new Font(18)),
-                new TimeFX(datetime, new Font(18)),
+                new DateFX(datetime, new Font(10)),
+                new TimeFX(datetime, new Font(10)),
                 this.leginfo);
         return centerinfobox;
     }
