@@ -45,7 +45,7 @@ public abstract class ThriftClient {
     }
 
     protected String getLocalIP() throws UnknownHostException {
-        return InetAddress.getLocalHost().toString();
+        return InetAddress.getLocalHost().getHostAddress();
     }
 
     @Override
