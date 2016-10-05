@@ -130,8 +130,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         datetime.init();
 
         centerinfobox.getChildren().addAll(locationnamelabel,
-                new DateFX(datetime, new Font(10)),
-                new TimeFX(datetime, new Font(10)),
+                new DateFX(datetime, new Font(5)),
+                new TimeFX(datetime, new Font(5)),
                 this.leginfo);
         return centerinfobox;
     }
@@ -143,7 +143,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         StackPane centertimebox = new StackPane();
         centertimebox.setPrefSize(100, 100);
 
-        this.balltime.setFont(new Font(30));
+        this.balltime.setFont(new Font(45));
         this.balltime.setTeamNodes(leftteambox, rightteambox);
         //this.balltime.fillHeightProperty().set(true);
 

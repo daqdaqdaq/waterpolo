@@ -65,7 +65,7 @@ public abstract class TeamDisplayFX {
         this.teamnamelabel.setFont(new Font(40));
         this.goalslabel = new Label("");
         this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
-        this.goalslabel.setFont(new Font(40));        
+        this.goalslabel.setFont(new Font(50));        
 
     }
 
