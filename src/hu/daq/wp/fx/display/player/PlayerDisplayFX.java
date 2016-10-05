@@ -53,7 +53,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.player = player;
         this.setMaxHeight(35);
         this.setMinHeight(35);
-        Font sizeing = new Font(24);
+        Font sizeing = new Font(33);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();
@@ -66,10 +66,10 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.penalties.setFillHeight(true);
         this.goals.set(0);
         //Size constraints
-        capnumconst.setPercentWidth(8);
-        nameconst.setPercentWidth(67);
+        capnumconst.setPercentWidth(10);
+        nameconst.setPercentWidth(55);
         penaltiesconst.setPercentWidth(20);
-        goalsconst.setPercentWidth(5);
+        goalsconst.setPercentWidth(15);
 
         //this.build();
     }

@@ -124,14 +124,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     private VBox buildCenterInfoBox() {
         VBox centerinfobox = new VBox(20);
         centerinfobox.setAlignment(Pos.CENTER);
-        Label locationnamelabel = new Label("Dunaújváros");
-        locationnamelabel.setFont(new Font(10));
+        //Label locationnamelabel = new Label("Dunaújváros");
+        //locationnamelabel.setFont(new Font(10));
         TimeEngine datetime = new TimeEngine();
         datetime.init();
 
-        centerinfobox.getChildren().addAll(locationnamelabel,
-                new DateFX(datetime, new Font(5)),
-                new TimeFX(datetime, new Font(5)),
+        centerinfobox.getChildren().addAll(
+                //locationnamelabel,
+                //     new DateFX(datetime, new Font(5)),
+                //     new TimeFX(datetime, new Font(5)),
                 this.leginfo);
         return centerinfobox;
     }
@@ -347,8 +348,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     @Override
     public void setupPhase(MatchPhase mp) {
         this.pauseMatch();
-        this.syncTime();
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+ 
         if (mp.getPhaseName().equals("Büntetők")) {
             this.leginfo.setLegName(mp.getPhaseName());
             this.fiverswindow.loadLeftTeam(this.leftteam.getTeamId());
@@ -363,7 +364,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
             this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
         }
-        System.out.println("New phase set up");
+       this.syncTime();
+       System.out.println("New phase set up");
 
     }
 

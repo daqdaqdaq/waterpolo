@@ -43,7 +43,7 @@ public class PlayerFXDisplayOverlay extends StackPane{
         TimeDisplay wd = WatchFactory.getWatchDisplay(cw);
        // StackPane.setAlignment(wd, Pos.CENTER);
         HBox hb = new HBox();
-        wd.setFont(new Font(20));
+        wd.setFont(new Font(35));
         wd.setColor(Color.RED);
         //hb.getChildren().add(wd);
         //hb.setAlignment(Pos.CENTER);

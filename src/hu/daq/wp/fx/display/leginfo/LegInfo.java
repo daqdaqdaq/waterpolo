@@ -41,13 +41,13 @@ public class LegInfo extends VBox {
 
     private void build() {
         //this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
-        this.legname.setFont(new Font(30));
+        this.legname.setFont(new Font(40));
         //We set it to a fake amount and let the WatchFactory generate a correct display format
         this.legtime.setTimeToCount(0, 1, 1);
         TimeDisplay td = WatchFactory.getSimpleWatchDisplay(this.legtime);
         //HBox td = new HBox();
         //td.getChildren().addAll(new Label("0"),new Label(":"),new Label("00"));
-        td.setFontSize(45);
+        td.setFontSize(50);
         //td.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setAlignment(Pos.CENTER);
         //this.add(legname, 0, 0);

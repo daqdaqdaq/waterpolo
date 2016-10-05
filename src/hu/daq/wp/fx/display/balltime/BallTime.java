@@ -42,7 +42,7 @@ public class BallTime extends HBox implements TimeoutListener {
         this.leftpointer.on();
         this.switchTeam();
         this.td = WatchFactory.getWatchDisplay(cw);
-        this.td.setFont(new Font(45));
+        this.td.setFont(new Font(60));
         this.build();
     }
 
