@@ -1,0 +1,389 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hu.daq.wp.fx.display.screens;
+
+import hu.daq.wp.fx.display.control.ControlledScreen;
+import client.Postgres;
+import hu.daq.UDPSender.TimeSender;
+import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.thriftconnector.talkback.PenaltyTime;
+import hu.daq.thriftconnector.talkback.TimeSync;
+import hu.daq.thriftconnector.talkback.WPTalkBackClient;
+import hu.daq.timeengine.TimeEngine;
+import hu.daq.watch.TimeoutListener;
+import hu.daq.wp.fx.datetime.DateFX;
+
+import hu.daq.wp.fx.datetime.TimeFX;
+import hu.daq.wp.fx.display.balltime.BallTime;
+import hu.daq.wp.fx.display.infopopup.FiversDisplayWindow;
+import hu.daq.wp.fx.display.infopopup.GoalPopup;
+import hu.daq.wp.fx.display.infopopup.PlayerInfo;
+import hu.daq.wp.fx.display.leginfo.LegInfo;
+import hu.daq.wp.fx.display.player.PlayerDisplayFX;
+import hu.daq.wp.fx.display.team.TeamDisplayFX;
+import hu.daq.wp.fx.display.team.TeamDisplayLeftFX;
+import hu.daq.wp.fx.display.team.TeamDisplayRightFX;
+import hu.daq.wp.matchorganizer.MatchPhase;
+import hu.daq.wp.matchorganizer.Organizable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+
+/**
+ *
+ * @author DAQ
+ */
+public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable {
+
+    TeamDisplayLeftFX leftteam;
+    TeamDisplayRightFX rightteam;
+    Postgres db;
+    TimeEngine timeengine;
+    BallTime balltime;
+    //BaseWatch legtime;
+    LegInfo leginfo;
+    PlayerInfo pi;
+    FiversDisplayWindow fiverswindow;
+    TimeSender timesender;
+    //private final static int LEGTIME = 8; 
+    private final static int BALLTIME = 30;
+
+    public ScoreBoardScreen(Postgres db) {
+
+        this.setPrefSize(1024, 768);
+        this.db = db;
+        this.leftteam = new TeamDisplayLeftFX(this.db);
+        this.rightteam = new TeamDisplayRightFX(this.db);
+        this.timeengine = ServiceHandler.getInstance().getTimeEngine();
+        this.balltime = new BallTime(this.timeengine, BALLTIME);
+        this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
+        this.leginfo = new LegInfo(this.timeengine);
+        this.pi = new PlayerInfo();
+        this.fiverswindow = new FiversDisplayWindow();
+        //this.leginfo.setTimeToCount(0, LEGTIME, 0);
+        //this.leginfo.setLegName("II. negyed");
+        this.build();
+    }
+
+    private void build() {
+        VBox mainbox = new VBox(5);
+        //mainbox.setStyle("-fx-background-color: #77AACC;");
+        //mainbox.setFillWidth(true);
+        mainbox.setMinWidth(1024);
+        HBox databox = this.buildDataBox();
+        databox.prefWidthProperty().bind(this.widthProperty());
+        HBox playersbox = this.buildPlayersBox();
+        playersbox.prefWidthProperty().bind(this.widthProperty());
+        mainbox.getChildren().addAll(databox, playersbox);
+        //VBox.setVgrow(this, Priority.NEVER);
+        this.setCenter(mainbox);
+
+        //AnchorPane.setTopAnchor(mainbox, 0.0);
+    }
+
+    private HBox buildDataBox() {
+        HBox databox = new HBox(10);
+        databox.setPadding(new Insets(0, 5, 0, 5));
+        databox.setStyle("-fx-background-color: #404040;");
+        VBox leftteambox = this.buildScoreAndNameBox(leftteam);
+        VBox rightteambox = this.buildScoreAndNameBox(rightteam);
+        VBox centerinfobox = this.buildCenterInfoBox();
+        //The width of the scorebox is 3/8 (0.375)of the width of the whole box
+        leftteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
+        rightteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
+
+        databox.getChildren().addAll(leftteambox,
+                centerinfobox,
+                rightteambox);
+        HBox.setHgrow(centerinfobox, Priority.ALWAYS);
+        //HBox.setHgrow(rightteambox, Priority.ALWAYS);         
+
+        return databox;
+    }
+
+    private VBox buildScoreAndNameBox(TeamDisplayFX team) {
+        VBox scoreandname = new VBox(40);
+        scoreandname.setAlignment(Pos.BOTTOM_CENTER);
+        scoreandname.getChildren().addAll(team.getTeamNameLabel(),
+                team.getGoalsLabel());
+        return scoreandname;
+    }
+
+    private VBox buildCenterInfoBox() {
+        VBox centerinfobox = new VBox(20);
+        centerinfobox.setAlignment(Pos.CENTER);
+        Label locationnamelabel = new Label("Dunaújváros");
+        locationnamelabel.setFont(new Font(32));
+        TimeEngine datetime = new TimeEngine();
+        datetime.init();
+
+        centerinfobox.getChildren().addAll(locationnamelabel,
+                new DateFX(datetime, new Font(18)),
+                new TimeFX(datetime, new Font(18)),
+                this.leginfo);
+        return centerinfobox;
+    }
+
+    private HBox buildPlayersBox() {
+        HBox playersbox = new HBox(5);
+        VBox leftteambox = this.leftteam.getPlayerListView();
+        VBox rightteambox = this.rightteam.getPlayerListView();
+        StackPane centertimebox = new StackPane();
+        centertimebox.setPrefSize(100, 100);
+
+        this.balltime.setFont(new Font(30));
+        this.balltime.setTeamNodes(leftteambox, rightteambox);
+        //this.balltime.fillHeightProperty().set(true);
+
+        centertimebox.getChildren().add(this.balltime);
+
+        playersbox.getChildren().addAll(leftteambox,
+                centertimebox,
+                rightteambox);
+        HBox.setHgrow(centertimebox, Priority.NEVER);
+        HBox.setHgrow(leftteambox, Priority.SOMETIMES);
+        HBox.setHgrow(rightteambox, Priority.SOMETIMES);
+        return playersbox;
+    }
+
+    public void loadLeftTeam(Integer teamid) {
+        this.leftteam.load(teamid);
+    }
+
+    public void loadRightTeam(Integer teamid) {
+        this.rightteam.load(teamid);
+    }
+
+    private PlayerDisplayFX getPlayer(Integer playerid) throws Exception {
+        PlayerDisplayFX player;
+        //first search the player in the left team. If it didn't find then try in the right team
+        player = this.leftteam.getPlayer(playerid);
+        if (player == null) {
+            player = this.rightteam.getPlayer(playerid);
+        }
+        if (player == null) {
+            throw new Exception("Player with id " + playerid.toString() + " hasn't found");
+        }
+        return player;
+    }
+
+    public void addPenalty(Integer playerid) {
+        try {
+            this.getPlayer(playerid).addPenalty();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void removePenalty(Integer playerid) {
+        try {
+            this.getPlayer(playerid).removePenalty();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void addGoal(Integer playerid) {
+        try {
+            this.getPlayer(playerid).addGoal();
+            GoalPopup pi = new GoalPopup();
+
+            pi.loadPlayer(this.getPlayer(playerid).getPlayerModel());
+            pi.setTimer(3);
+            pi.showIt();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.timeengine.pause();
+        this.syncTime();
+    }
+
+    public void removeGoal(Integer playerid) {
+        try {
+            this.getPlayer(playerid).removeGoal();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void addFivemGoal(Integer playerid) {
+        try {
+            this.fiverswindow.getPlayer(playerid).addGoal();
+
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void removeFivemGoal(Integer playerid) {
+        try {
+            this.fiverswindow.getPlayer(playerid).removeGoal();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void addFivemPlayer(Integer playerid) {
+        try {
+            this.fiverswindow.addPlayer(playerid);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void setBallTime(int secs) {
+        this.timeengine.pause();
+        if (secs * 1000 > this.leginfo.getRemainingTime()) {
+            this.balltime.set(this.leginfo.getRemainingTime());
+        } else {
+            this.balltime.set(secs);
+        }
+        this.syncTime();
+    }
+
+    public void switchBallTimeLeft() {
+        this.timeengine.pause();
+        this.balltime.switchToLeft();
+        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
+            this.balltime.set(this.leginfo.getRemainingTime());
+        }
+        this.syncTime();
+    }
+
+    public void switchBallTimeRight() {
+        this.timeengine.pause();
+        this.balltime.switchToRight();
+        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
+            this.balltime.set(this.leginfo.getRemainingTime());
+        }
+        this.syncTime();
+    }
+
+    public void SwitchBallTime() {
+        this.timeengine.pause();
+        this.balltime.switchTeam();
+        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
+            this.balltime.set(this.leginfo.getRemainingTime());
+        }
+        this.syncTime();
+    }
+
+    public void resetBallTime() {
+        this.timeengine.pause();
+        this.balltime.reset();
+        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
+            this.balltime.set(this.leginfo.getRemainingTime());
+        }
+        this.syncTime();
+
+    }
+
+    public void showPlayerInfo(Integer playerid) {
+        try {
+            this.pi.loadPlayer(this.getPlayer(playerid).getPlayerModel());
+            this.pi.showIt();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void hidePlayerInfo() {
+        try {
+            this.pi.close();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void startMatch() {
+        if (this.leginfo.getTimeToCount() == 0) {
+            this.leginfo.getTimeoutListener().timeout();
+        } else {
+            this.timeengine.start();
+        }
+    }
+
+    public void pauseMatch() {
+        //Pause the main time engine
+        this.timeengine.pause();
+        this.syncTime();
+    }
+
+    public void requestTimeout(Integer teamid) {
+        if (this.leftteam.getTeamId().equals(teamid)) {
+            this.leftteam.requestTimeout();
+        } else {
+            this.rightteam.requestTimeout();
+        }
+    }
+
+    public void syncTime() {
+        //Building time syncronization structure to send back to the controller app
+        TimeSync tsync = new TimeSync();
+        tsync.setBalltime(this.balltime.getMilis());
+        tsync.setLegtime(this.leginfo.getTime());
+        this.leftteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
+        this.rightteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
+        //And sending it back via the Thrift connection
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseReceived(tsync);
+
+    }
+
+    @Override
+    public void setupPhase(MatchPhase mp) {
+        this.pauseMatch();
+        this.syncTime();
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+        if (mp.getPhaseName().equals("Büntetők")) {
+            this.leginfo.setLegName(mp.getPhaseName());
+            this.fiverswindow.loadLeftTeam(this.leftteam.getTeamId());
+            this.fiverswindow.loadRightTeam(this.rightteam.getTeamId());
+            this.fiverswindow.showIt();
+        } else {
+            this.leginfo.setTimeToCount(mp.getDuration());
+            this.leginfo.resetTime();
+            this.resetBallTime();
+            this.syncTime();
+            this.leginfo.setLegName(mp.getPhaseName());
+            this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
+            this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
+        }
+        System.out.println("New phase set up");
+
+    }
+
+    @Override
+    public void setTimeoutListener(TimeoutListener tl) {
+        this.leginfo.setTimeoutListener(tl);
+    }
+
+    public void closeFivemWindow() {
+        this.fiverswindow.close();
+    }
+
+    public void clearTeams() {
+        this.leftteam.clearTeam();
+        this.rightteam.clearTeam();
+        this.leginfo.resetTime();
+        ServiceHandler.getInstance().getTimeEngine().hibernate();
+    }
+
+    public void soundHorn() {
+        ServiceHandler.getInstance().getHorn().honk();
+    }
+}
