@@ -21,6 +21,7 @@ public class NumField extends TextField{
 
     public NumField(String text) {
         super(text);
+        
         this.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
     }
     
