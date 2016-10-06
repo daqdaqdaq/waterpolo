@@ -21,6 +21,7 @@ import hu.daq.wp.fx.commonbuttons.ShowPlayerButton;
 import hu.daq.wp.fx.commonbuttons.ToggleGlyphButton;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -28,6 +29,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  *
@@ -48,6 +50,14 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Postgres db) {
         super(db);
         this.setStyle("-fx-background-color: #77AACC;");
+        Font sizeing = new Font(24);
+        this.capnum_label = new Label();
+        this.capnum_label.setFont(sizeing);
+        this.name_label = new Label();
+        this.name_label.setFont(sizeing);
+        this.goals_label = new Label();
+        this.goals_label.setFont(sizeing);        
+        
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
         this.removegoalbutton = new RemoveGoalButton();
@@ -61,6 +71,14 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Postgres db, int player_id) {
         super(db, player_id);
         this.setStyle("-fx-background-color: #77AACC;");
+        Font sizeing = new Font(24);
+        this.capnum_label = new Label();
+        this.capnum_label.setFont(sizeing);
+        this.name_label = new Label();
+        this.name_label.setFont(sizeing);
+        this.goals_label = new Label();
+        this.goals_label.setFont(sizeing);
+        
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
         this.removegoalbutton = new RemoveGoalButton();
@@ -74,6 +92,13 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Player player) {
         super(player);
         this.setStyle("-fx-background-color: #77AACC;");
+        Font sizeing = new Font(24);
+        this.capnum_label = new Label();
+        this.capnum_label.setFont(sizeing);
+        this.name_label = new Label();
+        this.name_label.setFont(sizeing);
+        this.goals_label = new Label();
+        this.goals_label.setFont(sizeing);        
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
         this.removegoalbutton = new RemoveGoalButton();

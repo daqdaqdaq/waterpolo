@@ -14,10 +14,8 @@ import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.talkback.WPTalkBackClient;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.TimeoutListener;
-import hu.daq.wp.fx.datetime.DateFX;
-
-import hu.daq.wp.fx.datetime.TimeFX;
 import hu.daq.wp.fx.display.balltime.BallTime;
+import hu.daq.wp.fx.display.balltime.BallTimeDisplay;
 import hu.daq.wp.fx.display.infopopup.FiversDisplayWindow;
 import hu.daq.wp.fx.display.infopopup.GoalPopup;
 import hu.daq.wp.fx.display.infopopup.PlayerInfo;
@@ -33,7 +31,6 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -51,12 +48,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     TeamDisplayRightFX rightteam;
     Postgres db;
     TimeEngine timeengine;
-    BallTime balltime;
+    BallTimeDisplay balltime;
     //BaseWatch legtime;
     LegInfo leginfo;
     PlayerInfo pi;
     FiversDisplayWindow fiverswindow;
     TimeSender timesender;
+        VBox leftteambox;
+        VBox rightteambox;    
     //private final static int LEGTIME = 8; 
     private final static int BALLTIME = 30;
 
@@ -67,11 +66,13 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.leftteam = new TeamDisplayLeftFX(this.db);
         this.rightteam = new TeamDisplayRightFX(this.db);
         this.timeengine = ServiceHandler.getInstance().getTimeEngine();
-        this.balltime = new BallTime(this.timeengine, BALLTIME);
+        this.balltime = new BallTimeDisplay(this.timeengine, BALLTIME);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
         this.leginfo = new LegInfo(this.timeengine);
         this.pi = new PlayerInfo();
         this.fiverswindow = new FiversDisplayWindow();
+        this.leftteambox = this.leftteam.getPlayerListView();
+        this.rightteambox = this.rightteam.getPlayerListView();        
         //this.leginfo.setTimeToCount(0, LEGTIME, 0);
         //this.leginfo.setLegName("II. negyed");
         this.build();
@@ -114,7 +115,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     private VBox buildScoreAndNameBox(TeamDisplayFX team) {
-        VBox scoreandname = new VBox(40);
+        VBox scoreandname = new VBox(20);
         scoreandname.setAlignment(Pos.BOTTOM_CENTER);
         scoreandname.getChildren().addAll(team.getTeamNameLabel(),
                 team.getGoalsLabel());
@@ -122,38 +123,35 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     private VBox buildCenterInfoBox() {
-        VBox centerinfobox = new VBox(20);
+        VBox centerinfobox = new VBox(10);
         centerinfobox.setAlignment(Pos.CENTER);
         //Label locationnamelabel = new Label("Dunaújváros");
         //locationnamelabel.setFont(new Font(10));
         TimeEngine datetime = new TimeEngine();
         datetime.init();
+        StackPane centertimebox = new StackPane();
+        centertimebox.setPrefSize(100, 100);
 
+        this.balltime.setFont(new Font(55));
+        this.balltime.setTeamNodes(this.leftteambox, this.rightteambox);
+        //this.balltime.fillHeightProperty().set(true);
+
+        centertimebox.getChildren().add(this.balltime);
         centerinfobox.getChildren().addAll(
                 //locationnamelabel,
                 //     new DateFX(datetime, new Font(5)),
                 //     new TimeFX(datetime, new Font(5)),
-                this.leginfo);
+                this.leginfo,
+                this.balltime);
         return centerinfobox;
     }
 
     private HBox buildPlayersBox() {
-        HBox playersbox = new HBox(5);
+        HBox playersbox = new HBox(40);
         VBox leftteambox = this.leftteam.getPlayerListView();
         VBox rightteambox = this.rightteam.getPlayerListView();
-        StackPane centertimebox = new StackPane();
-        centertimebox.setPrefSize(100, 100);
-
-        this.balltime.setFont(new Font(45));
-        this.balltime.setTeamNodes(leftteambox, rightteambox);
-        //this.balltime.fillHeightProperty().set(true);
-
-        centertimebox.getChildren().add(this.balltime);
-
         playersbox.getChildren().addAll(leftteambox,
-                centertimebox,
-                rightteambox);
-        HBox.setHgrow(centertimebox, Priority.NEVER);
+                                    rightteambox);
         HBox.setHgrow(leftteambox, Priority.SOMETIMES);
         HBox.setHgrow(rightteambox, Priority.SOMETIMES);
         return playersbox;
