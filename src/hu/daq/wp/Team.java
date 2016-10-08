@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.util.Callback;
 
 /**
  *
@@ -34,6 +36,10 @@ public class Team extends Entity{
         this.subscribe();
         
     }     
+    
+    public static Callback<Team, Observable[]> extractor(){
+        return (Team t) -> new Observable[]{t.getTeamname()};
+    }
     
     @Override
     public boolean load(Integer pk) {

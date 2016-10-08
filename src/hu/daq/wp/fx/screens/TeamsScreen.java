@@ -57,12 +57,13 @@ public class TeamsScreen extends BorderPane implements SubScreen{
                 return nv == null || nv.isEmpty() || t.getTeamname().getValueSafe().toLowerCase().contains(nv.toLowerCase());
             });
         });
-
+  
         this.teamsview.setCellFactory(new Callback<ListView<Team>, ListCell<Team>>() {
 
             @Override
             public ListCell<Team> call(ListView<Team> param) {
-                ListCell<Team> cell = new ListCell<Team>() {
+                ListCell<Team> cell = new ListCell<Team>()
+                {
 
                     @Override
                     protected void updateItem(Team item, boolean empty) {

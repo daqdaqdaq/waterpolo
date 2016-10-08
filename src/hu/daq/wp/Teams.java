@@ -23,7 +23,8 @@ public class Teams implements Notifiable {
 
     public Teams(Postgres db) {
         this.db = db;
-        this.teams = FXCollections.observableList(new ArrayList<Team>());
+//        this.teams = FXCollections.observableList(new ArrayList<Team>());
+        this.teams = FXCollections.observableArrayList(Team.extractor());
 
     }
 

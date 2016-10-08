@@ -13,6 +13,11 @@ import hu.daq.thriftconnector.connector.ThriftConnector;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.wp.horn.Horn;
 import hu.daq.wp.matchorganizer.MatchOrganizer;
+import java.util.Optional;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +25,7 @@ import javafx.stage.Stage;
  * @author DAQ
  */
 public class ServiceHandler {
+
     private static ServiceHandler instance;
     private Postgres db;
     private TimeEngine te;
@@ -30,7 +36,7 @@ public class ServiceHandler {
     private Horn horn;
     private SettingsHandler settings;
     private KeyEventHandler keyeventhandler;
-    
+
     private ServiceHandler() {
         this.settings = new SettingsHandler();
         this.te = new TimeEngine();
@@ -38,9 +44,11 @@ public class ServiceHandler {
         te.init();
         te.pause();
     }
-    
-    public static ServiceHandler getInstance(){
-        if (instance==null) instance = new ServiceHandler();
+
+    public static ServiceHandler getInstance() {
+        if (instance == null) {
+            instance = new ServiceHandler();
+        }
         return instance;
     }
 
@@ -71,10 +79,12 @@ public class ServiceHandler {
     public void setThriftconnector(ThriftConnector thriftconnector) {
         this.thriftconnector = thriftconnector;
     }
-   
+
     //registers the cleanup method on the Stage for closing time cleanup
-    public void registerCleanup(Stage stage){
-        stage.setOnCloseRequest((ev)->{this.cleanupServices();});
+    public void registerCleanup(Stage stage) {
+        stage.setOnCloseRequest((ev) -> {
+            this.cleanupServices();
+        });
     }
 
     public void setOrganizer(MatchOrganizer organizer) {
@@ -110,23 +120,44 @@ public class ServiceHandler {
         this.keyeventhandler = keyeventhandler;
     }
 
-    
-    
-    public void cleanupServices(){
+    public void cleanupServices() {
         this.db.disconnect();
         this.thriftconnector.closeConnections();
-        if (this.senderthread!=null){
+        if (this.senderthread != null) {
             this.senderthread.stopSender();
         }
-        
+
     }
-    
-    public void finalize(){
+
+    public void finalize() {
         this.cleanupServices();
     }
 
     public SettingsHandler getSettings() {
         return settings;
     }
-    
+
+    public void showError(String headertext, String text) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Hiba");
+        alert.setHeaderText(headertext);
+        alert.setContentText(text);
+        Platform.runLater(() -> {
+            alert.showAndWait();
+        });
+    }
+/*
+    public boolean showConfirm(String headertext, String text) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(null);
+        alert.setHeaderText(headertext);
+        alert.setContentText(text);
+        final Optional<ButtonType> res;
+        Platform.runLater(() -> {
+            res = alert.showAndWait();
+        
+        });
+        return res.get()==ButtonType.OK;
+      }    
+    */
 }

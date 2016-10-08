@@ -77,11 +77,11 @@ public class SettingsHandler {
     }
 
     public String getProperty(String property) {
-        return prop.getProperty(property);
+        return prop.getProperty(property).trim();
     }
 
     public Integer getIntProperty(String property) {
-        return Integer.parseInt(prop.getProperty(property));
+        return Integer.parseInt(prop.getProperty(property).trim());
     }    
     
     public <T extends Object> void setProperty(String propname, T value) {

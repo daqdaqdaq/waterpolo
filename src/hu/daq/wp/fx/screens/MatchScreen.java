@@ -173,29 +173,6 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
     @Override
     public void initScreen() {
-        String token = this.db.query("select gettoken() as token").get(0).get("token");
-        try {
-            String user = ServiceHandler.getInstance().getThriftConnector().getClient().connect(token);
-            /*
-             try {
-             String user = this.parent.getThriftConnector().connect(token);
-             this.securitytoken = token;
-             this.parent.getThriftConnector().getClient().loadteams(this.securitytoken, 1, 2);
-             this.parent.getThriftConnector().getClient().goal(this.securitytoken,3);
-             this.parent.getThriftConnector().getClient().foul(token, 3);
-            
-             //System.out.println("USSSSSEEEEEERRRR:"+user);
-             } catch (FailedOperation ex) {
-             ex.printStackTrace();
-             //Logger.getLogger(MatchScreen.class.getName()).log(Level.SEVERE, null, ex);
-             } catch (TException ex) {
-             ex.printStackTrace();
-             }
-             */
-        } catch (FailedOperation ex) {
-            Logger.getLogger(MatchScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
     private void showTeamSelector() {
@@ -214,7 +191,14 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private void startstopMatch() {
         //If the control panel is disabled assume there is no match in progress
         if (this.controlpanel.disabledProperty().getValue().equals(true)) {
-            this.readyMatch();
+            String token = this.db.query("select gettoken() as token").get(0).get("token");
+            try {
+                String user = ServiceHandler.getInstance().getThriftConnector().getClient().connect(token);
+                this.readyMatch();
+            } catch (FailedOperation ex) {
+                ServiceHandler.getInstance().showError("A kijelző nem elérhető", ex.errormsg);
+            }
+
         } else {
             this.endMatch();
         }

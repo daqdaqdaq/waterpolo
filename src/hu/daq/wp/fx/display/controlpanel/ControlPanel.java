@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 
@@ -61,6 +62,7 @@ public class ControlPanel extends GridPane {
         keh.bindButton(sh.getProperty("key_left"), this.balltimeleft);
         keh.bindButton(sh.getProperty("key_right"), this.balltimeright);
         keh.bindButton(sh.getProperty("key_reset"), this.balltimereset);
+        System.out.println("Keeeeycode:" + KeyCode.H.toString());
         keh.bindButton(sh.getProperty("key_horn"), this.horn);
 
         this.build();
