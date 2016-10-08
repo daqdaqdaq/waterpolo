@@ -11,6 +11,7 @@ import hu.daq.watch.BaseWatch;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;
 import hu.daq.watch.fx.TimeDisplay;
+import hu.daq.watch.fx.TimeDisplayTsecHiding;
 import hu.daq.watch.utility.WatchFactory;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -49,14 +50,12 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         this.cw = new CountdownWatch(te, 0, 0, seconds);
         this.cw.start();
         this.switchTeam();
-        this.td = WatchFactory.getWatchDisplay(cw);
+        this.td = WatchFactory.getTsecHidingWatchDisplay(cw);
         StackPane.setAlignment(this.td, Pos.CENTER);
         Stop[] stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(1, Color.GREEN)};
-        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.5, 0.5, 0, 1, true, CycleMethod.NO_CYCLE, stops), null, null));
-        this.toright = new Background(new BackgroundFill(new LinearGradient(0.5, 0.5, 1, 1, true, CycleMethod.NO_CYCLE, stops), null, null));        
-        this.leftpointer = false;
-        this.rightpointer = true;
-        this.highlightTeam();
+        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.3, 0.7, 0, 1, true, CycleMethod.NO_CYCLE, stops), null, null));
+        this.toright = new Background(new BackgroundFill(new LinearGradient(0.7, 0.7, 1, 1, true, CycleMethod.NO_CYCLE, stops), null, null));        
+        this.switchToLeft();
         this.build();
     }
     
@@ -73,6 +72,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     public void setTeamNodes(Node left, Node right) {
         this.leftteam = left;
         this.rightteam = right;
+        this.highlightTeam();
     }
     
     public void switchTeam() {

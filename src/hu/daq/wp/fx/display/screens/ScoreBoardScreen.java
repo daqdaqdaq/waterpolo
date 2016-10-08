@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -117,8 +118,12 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     private VBox buildScoreAndNameBox(TeamDisplayFX team) {
         VBox scoreandname = new VBox(20);
         scoreandname.setAlignment(Pos.BOTTOM_CENTER);
-        scoreandname.getChildren().addAll(team.getTeamNameLabel(),
-                team.getGoalsLabel());
+        Label teamname = team.getTeamNameLabel();
+        teamname.setFont(new Font(45));
+        Label teamscore = team.getGoalsLabel();
+        teamscore.setFont(new Font(60));
+        scoreandname.getChildren().addAll(teamname,
+                teamscore);
         return scoreandname;
     }
 
@@ -132,7 +137,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         StackPane centertimebox = new StackPane();
         centertimebox.setPrefSize(100, 100);
 
-        this.balltime.setFont(new Font(55));
+        this.balltime.setFont(new Font(60));
         this.balltime.setTeamNodes(this.leftteambox, this.rightteambox);
         //this.balltime.fillHeightProperty().set(true);
 

@@ -38,9 +38,7 @@ public class BallTime extends HBox implements TimeoutListener {
         this.cw.start();
         this.leftpointer = new PointerTriangleLeft(Color.GREEN, Color.TRANSPARENT);
         this.rightpointer = new PointerTriangleRight(Color.GREEN, Color.TRANSPARENT);
-        this.rightpointer.off();
-        this.leftpointer.on();
-        this.switchTeam();
+        this.switchToLeft();
         this.td = WatchFactory.getWatchDisplay(cw);
         this.td.setFont(new Font(60));
         this.build();
@@ -90,18 +88,18 @@ public class BallTime extends HBox implements TimeoutListener {
 
     private void highlightTeam() {
         if (this.leftteam != null) {
-            if (this.leftpointer.isOn()){
+            if (this.leftpointer.isOn()) {
                 this.leftteam.getStyleClass().add("glowright");
-            } else{
-            this.leftteam.getStyleClass().remove("glowright");
+            } else {
+                this.leftteam.getStyleClass().remove("glowright");
             }
 
         }
         if (this.rightteam != null) {
-            if (this.rightpointer.isOn()){
+            if (this.rightpointer.isOn()) {
                 this.rightteam.getStyleClass().add("glowleft");
-            } else{
-            this.rightteam.getStyleClass().remove("glowleft");
+            } else {
+                this.rightteam.getStyleClass().remove("glowleft");
             }
         }
     }

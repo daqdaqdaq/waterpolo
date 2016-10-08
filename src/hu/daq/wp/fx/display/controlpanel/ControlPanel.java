@@ -5,7 +5,9 @@
  */
 package hu.daq.wp.fx.display.controlpanel;
 
+import hu.daq.keyevent.KeyEventHandler;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.client.WPController;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.wp.fx.commonbuttons.GlyphButton;
@@ -14,9 +16,10 @@ import hu.daq.wp.fx.commonbuttons.LeftButton;
 import hu.daq.wp.fx.commonbuttons.PauseButton;
 import hu.daq.wp.fx.commonbuttons.ResetButton;
 import hu.daq.wp.fx.commonbuttons.RightButton;
-import hu.daq.wp.fx.commonbuttons.StartButton;
+import hu.daq.wp.fx.commonbuttons.StartPauseButton;
 import hu.daq.wp.fx.display.balltime.BallTime;
 import hu.daq.wp.fx.display.leginfo.LegInfo;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -33,8 +36,8 @@ public class ControlPanel extends GridPane {
     //private TimeDisplay balltimer;
     private GlyphButton balltimeright;
     private GlyphButton balltimeleft;
-    private GlyphButton start;
-    private GlyphButton pause;
+    private StartPauseButton start;
+    //private GlyphButton pause;
     private GlyphButton balltimereset;
     private GlyphButton horn;
     private Label leglabel;
@@ -45,13 +48,21 @@ public class ControlPanel extends GridPane {
         //this.balltimer = new TimeDisplay(false, false, true, true);
         this.balltimeright = new RightButton();
         this.balltimeleft = new LeftButton();
-        this.start = new StartButton();
-        this.pause = new PauseButton();
+        this.start = new StartPauseButton();
+        //this.pause = new PauseButton();
         this.balltimereset = new ResetButton();
         this.horn = new HornButton();
         this.leglabel = new Label("1. játékrész");
         this.balltimedisplay = new BallTime(ServiceHandler.getInstance().getTimeEngine(), 30);
         this.leginfo = new LegInfo(ServiceHandler.getInstance().getTimeEngine());
+        KeyEventHandler keh = ServiceHandler.getInstance().getKeyEventHandler();
+        SettingsHandler sh = ServiceHandler.getInstance().getSettings();
+        keh.bindButton(sh.getProperty("key_startstop"), this.start);
+        keh.bindButton(sh.getProperty("key_left"), this.balltimeleft);
+        keh.bindButton(sh.getProperty("key_right"), this.balltimeright);
+        keh.bindButton(sh.getProperty("key_reset"), this.balltimereset);
+        keh.bindButton(sh.getProperty("key_horn"), this.horn);
+
         this.build();
     }
 
@@ -65,7 +76,7 @@ public class ControlPanel extends GridPane {
         //this.add(this.leglabel, 0, 0, 3, 1);
         //this.leglabel.setAlignment(Pos.CENTER);
         this.add(this.leginfo, 0, 1, 3, 1);
-       // this.legtimer.setAlignment(Pos.CENTER);
+        // this.legtimer.setAlignment(Pos.CENTER);
 
         this.add(this.balltimeleft, 0, 2);
         this.add(this.balltimedisplay, 1, 2);
@@ -74,7 +85,7 @@ public class ControlPanel extends GridPane {
         GridPane buttongrid = new GridPane();
         buttongrid.setVgap(5);
         buttongrid.setHgap(5);
-        buttongrid.add(this.pause, 0, 0);
+        //buttongrid.add(this.pause, 0, 0);
         buttongrid.add(this.balltimereset, 1, 0);
         buttongrid.add(this.start, 2, 0);
         buttongrid.add(this.horn, 1, 1);
@@ -89,6 +100,21 @@ public class ControlPanel extends GridPane {
          private GlyphButton balltimereset;
          private GlyphButton horn;
          */
+        ServiceHandler.getInstance().getTimeEngine().getRunning().addListener((bservable, ov, nv) -> {
+            if (nv) {
+                Platform.runLater(() -> {
+                    this.start.startState();
+                });
+
+            } else {
+                Platform.runLater(() -> {
+                    this.start.pauseState();
+                });
+
+            }
+
+        });
+
         this.balltimeleft.setOnAction((ev) -> {
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).switchTeamToLeft();
             this.balltimedisplay.switchToLeft();
@@ -100,18 +126,18 @@ public class ControlPanel extends GridPane {
         });
 
         this.start.setOnAction((ev) -> {
-            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).startMatch();
-            this.balltimedisplay.start();
-        });
+            if (this.start.startpauseState()) {
+                ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).startMatch();
+                this.balltimedisplay.start();
+            } else {
+                ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseMatch();
+            }
 
-        this.pause.setOnAction((ev) -> {
-            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseMatch();
-            //this.balltimedisplay.pause();
         });
 
         this.balltimereset.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).resetBallTime());
-        
-        this.horn.setOnAction((ev)->((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());        
+
+        this.horn.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());
     }
 
     public TimeDisplay getLegtimer() {
@@ -128,10 +154,6 @@ public class ControlPanel extends GridPane {
 
     public GlyphButton getStart() {
         return start;
-    }
-
-    public GlyphButton getPause() {
-        return pause;
     }
 
     public GlyphButton getBalltimereset() {
@@ -169,8 +191,8 @@ public class ControlPanel extends GridPane {
     public void setTimeToCount(int milisecs) {
         this.leginfo.setTimeToCount(milisecs);
     }
-    
-    public void setLegTime(int milisecs){
+
+    public void setLegTime(int milisecs) {
         this.leginfo.setTime(milisecs);
     }
 }

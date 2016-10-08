@@ -7,6 +7,7 @@ package hu.daq.servicehandler;
 
 import client.Postgres;
 import hu.daq.UDPSender.SenderThread;
+import hu.daq.keyevent.KeyEventHandler;
 import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.connector.ThriftConnector;
 import hu.daq.timeengine.TimeEngine;
@@ -28,10 +29,12 @@ public class ServiceHandler {
     private SenderThread senderthread;
     private Horn horn;
     private SettingsHandler settings;
+    private KeyEventHandler keyeventhandler;
     
     private ServiceHandler() {
         this.settings = new SettingsHandler();
         this.te = new TimeEngine();
+        this.keyeventhandler = new KeyEventHandler();
         te.init();
         te.pause();
     }
@@ -97,6 +100,14 @@ public class ServiceHandler {
 
     public void setHorn(Horn horn) {
         this.horn = horn;
+    }
+
+    public KeyEventHandler getKeyEventHandler() {
+        return keyeventhandler;
+    }
+
+    public void setKeyEventHandler(KeyEventHandler keyeventhandler) {
+        this.keyeventhandler = keyeventhandler;
     }
 
     

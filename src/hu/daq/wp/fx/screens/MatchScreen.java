@@ -285,6 +285,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
     @Override
     public void setupPhase(MatchPhase mp) {
+        this.controlpanel.pause();
         if (mp.getPhaseName().equals("Büntetők")) {
             this.fivers.loadLeftTeam(this.leftteam.getTeamID());
             this.fivers.loadRightTeam(this.rightteam.getTeamID());
