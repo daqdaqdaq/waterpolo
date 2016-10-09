@@ -31,6 +31,7 @@ public class BallTime extends HBox implements TimeoutListener {
     Node leftteam;
     Node rightteam;
     TimeDisplay td;
+    TimeSetPopOver tspo;
 
     public BallTime(TimeEngine te, Integer seconds) {
         this.seconds = seconds;
@@ -41,6 +42,7 @@ public class BallTime extends HBox implements TimeoutListener {
         this.switchToLeft();
         this.td = WatchFactory.getWatchDisplay(cw);
         this.td.setFont(new Font(60));
+        this.tspo = new TimeSetPopOver(this);
         this.build();
     }
 
@@ -103,7 +105,11 @@ public class BallTime extends HBox implements TimeoutListener {
             }
         }
     }
-
+    
+    public void showPopOver(){
+        this.tspo.show(this.td);
+    }
+    
     public void start() {
         //this.cw.start();
         ServiceHandler.getInstance().getTimeEngine().start();

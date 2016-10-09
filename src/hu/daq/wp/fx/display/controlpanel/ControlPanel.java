@@ -16,6 +16,7 @@ import hu.daq.wp.fx.commonbuttons.LeftButton;
 import hu.daq.wp.fx.commonbuttons.PauseButton;
 import hu.daq.wp.fx.commonbuttons.ResetButton;
 import hu.daq.wp.fx.commonbuttons.RightButton;
+import hu.daq.wp.fx.commonbuttons.SetTimeButton;
 import hu.daq.wp.fx.commonbuttons.StartPauseButton;
 import hu.daq.wp.fx.display.balltime.BallTime;
 import hu.daq.wp.fx.display.leginfo.LegInfo;
@@ -38,19 +39,20 @@ public class ControlPanel extends GridPane {
     private GlyphButton balltimeright;
     private GlyphButton balltimeleft;
     private StartPauseButton start;
-    //private GlyphButton pause;
+    private GlyphButton settime;
     private GlyphButton balltimereset;
     private GlyphButton horn;
     private Label leglabel;
     private BallTime balltimedisplay;
     private LegInfo leginfo;
 
+
     public ControlPanel() {
         //this.balltimer = new TimeDisplay(false, false, true, true);
         this.balltimeright = new RightButton();
         this.balltimeleft = new LeftButton();
         this.start = new StartPauseButton();
-        //this.pause = new PauseButton();
+        this.settime = new SetTimeButton();
         this.balltimereset = new ResetButton();
         this.horn = new HornButton();
         this.leglabel = new Label("1. játékrész");
@@ -62,7 +64,6 @@ public class ControlPanel extends GridPane {
         keh.bindButton(sh.getProperty("key_left"), this.balltimeleft);
         keh.bindButton(sh.getProperty("key_right"), this.balltimeright);
         keh.bindButton(sh.getProperty("key_reset"), this.balltimereset);
-        System.out.println("Keeeeycode:" + KeyCode.H.toString());
         keh.bindButton(sh.getProperty("key_horn"), this.horn);
 
         this.build();
@@ -87,7 +88,7 @@ public class ControlPanel extends GridPane {
         GridPane buttongrid = new GridPane();
         buttongrid.setVgap(5);
         buttongrid.setHgap(5);
-        //buttongrid.add(this.pause, 0, 0);
+        buttongrid.add(this.settime, 0, 0);
         buttongrid.add(this.balltimereset, 1, 0);
         buttongrid.add(this.start, 2, 0);
         buttongrid.add(this.horn, 1, 1);
@@ -138,7 +139,9 @@ public class ControlPanel extends GridPane {
         });
 
         this.balltimereset.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).resetBallTime());
-
+        
+        this.settime.setOnAction((ev) -> this.balltimedisplay.showPopOver());
+        
         this.horn.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());
     }
 
