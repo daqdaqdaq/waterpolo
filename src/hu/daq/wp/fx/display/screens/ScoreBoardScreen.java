@@ -29,6 +29,7 @@ import hu.daq.wp.matchorganizer.Organizable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -43,8 +44,8 @@ import javafx.scene.text.Font;
  *
  * @author DAQ
  */
-public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable {
-
+public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable,TimeoutListener{
+    SimpleBooleanProperty isdraw;
     TeamDisplayLeftFX leftteam;
     TeamDisplayRightFX rightteam;
     Postgres db;
@@ -60,7 +61,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     //private final static int LEGTIME = 8; 
     private final static int BALLTIME = 30;
 
-    public ScoreBoardScreen(Postgres db) {
+    public ScoreBoardScreen(Postgres db){
 
         this.setPrefSize(1024, 768);
         this.db = db;
@@ -68,12 +69,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.rightteam = new TeamDisplayRightFX(this.db);
         this.timeengine = ServiceHandler.getInstance().getTimeEngine();
         this.balltime = new BallTimeDisplay(this.timeengine, BALLTIME);
+        this.balltime.getWatch().addTimeoutListener(this);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
         this.leginfo = new LegInfo(this.timeengine);
         this.pi = new PlayerInfo();
         this.fiverswindow = new FiversDisplayWindow();
         this.leftteambox = this.leftteam.getPlayerListView();
         this.rightteambox = this.rightteam.getPlayerListView();        
+        this.isdraw = new SimpleBooleanProperty(true);
+        this.isdraw.bind(Bindings.equal(this.leftteam.getTeamgoals(), this.rightteam.getTeamgoals()));
         //this.leginfo.setTimeToCount(0, LEGTIME, 0);
         //this.leginfo.setLegName("II. negyed");
         this.build();
@@ -248,12 +252,12 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         }
     }
 
-    public void setBallTime(int secs) {
+    public void setBallTime(int milisecs) {
         this.timeengine.pause();
-        if (secs * 1000 > this.leginfo.getRemainingTime()) {
+        if (milisecs > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         } else {
-            this.balltime.set(secs);
+            this.balltime.set(milisecs);
         }
         this.syncTime();
     }
@@ -391,4 +395,11 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void soundHorn() {
         ServiceHandler.getInstance().getHorn().honk();
     }
+
+    @Override
+    public void timeout() {
+        this.pauseMatch();
+    }
+
+
 }

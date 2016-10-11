@@ -6,6 +6,7 @@
 package hu.daq.wp.matchorganizer;
 
 import hu.daq.watch.TimeoutListener;
+import javafx.beans.property.SimpleBooleanProperty;
 
 /**
  *
@@ -14,4 +15,5 @@ import hu.daq.watch.TimeoutListener;
 public interface Organizable {
     public void setupPhase(MatchPhase mp);
     public void setTimeoutListener(TimeoutListener tl);
+
 }

@@ -31,6 +31,14 @@ public class MatchOrganizer implements TimeoutListener {
         this.phases.get(this.currentphase).setupPhase();
     }
     
+    public void jumpToPhase(Integer phasenum){
+        this.setCurrentPhase(phasenum);
+        this.setupPhase();
+    }
+    
+    public void jumToEnd(){
+        this.jumpToPhase(this.phases.size()-1);
+    }
     
     public void nextPhase() {
         //if it's not the last phase and if there is any phases at all
@@ -54,4 +62,6 @@ public class MatchOrganizer implements TimeoutListener {
     public void setCurrentPhase(Integer phasenum){
         this.currentphase = phasenum;
     }
+    
+    
 }

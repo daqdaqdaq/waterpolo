@@ -141,6 +141,8 @@ public class ControlPanel extends GridPane {
         this.balltimereset.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).resetBallTime());
         
         this.settime.setOnAction((ev) -> this.balltimedisplay.showPopOver());
+        //Setting the time is available only when the time is paused
+        this.settime.disableProperty().bind(this.balltimedisplay.getWatch().getTimeEngineRunning());
         
         this.horn.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());
     }

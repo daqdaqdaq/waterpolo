@@ -16,7 +16,9 @@ public class Overtime extends MatchPhase{
     public Overtime(int milisec, Organizable screen) {
         super(milisec, "Hosszabbítás", screen);
     }
+    
 
+    
     @Override
     public void endPhase(){
         ServiceHandler.getInstance().getHorn().honk();

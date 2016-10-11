@@ -123,6 +123,10 @@ public abstract class TeamDisplayFX {
         return this.goalslabel;
     }
 
+    public SimpleIntegerProperty getTeamgoals() {
+        return teamgoals;
+    }
+    
     public PlayerDisplayFX getPlayer(Integer id) {
         return this.active_players.stream().filter(E -> E.getPlayerID() == id).findAny().orElse(null);
     }

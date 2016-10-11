@@ -29,6 +29,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -46,7 +48,6 @@ import javafx.scene.layout.VBox;
  * @author DAQ
  */
 public class MatchScreen extends BorderPane implements SubScreen, Organizable, PopupCloseListener {
-
     private MainPage parent;
     private String securitytoken;
     private final Boolean adminonly;
@@ -301,5 +302,6 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     public void cleanupAfterPopup() {
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).closeFivemWindow();
     }
+
 
 }

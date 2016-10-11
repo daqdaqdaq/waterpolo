@@ -8,6 +8,7 @@ package hu.daq.wp.fx.display.balltime;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.thriftconnector.client.WPController;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import org.controlsfx.control.PopOver;
 
 /**
@@ -25,6 +26,8 @@ public class TimeSetPopOver extends PopOver {
         this.setDetached(false);
         this.setArrowLocation(ArrowLocation.TOP_CENTER);
         this.timefield = new TextField();
+        this.timefield.setFont(new Font(24));
+        this.timefield.setPrefWidth(30);
         this.setContentNode(this.timefield);
 
         this.timefield.setOnAction((ev) -> {

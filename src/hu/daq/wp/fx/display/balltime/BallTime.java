@@ -116,8 +116,9 @@ public class BallTime extends HBox implements TimeoutListener {
     }
 
     public void pause() {
-        ServiceHandler.getInstance().getTimeEngine().pause();
         //this.cw.pause();
+        ServiceHandler.getInstance().getTimeEngine().pause();
+
     }
 
     public void reset() {

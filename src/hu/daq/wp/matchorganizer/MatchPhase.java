@@ -5,6 +5,8 @@
  */
 package hu.daq.wp.matchorganizer;
 
+import javafx.beans.property.SimpleBooleanProperty;
+
 /**
  *
  * @author DAQ
@@ -14,12 +16,14 @@ public abstract class MatchPhase{
     protected String phasename;
     protected Organizable screen;
     protected int availabletimeouts = 0;
+
     
     //Duration of the phase in milisecs, the name of the phase and the screen to control
     public MatchPhase(int milisec, String phasename, Organizable screen){
         this.milisec = milisec;
         this.phasename = phasename;
         this.screen = screen;
+ 
     }
     
     public String getPhaseName(){
@@ -39,6 +43,8 @@ public abstract class MatchPhase{
     public int getAvailableTimeouts() {
         return availabletimeouts;
     }
+    
+ 
     
     //Jobs at the end of the phase eg. sound the horn at match legs' end
     public void endPhase(){

@@ -12,7 +12,7 @@ package hu.daq.wp.matchorganizer;
 public class Finished extends MatchPhase{
 
     public Finished(Organizable screen) {
-        super(-1, "Vége", screen);
+        super(-1, "Végeredmény", screen);
     }
     
 }
