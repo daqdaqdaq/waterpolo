@@ -40,7 +40,7 @@ public class WPDisplay {
 
     public String logout(String token) throws FailedOperation, org.apache.thrift.TException;
 
-    public void readymatch(String token) throws FailedOperation, org.apache.thrift.TException;
+    public void readymatch(String token, int leftteamid, int rightteamid, int matchid) throws FailedOperation, org.apache.thrift.TException;
 
     public void startmatch(String token) throws FailedOperation, org.apache.thrift.TException;
 
@@ -96,7 +96,7 @@ public class WPDisplay {
 
     public void logout(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void readymatch(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void readymatch(String token, int leftteamid, int rightteamid, int matchid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void startmatch(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -219,16 +219,19 @@ public class WPDisplay {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "logout failed: unknown result");
     }
 
-    public void readymatch(String token) throws FailedOperation, org.apache.thrift.TException
+    public void readymatch(String token, int leftteamid, int rightteamid, int matchid) throws FailedOperation, org.apache.thrift.TException
     {
-      send_readymatch(token);
+      send_readymatch(token, leftteamid, rightteamid, matchid);
       recv_readymatch();
     }
 
-    public void send_readymatch(String token) throws org.apache.thrift.TException
+    public void send_readymatch(String token, int leftteamid, int rightteamid, int matchid) throws org.apache.thrift.TException
     {
       readymatch_args args = new readymatch_args();
       args.setToken(token);
+      args.setLeftteamid(leftteamid);
+      args.setRightteamid(rightteamid);
+      args.setMatchid(matchid);
       sendBase("readymatch", args);
     }
 
@@ -872,24 +875,33 @@ public class WPDisplay {
       }
     }
 
-    public void readymatch(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void readymatch(String token, int leftteamid, int rightteamid, int matchid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      readymatch_call method_call = new readymatch_call(token, resultHandler, this, ___protocolFactory, ___transport);
+      readymatch_call method_call = new readymatch_call(token, leftteamid, rightteamid, matchid, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class readymatch_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String token;
-      public readymatch_call(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int leftteamid;
+      private int rightteamid;
+      private int matchid;
+      public readymatch_call(String token, int leftteamid, int rightteamid, int matchid, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.token = token;
+        this.leftteamid = leftteamid;
+        this.rightteamid = rightteamid;
+        this.matchid = matchid;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("readymatch", org.apache.thrift.protocol.TMessageType.CALL, 0));
         readymatch_args args = new readymatch_args();
         args.setToken(token);
+        args.setLeftteamid(leftteamid);
+        args.setRightteamid(rightteamid);
+        args.setMatchid(matchid);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1785,7 +1797,7 @@ public class WPDisplay {
       public readymatch_result getResult(I iface, readymatch_args args) throws org.apache.thrift.TException {
         readymatch_result result = new readymatch_result();
         try {
-          iface.readymatch(args.token);
+          iface.readymatch(args.token, args.leftteamid, args.rightteamid, args.matchid);
         } catch (FailedOperation err) {
           result.err = err;
         }
@@ -2553,7 +2565,7 @@ public class WPDisplay {
       }
 
       public void start(I iface, readymatch_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
-        iface.readymatch(args.token,resultHandler);
+        iface.readymatch(args.token, args.leftteamid, args.rightteamid, args.matchid,resultHandler);
       }
     }
 
@@ -5577,6 +5589,9 @@ public class WPDisplay {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("readymatch_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField LEFTTEAMID_FIELD_DESC = new org.apache.thrift.protocol.TField("leftteamid", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField RIGHTTEAMID_FIELD_DESC = new org.apache.thrift.protocol.TField("rightteamid", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField MATCHID_FIELD_DESC = new org.apache.thrift.protocol.TField("matchid", org.apache.thrift.protocol.TType.I32, (short)4);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -5585,10 +5600,16 @@ public class WPDisplay {
     }
 
     public String token; // required
+    public int leftteamid; // required
+    public int rightteamid; // required
+    public int matchid; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      TOKEN((short)1, "token");
+      TOKEN((short)1, "token"),
+      LEFTTEAMID((short)2, "leftteamid"),
+      RIGHTTEAMID((short)3, "rightteamid"),
+      MATCHID((short)4, "matchid");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -5605,6 +5626,12 @@ public class WPDisplay {
         switch(fieldId) {
           case 1: // TOKEN
             return TOKEN;
+          case 2: // LEFTTEAMID
+            return LEFTTEAMID;
+          case 3: // RIGHTTEAMID
+            return RIGHTTEAMID;
+          case 4: // MATCHID
+            return MATCHID;
           default:
             return null;
         }
@@ -5645,11 +5672,21 @@ public class WPDisplay {
     }
 
     // isset id assignments
+    private static final int __LEFTTEAMID_ISSET_ID = 0;
+    private static final int __RIGHTTEAMID_ISSET_ID = 1;
+    private static final int __MATCHID_ISSET_ID = 2;
+    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "security")));
+      tmpMap.put(_Fields.LEFTTEAMID, new org.apache.thrift.meta_data.FieldMetaData("leftteamid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32          , "int")));
+      tmpMap.put(_Fields.RIGHTTEAMID, new org.apache.thrift.meta_data.FieldMetaData("rightteamid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32          , "int")));
+      tmpMap.put(_Fields.MATCHID, new org.apache.thrift.meta_data.FieldMetaData("matchid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32          , "int")));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(readymatch_args.class, metaDataMap);
     }
@@ -5658,19 +5695,32 @@ public class WPDisplay {
     }
 
     public readymatch_args(
-      String token)
+      String token,
+      int leftteamid,
+      int rightteamid,
+      int matchid)
     {
       this();
       this.token = token;
+      this.leftteamid = leftteamid;
+      setLeftteamidIsSet(true);
+      this.rightteamid = rightteamid;
+      setRightteamidIsSet(true);
+      this.matchid = matchid;
+      setMatchidIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public readymatch_args(readymatch_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetToken()) {
         this.token = other.token;
       }
+      this.leftteamid = other.leftteamid;
+      this.rightteamid = other.rightteamid;
+      this.matchid = other.matchid;
     }
 
     public readymatch_args deepCopy() {
@@ -5680,6 +5730,12 @@ public class WPDisplay {
     @Override
     public void clear() {
       this.token = null;
+      setLeftteamidIsSet(false);
+      this.leftteamid = 0;
+      setRightteamidIsSet(false);
+      this.rightteamid = 0;
+      setMatchidIsSet(false);
+      this.matchid = 0;
     }
 
     public String getToken() {
@@ -5706,6 +5762,75 @@ public class WPDisplay {
       }
     }
 
+    public int getLeftteamid() {
+      return this.leftteamid;
+    }
+
+    public readymatch_args setLeftteamid(int leftteamid) {
+      this.leftteamid = leftteamid;
+      setLeftteamidIsSet(true);
+      return this;
+    }
+
+    public void unsetLeftteamid() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __LEFTTEAMID_ISSET_ID);
+    }
+
+    /** Returns true if field leftteamid is set (has been assigned a value) and false otherwise */
+    public boolean isSetLeftteamid() {
+      return EncodingUtils.testBit(__isset_bitfield, __LEFTTEAMID_ISSET_ID);
+    }
+
+    public void setLeftteamidIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __LEFTTEAMID_ISSET_ID, value);
+    }
+
+    public int getRightteamid() {
+      return this.rightteamid;
+    }
+
+    public readymatch_args setRightteamid(int rightteamid) {
+      this.rightteamid = rightteamid;
+      setRightteamidIsSet(true);
+      return this;
+    }
+
+    public void unsetRightteamid() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __RIGHTTEAMID_ISSET_ID);
+    }
+
+    /** Returns true if field rightteamid is set (has been assigned a value) and false otherwise */
+    public boolean isSetRightteamid() {
+      return EncodingUtils.testBit(__isset_bitfield, __RIGHTTEAMID_ISSET_ID);
+    }
+
+    public void setRightteamidIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __RIGHTTEAMID_ISSET_ID, value);
+    }
+
+    public int getMatchid() {
+      return this.matchid;
+    }
+
+    public readymatch_args setMatchid(int matchid) {
+      this.matchid = matchid;
+      setMatchidIsSet(true);
+      return this;
+    }
+
+    public void unsetMatchid() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __MATCHID_ISSET_ID);
+    }
+
+    /** Returns true if field matchid is set (has been assigned a value) and false otherwise */
+    public boolean isSetMatchid() {
+      return EncodingUtils.testBit(__isset_bitfield, __MATCHID_ISSET_ID);
+    }
+
+    public void setMatchidIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __MATCHID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case TOKEN:
@@ -5716,6 +5841,30 @@ public class WPDisplay {
         }
         break;
 
+      case LEFTTEAMID:
+        if (value == null) {
+          unsetLeftteamid();
+        } else {
+          setLeftteamid((Integer)value);
+        }
+        break;
+
+      case RIGHTTEAMID:
+        if (value == null) {
+          unsetRightteamid();
+        } else {
+          setRightteamid((Integer)value);
+        }
+        break;
+
+      case MATCHID:
+        if (value == null) {
+          unsetMatchid();
+        } else {
+          setMatchid((Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -5723,6 +5872,15 @@ public class WPDisplay {
       switch (field) {
       case TOKEN:
         return getToken();
+
+      case LEFTTEAMID:
+        return Integer.valueOf(getLeftteamid());
+
+      case RIGHTTEAMID:
+        return Integer.valueOf(getRightteamid());
+
+      case MATCHID:
+        return Integer.valueOf(getMatchid());
 
       }
       throw new IllegalStateException();
@@ -5737,6 +5895,12 @@ public class WPDisplay {
       switch (field) {
       case TOKEN:
         return isSetToken();
+      case LEFTTEAMID:
+        return isSetLeftteamid();
+      case RIGHTTEAMID:
+        return isSetRightteamid();
+      case MATCHID:
+        return isSetMatchid();
       }
       throw new IllegalStateException();
     }
@@ -5763,6 +5927,33 @@ public class WPDisplay {
           return false;
       }
 
+      boolean this_present_leftteamid = true;
+      boolean that_present_leftteamid = true;
+      if (this_present_leftteamid || that_present_leftteamid) {
+        if (!(this_present_leftteamid && that_present_leftteamid))
+          return false;
+        if (this.leftteamid != that.leftteamid)
+          return false;
+      }
+
+      boolean this_present_rightteamid = true;
+      boolean that_present_rightteamid = true;
+      if (this_present_rightteamid || that_present_rightteamid) {
+        if (!(this_present_rightteamid && that_present_rightteamid))
+          return false;
+        if (this.rightteamid != that.rightteamid)
+          return false;
+      }
+
+      boolean this_present_matchid = true;
+      boolean that_present_matchid = true;
+      if (this_present_matchid || that_present_matchid) {
+        if (!(this_present_matchid && that_present_matchid))
+          return false;
+        if (this.matchid != that.matchid)
+          return false;
+      }
+
       return true;
     }
 
@@ -5785,6 +5976,36 @@ public class WPDisplay {
       }
       if (isSetToken()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetLeftteamid()).compareTo(other.isSetLeftteamid());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetLeftteamid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.leftteamid, other.leftteamid);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetRightteamid()).compareTo(other.isSetRightteamid());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetRightteamid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.rightteamid, other.rightteamid);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetMatchid()).compareTo(other.isSetMatchid());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetMatchid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.matchid, other.matchid);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -5816,6 +6037,18 @@ public class WPDisplay {
         sb.append(this.token);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("leftteamid:");
+      sb.append(this.leftteamid);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("rightteamid:");
+      sb.append(this.rightteamid);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("matchid:");
+      sb.append(this.matchid);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -5835,6 +6068,8 @@ public class WPDisplay {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -5867,6 +6102,30 @@ public class WPDisplay {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // LEFTTEAMID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.leftteamid = iprot.readI32();
+                struct.setLeftteamidIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // RIGHTTEAMID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.rightteamid = iprot.readI32();
+                struct.setRightteamidIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // MATCHID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.matchid = iprot.readI32();
+                struct.setMatchidIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -5887,6 +6146,15 @@ public class WPDisplay {
           oprot.writeString(struct.token);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(LEFTTEAMID_FIELD_DESC);
+        oprot.writeI32(struct.leftteamid);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(RIGHTTEAMID_FIELD_DESC);
+        oprot.writeI32(struct.rightteamid);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(MATCHID_FIELD_DESC);
+        oprot.writeI32(struct.matchid);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -5908,19 +6176,49 @@ public class WPDisplay {
         if (struct.isSetToken()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetLeftteamid()) {
+          optionals.set(1);
+        }
+        if (struct.isSetRightteamid()) {
+          optionals.set(2);
+        }
+        if (struct.isSetMatchid()) {
+          optionals.set(3);
+        }
+        oprot.writeBitSet(optionals, 4);
         if (struct.isSetToken()) {
           oprot.writeString(struct.token);
+        }
+        if (struct.isSetLeftteamid()) {
+          oprot.writeI32(struct.leftteamid);
+        }
+        if (struct.isSetRightteamid()) {
+          oprot.writeI32(struct.rightteamid);
+        }
+        if (struct.isSetMatchid()) {
+          oprot.writeI32(struct.matchid);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, readymatch_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
           struct.token = iprot.readString();
           struct.setTokenIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.leftteamid = iprot.readI32();
+          struct.setLeftteamidIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.rightteamid = iprot.readI32();
+          struct.setRightteamidIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.matchid = iprot.readI32();
+          struct.setMatchidIsSet(true);
         }
       }
     }

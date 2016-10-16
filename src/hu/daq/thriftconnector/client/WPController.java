@@ -58,8 +58,9 @@ public class WPController extends ThriftClient{
     public void disconnect(){
         //try to send the a logout to the server thus a server can disconnect the talkback client
         try {
+  
             this.client.logout(this.token);
-        } catch (TException ex) {
+        } catch (Exception ex) {
             
         }
         super.disconnect();
@@ -200,6 +201,10 @@ public class WPController extends ThriftClient{
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }   
+    
+    /*
+     Obsolete! Use readymatch instead!
+     */ 
     public void loadTeam(int leftteamid, int rightteamid) {
         try {
             this.client.loadteams(this.token, leftteamid, rightteamid);
@@ -208,6 +213,14 @@ public class WPController extends ThriftClient{
         }
     }
 
+    public void readyMatch(int leftteamid, int rightteamid, int matchid) {
+        try {
+            this.client.readymatch(this.token, leftteamid, rightteamid, matchid);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }
+    
     public void requestTimeOut(int teamid) {
         try {
             this.client.requesttimeout(token, teamid);

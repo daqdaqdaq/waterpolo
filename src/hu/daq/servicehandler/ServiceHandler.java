@@ -91,6 +91,7 @@ public class ServiceHandler {
         this.organizer = organizer;
     }
 
+    
     public MatchOrganizer getOrganizer() {
         return organizer;
     }

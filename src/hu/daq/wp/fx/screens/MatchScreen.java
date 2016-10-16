@@ -13,6 +13,7 @@ import hu.daq.thriftconnector.client.WPController;
 import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.watch.TimeoutListener;
+import hu.daq.wp.fx.MatchProfileFX;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
 import hu.daq.wp.fx.commonbuttons.EndMatchButton;
 import hu.daq.wp.fx.commonbuttons.TimeButton;
@@ -25,6 +26,7 @@ import hu.daq.wp.fx.display.team.TeamControlRightFX;
 import hu.daq.wp.fx.screens.teamselector.TeamSelectorWindow;
 import hu.daq.wp.matchorganizer.MatchPhase;
 import hu.daq.wp.matchorganizer.Organizable;
+import hu.daq.wp.matchorganizer.OrganizerBuilder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -42,6 +44,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.json.JSONException;
 
 /**
  *
@@ -60,8 +63,11 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private final AddTeamButton addteam;
     private final ControlPanel controlpanel;
     private final EndMatchButton stopmatch;
+    private MatchProfileFX matchprofile;
+    
     private ToggleGroup showplayertoggle;
     private FiversControlWindow fivers;
+    
 
     public MatchScreen(Postgres db) {
         this.db = db;
@@ -74,6 +80,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.leftteamtime = new TimeButton();
         this.stopmatch = new EndMatchButton();
         this.addteam = new AddTeamButton();
+        this.matchprofile = new MatchProfileFX(this.db);
         this.controlpanel = new ControlPanel();
         this.fivers = new FiversControlWindow();
         this.fivers.setCloseListener(this);
@@ -114,6 +121,12 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.rightteam.getLoaded().addListener((Observable observable) -> {
             this.controlStartStopButton();
         });
+        
+        this.matchprofile.getSelectionModel().selectedItemProperty().addListener((Observable observable) -> {
+            this.controlStartStopButton();
+        });
+        
+        
         this.leftteamtime.setOnAction((ev) -> {
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).requestTimeOut(this.leftteam.getTeamID());
         });
@@ -155,9 +168,15 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     }
 
     private HBox buildOtherButtonBox() {
-        HBox obb = new HBox(3);
-        obb.getChildren().addAll(this.addteam, this.stopmatch);
-
+        HBox obb = new HBox();
+        VBox vb = new VBox(3);
+        HBox upperhb = new HBox(3);
+        HBox lowerhb = new HBox(3);
+        
+        upperhb.getChildren().addAll(this.addteam);
+        lowerhb.getChildren().addAll(this.matchprofile, this.stopmatch);        
+        vb.getChildren().addAll(upperhb,lowerhb);
+        obb.getChildren().add(vb);
         return obb;
     }
 
@@ -174,6 +193,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
     @Override
     public void initScreen() {
+        this.matchprofile.load();
     }
 
     private void showTeamSelector() {
@@ -198,6 +218,8 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
                 this.readyMatch();
             } catch (FailedOperation ex) {
                 ServiceHandler.getInstance().showError("A kijelző nem elérhető", ex.errormsg);
+            } catch (JSONException ex) {
+                ServiceHandler.getInstance().showError("Meccs profil hiba", "A meccs profil betöltése sikertelen");
             }
 
         } else {
@@ -206,7 +228,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     }
 
     private void controlStartStopButton() {
-        if (this.leftteam.isLoaded() && this.rightteam.isLoaded()) {
+        if (this.leftteam.isLoaded() && this.rightteam.isLoaded() && this.matchprofile.isSelected()) {
             this.stopmatch.setDisable(false);
         } else {
             this.stopmatch.setDisable(true);
@@ -214,8 +236,9 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         }
     }
 
-    private void readyMatch() {
-        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).loadTeam(this.leftteam.getTeamID(), this.rightteam.getTeamID());
+    private void readyMatch() throws JSONException {
+        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(),this.matchprofile.getSelected().getID());
+        ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(),this));
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(-1);
         this.leftteam.enable();
         this.rightteam.enable();

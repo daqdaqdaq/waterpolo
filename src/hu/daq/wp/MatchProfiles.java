@@ -32,6 +32,7 @@ public class MatchProfiles implements Notifiable {
         String sendstr = "select * from matchprofile order by profilename";
         try {
             this.profiles.setAll(db.query(sendstr).stream().map(E -> {
+                System.out.println(E);
                 MatchProfile t = new MatchProfile(db);
                 t.load(E);
                 return t;

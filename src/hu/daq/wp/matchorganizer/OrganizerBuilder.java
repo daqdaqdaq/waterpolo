@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.matchorganizer;
 
+import hu.daq.wp.MatchProfile;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
@@ -53,5 +54,10 @@ public class OrganizerBuilder {
     
     public static MatchOrganizer build(String sourcestr, Organizable screen) throws JSONException{
         return build(new JSONObject(sourcestr),screen);
+    }
+    
+    public static MatchOrganizer build(MatchProfile mp, Organizable screen) throws JSONException{
+        System.out.println(mp.getProfile().getValue());
+        return build(new JSONObject(mp.getProfile().getValue()),screen);
     }
 }

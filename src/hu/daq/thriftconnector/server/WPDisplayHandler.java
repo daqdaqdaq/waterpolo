@@ -26,6 +26,7 @@ import hu.daq.wp.fx.display.commands.Honk;
 import hu.daq.wp.fx.display.commands.LoadTeams;
 import hu.daq.wp.fx.display.commands.PauseMatch;
 import hu.daq.wp.fx.display.commands.Penalty;
+import hu.daq.wp.fx.display.commands.ReadyMatch;
 import hu.daq.wp.fx.display.commands.RemoveFivemGoal;
 import hu.daq.wp.fx.display.commands.RemoveGoal;
 import hu.daq.wp.fx.display.commands.RemovePenalty;
@@ -67,11 +68,23 @@ public class WPDisplayHandler implements WPDisplay.Iface {
         }
 
     }
-
     @Override
-    public void readymatch(String token) throws FailedOperation, TException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void readymatch(String token, int leftteamid, int rightteamid, int matchid) throws FailedOperation, TException {
+        //System.out.println("Login request received...");
+
+        if (cs.checkToken(token)) {
+            cs.switchScreen("scoreboard");
+            Command comm = new ReadyMatch(leftteamid, rightteamid,matchid);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }
     }
+
 
     @Override
     public void startmatch(String token) throws FailedOperation, TException {
@@ -402,5 +415,7 @@ public class WPDisplayHandler implements WPDisplay.Iface {
             throw new FailedOperation("Unauthorized!");
         }        
     }
+
+
 
 }

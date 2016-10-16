@@ -14,6 +14,7 @@ import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.talkback.WPTalkBackClient;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.TimeoutListener;
+import hu.daq.wp.MatchProfile;
 import hu.daq.wp.fx.display.balltime.BallTime;
 import hu.daq.wp.fx.display.balltime.BallTimeDisplay;
 import hu.daq.wp.fx.display.infopopup.FiversDisplayWindow;
@@ -26,6 +27,7 @@ import hu.daq.wp.fx.display.team.TeamDisplayLeftFX;
 import hu.daq.wp.fx.display.team.TeamDisplayRightFX;
 import hu.daq.wp.matchorganizer.MatchPhase;
 import hu.daq.wp.matchorganizer.Organizable;
+import hu.daq.wp.matchorganizer.OrganizerBuilder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
@@ -39,12 +41,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.json.JSONException;
 
 /**
  *
  * @author DAQ
  */
-public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable,TimeoutListener{
+public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable, TimeoutListener {
+
     SimpleBooleanProperty isdraw;
     TeamDisplayLeftFX leftteam;
     TeamDisplayRightFX rightteam;
@@ -56,12 +60,12 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     PlayerInfo pi;
     FiversDisplayWindow fiverswindow;
     TimeSender timesender;
-        VBox leftteambox;
-        VBox rightteambox;    
+    VBox leftteambox;
+    VBox rightteambox;
     //private final static int LEGTIME = 8; 
     private final static int BALLTIME = 30;
 
-    public ScoreBoardScreen(Postgres db){
+    public ScoreBoardScreen(Postgres db) {
 
         this.setPrefSize(1024, 768);
         this.db = db;
@@ -75,7 +79,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.pi = new PlayerInfo();
         this.fiverswindow = new FiversDisplayWindow();
         this.leftteambox = this.leftteam.getPlayerListView();
-        this.rightteambox = this.rightteam.getPlayerListView();        
+        this.rightteambox = this.rightteam.getPlayerListView();
         this.isdraw = new SimpleBooleanProperty(true);
         this.isdraw.bind(Bindings.equal(this.leftteam.getTeamgoals(), this.rightteam.getTeamgoals()));
         //this.leginfo.setTimeToCount(0, LEGTIME, 0);
@@ -160,7 +164,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         VBox leftteambox = this.leftteam.getPlayerListView();
         VBox rightteambox = this.rightteam.getPlayerListView();
         playersbox.getChildren().addAll(leftteambox,
-                                    rightteambox);
+                rightteambox);
         HBox.setHgrow(leftteambox, Priority.SOMETIMES);
         HBox.setHgrow(rightteambox, Priority.SOMETIMES);
         return playersbox;
@@ -172,6 +176,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     public void loadRightTeam(Integer teamid) {
         this.rightteam.load(teamid);
+    }
+
+    public void loadMatchProfile(Integer profileid) throws JSONException {
+        MatchProfile mp = new MatchProfile(this.db);
+        mp.load(profileid);
+        ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(mp, this));
+        ServiceHandler.getInstance().getOrganizer().setCurrentPhase(0);
+        ServiceHandler.getInstance().getOrganizer().setupPhase();
     }
 
     private PlayerDisplayFX getPlayer(Integer playerid) throws Exception {
@@ -356,7 +368,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void setupPhase(MatchPhase mp) {
         this.pauseMatch();
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
- 
+
         if (mp.getPhaseName().equals("Büntetők")) {
             this.leginfo.setLegName(mp.getPhaseName());
             this.fiverswindow.loadLeftTeam(this.leftteam.getTeamId());
@@ -371,8 +383,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
             this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
         }
-       this.syncTime();
-       System.out.println("New phase set up");
+        this.syncTime();
+        System.out.println("New phase set up");
 
     }
 
@@ -400,6 +412,5 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void timeout() {
         this.pauseMatch();
     }
-
 
 }
