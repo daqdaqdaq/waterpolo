@@ -19,6 +19,7 @@ public class Player extends Entity {
     
     protected SimpleIntegerProperty player_id = new SimpleIntegerProperty();
     protected SimpleStringProperty name = new SimpleStringProperty(); 
+    protected SimpleStringProperty shortname = new SimpleStringProperty(); 
     protected SimpleIntegerProperty capnum  = new SimpleIntegerProperty();    
     protected SimpleIntegerProperty team_id = new SimpleIntegerProperty();
     protected SimpleBooleanProperty active = new SimpleBooleanProperty();
@@ -29,6 +30,7 @@ public class Player extends Entity {
         super(db);
         this.player_id.addListener(changelistener);
         this.name.addListener(changelistener);
+        this.shortname.addListener(changelistener);        
         this.capnum.addListener(changelistener);
         this.team_id.addListener(changelistener);
         this.active.addListener(changelistener);
@@ -58,6 +60,7 @@ public class Player extends Entity {
         try{
             this.player_id.set(Integer.parseInt(data.get("player_id")));
             this.name.set(data.get("name"));
+            this.shortname.set(data.get("shortname"));
             this.capnum.set(Integer.parseInt(data.get("capnum")));
             this.team_id.set(Integer.parseInt(data.get("team_id")));
             this.active.set(Boolean.parseBoolean(data.get("active")));
@@ -77,8 +80,9 @@ public class Player extends Entity {
         
         String sendstr;
         if (this.player_id.getValue().equals(0)){
-            sendstr = "insert into player (name,capnum,team_id,player_pic,active) values("
+            sendstr = "insert into player (name,shortname,capnum,team_id,player_pic,active) values("
                     +"'"+this.name.getValueSafe()+"', "
+                    +"'"+this.shortname.getValueSafe()+"', "
                     +this.capnum.getValue().toString()+", "
                     +this.team_id.getValue().toString()+", "
                     +this.player_pic.getValue().toString()+", "
@@ -87,6 +91,7 @@ public class Player extends Entity {
         } else {
             sendstr = "update player set (name,capnum,team_id,player_pic,active) =("
                     +"'"+this.name.getValueSafe()+"', "
+                    +"'"+this.shortname.getValueSafe()+"', "
                     +this.capnum.getValue().toString()+", "
                     +this.team_id.getValue().toString()+", "
                     +this.player_pic.getValue().toString()+", "
@@ -116,6 +121,10 @@ public class Player extends Entity {
 
     public SimpleStringProperty getName() {
         return name;
+    }
+
+    public SimpleStringProperty getShortname() {
+        return shortname;
     }
 
     public SimpleIntegerProperty getCapnum() {

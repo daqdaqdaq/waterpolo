@@ -41,6 +41,8 @@ public class PlayerFX extends AnchorPane implements Instructable{
     NumField capnum_field;
     Label name_label;
     TextField name_field;
+    Label shortname_label;
+    TextField shortname_field;    
     Button edit_button;
     Button save_button;
     PlayerPicture picture;
@@ -99,6 +101,10 @@ public class PlayerFX extends AnchorPane implements Instructable{
         this.name_field.textProperty().bindBidirectional(this.player.getName());
         this.name_label.textProperty().bindBidirectional(this.player.getName());
         
+        this.shortname_field.setPrefWidth(100);
+        this.shortname_label.setPrefWidth(100);
+        this.shortname_field.textProperty().bindBidirectional(this.player.getShortname());
+        this.shortname_label.textProperty().bindBidirectional(this.player.getShortname());        
         this.edit_button.setOnAction((ActionEvent event) -> {
             editOn();
         });
@@ -113,29 +119,34 @@ public class PlayerFX extends AnchorPane implements Instructable{
         this.basegrid.setVgap(5);
         this.basegrid.setPadding(new Insets(5));
         this.basegrid.add(this.picture, 0, 0, 1, 2);
-        this.basegrid.add(this.name_label, 1, 0, 2, 1);
+        this.basegrid.add(this.name_label, 1, 0, 3, 1);
+        this.basegrid.add(this.shortname_label, 2, 1, 2, 1);
         this.basegrid.add(this.capnum_label, 1, 1);
-        this.basegrid.add(this.edit_button, 2, 1);
+        this.basegrid.add(this.edit_button, 3, 0);
         this.getChildren().add(this.basegrid);
     }
     
     public void editOn(){
         this.basegrid.getChildren().remove(this.name_label);
-        this.basegrid.add(this.name_field, 1, 0, 2, 1);
+        this.basegrid.add(this.name_field, 1, 0, 3, 1);
+        this.basegrid.getChildren().remove(this.shortname_label);        
+        this.basegrid.add(this.shortname_field, 2, 1, 2, 1);        
         this.basegrid.getChildren().remove(this.capnum_label);
         this.basegrid.add(this.capnum_field, 1, 1);
         this.basegrid.getChildren().remove(this.edit_button);
-        this.basegrid.add(this.save_button, 2, 1);
+        this.basegrid.add(this.save_button, 3, 1);
         
     }
     
     public void editOff(){
         this.basegrid.getChildren().remove(this.name_field);
-        this.basegrid.add(this.name_label, 1, 0, 2, 1);
+        this.basegrid.add(this.name_label, 1, 0, 3, 1);
+        this.basegrid.getChildren().remove(this.shortname_field);        
+        this.basegrid.add(this.shortname_label, 2, 1, 2, 1);         
         this.basegrid.getChildren().remove(this.capnum_field);
         this.basegrid.add(this.capnum_label, 1, 1);
         this.basegrid.getChildren().remove(this.save_button);
-        this.basegrid.add(this.edit_button, 2, 1);    
+        this.basegrid.add(this.edit_button, 3, 1);    
     }
     
     

@@ -128,9 +128,11 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         
         
         this.leftteamtime.setOnAction((ev) -> {
+            this.controlpanel.pause();
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).requestTimeOut(this.leftteam.getTeamID());
         });
         this.rightteamtime.setOnAction((ev) -> {
+            this.controlpanel.pause();
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).requestTimeOut(this.rightteam.getTeamID());
         });
     }

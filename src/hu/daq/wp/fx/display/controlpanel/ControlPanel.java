@@ -55,7 +55,7 @@ public class ControlPanel extends GridPane {
         this.settime = new SetTimeButton();
         this.balltimereset = new ResetButton();
         this.horn = new HornButton();
-        this.leglabel = new Label("1. játékrész");
+        this.leglabel = new Label();
         this.balltimedisplay = new BallTime(ServiceHandler.getInstance().getTimeEngine(), 30);
         this.leginfo = new LegInfo(ServiceHandler.getInstance().getTimeEngine());
         KeyEventHandler keh = ServiceHandler.getInstance().getKeyEventHandler();
@@ -72,6 +72,7 @@ public class ControlPanel extends GridPane {
     private void build() {
         this.setMaxWidth(200);
         this.setMinWidth(200);
+        //this.setGridLinesVisible(true);
         this.setHgap(5);
         this.setVgap(5);
         this.setPadding(new Insets(10));
@@ -95,6 +96,7 @@ public class ControlPanel extends GridPane {
         buttongrid.setAlignment(Pos.CENTER);
 
         this.add(buttongrid, 0, 3, 3, 1);
+        this.setAlignment(Pos.CENTER);
 
         /*    private GlyphButton balltimeright;
          private GlyphButton balltimeleft;
@@ -140,9 +142,9 @@ public class ControlPanel extends GridPane {
 
         this.balltimereset.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).resetBallTime());
         
-        this.settime.setOnAction((ev) -> this.balltimedisplay.showPopOver());
+        //this.settime.setOnAction((ev) -> this.balltimedisplay.showPopOver());
         //Setting the time is available only when the time is paused
-        this.settime.disableProperty().bind(this.balltimedisplay.getWatch().getTimeEngineRunning());
+        //this.settime.disableProperty().bind(this.balltimedisplay.getWatch().getTimeEngineRunning());
         
         this.horn.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());
     }

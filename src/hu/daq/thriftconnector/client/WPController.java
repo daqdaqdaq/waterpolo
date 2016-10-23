@@ -19,8 +19,7 @@ import org.apache.thrift.protocol.TProtocol;
  *
  * @author DAQ
  */
-public class WPController extends ThriftClient{
-
+public class WPController extends ThriftClient {
 
     private WPDisplay.Client client;
 
@@ -29,52 +28,55 @@ public class WPController extends ThriftClient{
     }
 
     public String connect(String token) throws FailedOperation {
+        if (!this.transport.isOpen()) {
+            try {
+                this.transport.open();
 
-        try {
-            this.transport.open();
+                TProtocol protocol = new TBinaryProtocol(transport);
+                this.client = new WPDisplay.Client(protocol);
+                System.out.println("Connection to server has established");
+            } catch (TException x) {
+                throw new FailedOperation("Connection to server has failed");
 
-            TProtocol protocol = new TBinaryProtocol(transport);
-            this.client = new WPDisplay.Client(protocol);
-            System.out.println("Connection to server has established");
-        } catch (TException x) {
-            throw new FailedOperation("Connection to server has failed");
+            }
 
-        }
-
-        try {
-            this.token = token;
-            ClientData cd = new ClientData(this.getLocalIP(), this.listeningport);
-            System.out.println("Token:"
-                    + token);
-            return this.client.login(token, cd);
-        } catch (UnknownHostException ex) {
-            throw new FailedOperation("Can't find local IP");
-        } catch (TException ex) {
-            throw new FailedOperation("Login has failed");
+            try {
+                this.token = token;
+                ClientData cd = new ClientData(this.getLocalIP(), this.listeningport);
+                System.out.println("Token:"
+                        + token);
+                return this.client.login(token, cd);
+            } catch (UnknownHostException ex) {
+                throw new FailedOperation("Can't find local IP");
+            } catch (TException ex) {
+                throw new FailedOperation("Login has failed");
+            }
+        } else {
+            return "";
         }
     }
 
     @Override
-    public void disconnect(){
+    public void disconnect() {
         //try to send the a logout to the server thus a server can disconnect the talkback client
         try {
-  
+
             this.client.logout(this.token);
         } catch (Exception ex) {
-            
+
         }
         super.disconnect();
     }
-    
-    public void soundHorn(){
+
+    public void soundHorn() {
         try {
             this.client.honk(token);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
-        }    
-    
+        }
+
     }
-    
+
     public void addGoal(Integer playerid) {
         try {
             this.client.goal(this.token, playerid);
@@ -105,16 +107,16 @@ public class WPController extends ThriftClient{
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     public void removeFivemGoal(Integer playerid) {
         try {
             this.client.removefivemgoal(this.token, playerid);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     public void addPenalty(Integer playerid) {
         try {
             this.client.foul(this.token, playerid);
@@ -137,16 +139,16 @@ public class WPController extends ThriftClient{
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     public void hidePlayerInfo() {
         try {
             this.client.hideplayerinfo(this.token);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     public void startMatch() {
         try {
             this.client.startmatch(this.token);;
@@ -193,18 +195,19 @@ public class WPController extends ThriftClient{
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-     public void setBallTime(Integer secs) {
+    }
+
+    public void setBallTime(Integer secs) {
         try {
             this.client.balltimeset(token, secs);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }   
-    
+    }
+
     /*
      Obsolete! Use readymatch instead!
-     */ 
+     */
     public void loadTeam(int leftteamid, int rightteamid) {
         try {
             this.client.loadteams(this.token, leftteamid, rightteamid);
@@ -218,16 +221,16 @@ public class WPController extends ThriftClient{
             this.client.readymatch(this.token, leftteamid, rightteamid, matchid);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        }
     }
-    
+
     public void requestTimeOut(int teamid) {
         try {
             this.client.requesttimeout(token, teamid);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
+    }
 
     public void closeFivemWindow() {
         try {
@@ -235,16 +238,16 @@ public class WPController extends ThriftClient{
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }     
-    
-    public void clearScoreBoard(){
+    }
+
+    public void clearScoreBoard() {
         try {
             this.client.clearscoreboard(token);
         } catch (TException ex) {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        }
     }
-    
+
     public WPDisplay.Client getClient() {
         return this.client;
     }

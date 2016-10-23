@@ -6,6 +6,7 @@
 package hu.daq.thriftconnector.server;
 
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.thriftconnector.talkback.StatusReport;
 import hu.daq.thriftconnector.talkback.WPTalkBackClient;
 import hu.daq.thriftconnector.thrift.ClientData;
 import hu.daq.thriftconnector.thrift.FailedOperation;
@@ -414,6 +415,11 @@ public class WPDisplayHandler implements WPDisplay.Iface {
 
             throw new FailedOperation("Unauthorized!");
         }        
+    }
+
+    @Override
+    public StatusReport statusreport(String token) throws FailedOperation, TException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

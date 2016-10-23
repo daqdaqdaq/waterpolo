@@ -32,25 +32,28 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, PenaltyTime._Fields>, java.io.Serializable, Cloneable, Comparable<PenaltyTime> {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("PenaltyTime");
+public class PlayerStat implements org.apache.thrift.TBase<PlayerStat, PlayerStat._Fields>, java.io.Serializable, Cloneable, Comparable<PlayerStat> {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("PlayerStat");
 
   private static final org.apache.thrift.protocol.TField PLAYERID_FIELD_DESC = new org.apache.thrift.protocol.TField("playerid", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField MSECS_FIELD_DESC = new org.apache.thrift.protocol.TField("msecs", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField NUMGOALS_FIELD_DESC = new org.apache.thrift.protocol.TField("numgoals", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField NUMPENALTIES_FIELD_DESC = new org.apache.thrift.protocol.TField("numpenalties", org.apache.thrift.protocol.TType.I32, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new PenaltyTimeStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new PenaltyTimeTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new PlayerStatStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new PlayerStatTupleSchemeFactory());
   }
 
   public int playerid; // required
-  public int msecs; // required
+  public int numgoals; // required
+  public int numpenalties; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     PLAYERID((short)1, "playerid"),
-    MSECS((short)2, "msecs");
+    NUMGOALS((short)2, "numgoals"),
+    NUMPENALTIES((short)3, "numpenalties");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -67,8 +70,10 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
       switch(fieldId) {
         case 1: // PLAYERID
           return PLAYERID;
-        case 2: // MSECS
-          return MSECS;
+        case 2: // NUMGOALS
+          return NUMGOALS;
+        case 3: // NUMPENALTIES
+          return NUMPENALTIES;
         default:
           return null;
       }
@@ -110,59 +115,68 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
 
   // isset id assignments
   private static final int __PLAYERID_ISSET_ID = 0;
-  private static final int __MSECS_ISSET_ID = 1;
+  private static final int __NUMGOALS_ISSET_ID = 1;
+  private static final int __NUMPENALTIES_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.PLAYERID, new org.apache.thrift.meta_data.FieldMetaData("playerid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "int")));
-    tmpMap.put(_Fields.MSECS, new org.apache.thrift.meta_data.FieldMetaData("msecs", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.NUMGOALS, new org.apache.thrift.meta_data.FieldMetaData("numgoals", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "int")));
+    tmpMap.put(_Fields.NUMPENALTIES, new org.apache.thrift.meta_data.FieldMetaData("numpenalties", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "int")));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(PenaltyTime.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(PlayerStat.class, metaDataMap);
   }
 
-  public PenaltyTime() {
+  public PlayerStat() {
   }
 
-  public PenaltyTime(
+  public PlayerStat(
     int playerid,
-    int msecs)
+    int numgoals,
+    int numpenalties)
   {
     this();
     this.playerid = playerid;
     setPlayeridIsSet(true);
-    this.msecs = msecs;
-    setMsecsIsSet(true);
+    this.numgoals = numgoals;
+    setNumgoalsIsSet(true);
+    this.numpenalties = numpenalties;
+    setNumpenaltiesIsSet(true);
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public PenaltyTime(PenaltyTime other) {
+  public PlayerStat(PlayerStat other) {
     __isset_bitfield = other.__isset_bitfield;
     this.playerid = other.playerid;
-    this.msecs = other.msecs;
+    this.numgoals = other.numgoals;
+    this.numpenalties = other.numpenalties;
   }
 
-  public PenaltyTime deepCopy() {
-    return new PenaltyTime(this);
+  public PlayerStat deepCopy() {
+    return new PlayerStat(this);
   }
 
   @Override
   public void clear() {
     setPlayeridIsSet(false);
     this.playerid = 0;
-    setMsecsIsSet(false);
-    this.msecs = 0;
+    setNumgoalsIsSet(false);
+    this.numgoals = 0;
+    setNumpenaltiesIsSet(false);
+    this.numpenalties = 0;
   }
 
   public int getPlayerid() {
     return this.playerid;
   }
 
-  public PenaltyTime setPlayerid(int playerid) {
+  public PlayerStat setPlayerid(int playerid) {
     this.playerid = playerid;
     setPlayeridIsSet(true);
     return this;
@@ -181,27 +195,50 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PLAYERID_ISSET_ID, value);
   }
 
-  public int getMsecs() {
-    return this.msecs;
+  public int getNumgoals() {
+    return this.numgoals;
   }
 
-  public PenaltyTime setMsecs(int msecs) {
-    this.msecs = msecs;
-    setMsecsIsSet(true);
+  public PlayerStat setNumgoals(int numgoals) {
+    this.numgoals = numgoals;
+    setNumgoalsIsSet(true);
     return this;
   }
 
-  public void unsetMsecs() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __MSECS_ISSET_ID);
+  public void unsetNumgoals() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __NUMGOALS_ISSET_ID);
   }
 
-  /** Returns true if field msecs is set (has been assigned a value) and false otherwise */
-  public boolean isSetMsecs() {
-    return EncodingUtils.testBit(__isset_bitfield, __MSECS_ISSET_ID);
+  /** Returns true if field numgoals is set (has been assigned a value) and false otherwise */
+  public boolean isSetNumgoals() {
+    return EncodingUtils.testBit(__isset_bitfield, __NUMGOALS_ISSET_ID);
   }
 
-  public void setMsecsIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __MSECS_ISSET_ID, value);
+  public void setNumgoalsIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __NUMGOALS_ISSET_ID, value);
+  }
+
+  public int getNumpenalties() {
+    return this.numpenalties;
+  }
+
+  public PlayerStat setNumpenalties(int numpenalties) {
+    this.numpenalties = numpenalties;
+    setNumpenaltiesIsSet(true);
+    return this;
+  }
+
+  public void unsetNumpenalties() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __NUMPENALTIES_ISSET_ID);
+  }
+
+  /** Returns true if field numpenalties is set (has been assigned a value) and false otherwise */
+  public boolean isSetNumpenalties() {
+    return EncodingUtils.testBit(__isset_bitfield, __NUMPENALTIES_ISSET_ID);
+  }
+
+  public void setNumpenaltiesIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __NUMPENALTIES_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, Object value) {
@@ -214,11 +251,19 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
       }
       break;
 
-    case MSECS:
+    case NUMGOALS:
       if (value == null) {
-        unsetMsecs();
+        unsetNumgoals();
       } else {
-        setMsecs((Integer)value);
+        setNumgoals((Integer)value);
+      }
+      break;
+
+    case NUMPENALTIES:
+      if (value == null) {
+        unsetNumpenalties();
+      } else {
+        setNumpenalties((Integer)value);
       }
       break;
 
@@ -230,8 +275,11 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
     case PLAYERID:
       return Integer.valueOf(getPlayerid());
 
-    case MSECS:
-      return Integer.valueOf(getMsecs());
+    case NUMGOALS:
+      return Integer.valueOf(getNumgoals());
+
+    case NUMPENALTIES:
+      return Integer.valueOf(getNumpenalties());
 
     }
     throw new IllegalStateException();
@@ -246,8 +294,10 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
     switch (field) {
     case PLAYERID:
       return isSetPlayerid();
-    case MSECS:
-      return isSetMsecs();
+    case NUMGOALS:
+      return isSetNumgoals();
+    case NUMPENALTIES:
+      return isSetNumpenalties();
     }
     throw new IllegalStateException();
   }
@@ -256,12 +306,12 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof PenaltyTime)
-      return this.equals((PenaltyTime)that);
+    if (that instanceof PlayerStat)
+      return this.equals((PlayerStat)that);
     return false;
   }
 
-  public boolean equals(PenaltyTime that) {
+  public boolean equals(PlayerStat that) {
     if (that == null)
       return false;
 
@@ -274,12 +324,21 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
         return false;
     }
 
-    boolean this_present_msecs = true;
-    boolean that_present_msecs = true;
-    if (this_present_msecs || that_present_msecs) {
-      if (!(this_present_msecs && that_present_msecs))
+    boolean this_present_numgoals = true;
+    boolean that_present_numgoals = true;
+    if (this_present_numgoals || that_present_numgoals) {
+      if (!(this_present_numgoals && that_present_numgoals))
         return false;
-      if (this.msecs != that.msecs)
+      if (this.numgoals != that.numgoals)
+        return false;
+    }
+
+    boolean this_present_numpenalties = true;
+    boolean that_present_numpenalties = true;
+    if (this_present_numpenalties || that_present_numpenalties) {
+      if (!(this_present_numpenalties && that_present_numpenalties))
+        return false;
+      if (this.numpenalties != that.numpenalties)
         return false;
     }
 
@@ -292,7 +351,7 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
   }
 
   @Override
-  public int compareTo(PenaltyTime other) {
+  public int compareTo(PlayerStat other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
@@ -309,12 +368,22 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetMsecs()).compareTo(other.isSetMsecs());
+    lastComparison = Boolean.valueOf(isSetNumgoals()).compareTo(other.isSetNumgoals());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetMsecs()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.msecs, other.msecs);
+    if (isSetNumgoals()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.numgoals, other.numgoals);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetNumpenalties()).compareTo(other.isSetNumpenalties());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetNumpenalties()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.numpenalties, other.numpenalties);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -336,15 +405,19 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("PenaltyTime(");
+    StringBuilder sb = new StringBuilder("PlayerStat(");
     boolean first = true;
 
     sb.append("playerid:");
     sb.append(this.playerid);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("msecs:");
-    sb.append(this.msecs);
+    sb.append("numgoals:");
+    sb.append(this.numgoals);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("numpenalties:");
+    sb.append(this.numpenalties);
     first = false;
     sb.append(")");
     return sb.toString();
@@ -373,15 +446,15 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
     }
   }
 
-  private static class PenaltyTimeStandardSchemeFactory implements SchemeFactory {
-    public PenaltyTimeStandardScheme getScheme() {
-      return new PenaltyTimeStandardScheme();
+  private static class PlayerStatStandardSchemeFactory implements SchemeFactory {
+    public PlayerStatStandardScheme getScheme() {
+      return new PlayerStatStandardScheme();
     }
   }
 
-  private static class PenaltyTimeStandardScheme extends StandardScheme<PenaltyTime> {
+  private static class PlayerStatStandardScheme extends StandardScheme<PlayerStat> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, PenaltyTime struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, PlayerStat struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -399,10 +472,18 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // MSECS
+          case 2: // NUMGOALS
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.msecs = iprot.readI32();
-              struct.setMsecsIsSet(true);
+              struct.numgoals = iprot.readI32();
+              struct.setNumgoalsIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 3: // NUMPENALTIES
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.numpenalties = iprot.readI32();
+              struct.setNumpenaltiesIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -418,15 +499,18 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, PenaltyTime struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, PlayerStat struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
       oprot.writeFieldBegin(PLAYERID_FIELD_DESC);
       oprot.writeI32(struct.playerid);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(MSECS_FIELD_DESC);
-      oprot.writeI32(struct.msecs);
+      oprot.writeFieldBegin(NUMGOALS_FIELD_DESC);
+      oprot.writeI32(struct.numgoals);
+      oprot.writeFieldEnd();
+      oprot.writeFieldBegin(NUMPENALTIES_FIELD_DESC);
+      oprot.writeI32(struct.numpenalties);
       oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -434,44 +518,54 @@ public class PenaltyTime implements org.apache.thrift.TBase<PenaltyTime, Penalty
 
   }
 
-  private static class PenaltyTimeTupleSchemeFactory implements SchemeFactory {
-    public PenaltyTimeTupleScheme getScheme() {
-      return new PenaltyTimeTupleScheme();
+  private static class PlayerStatTupleSchemeFactory implements SchemeFactory {
+    public PlayerStatTupleScheme getScheme() {
+      return new PlayerStatTupleScheme();
     }
   }
 
-  private static class PenaltyTimeTupleScheme extends TupleScheme<PenaltyTime> {
+  private static class PlayerStatTupleScheme extends TupleScheme<PlayerStat> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, PenaltyTime struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, PlayerStat struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetPlayerid()) {
         optionals.set(0);
       }
-      if (struct.isSetMsecs()) {
+      if (struct.isSetNumgoals()) {
         optionals.set(1);
       }
-      oprot.writeBitSet(optionals, 2);
+      if (struct.isSetNumpenalties()) {
+        optionals.set(2);
+      }
+      oprot.writeBitSet(optionals, 3);
       if (struct.isSetPlayerid()) {
         oprot.writeI32(struct.playerid);
       }
-      if (struct.isSetMsecs()) {
-        oprot.writeI32(struct.msecs);
+      if (struct.isSetNumgoals()) {
+        oprot.writeI32(struct.numgoals);
+      }
+      if (struct.isSetNumpenalties()) {
+        oprot.writeI32(struct.numpenalties);
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, PenaltyTime struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, PlayerStat struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(2);
+      BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
         struct.playerid = iprot.readI32();
         struct.setPlayeridIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.msecs = iprot.readI32();
-        struct.setMsecsIsSet(true);
+        struct.numgoals = iprot.readI32();
+        struct.setNumgoalsIsSet(true);
+      }
+      if (incoming.get(2)) {
+        struct.numpenalties = iprot.readI32();
+        struct.setNumpenaltiesIsSet(true);
       }
     }
   }

@@ -45,6 +45,7 @@ public class LegInfo extends VBox {
         //We set it to a fake amount and let the WatchFactory generate a correct display format
         this.legtime.setTimeToCount(0, 1, 1);
         TimeDisplay td = WatchFactory.getSimpleWatchDisplay(this.legtime);
+        td.enableTimeSetPopOver();
         //HBox td = new HBox();
         //td.getChildren().addAll(new Label("0"),new Label(":"),new Label("00"));
         td.setFontSize(50);

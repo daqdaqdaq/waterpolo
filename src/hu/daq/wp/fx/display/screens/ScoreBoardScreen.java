@@ -411,6 +411,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     @Override
     public void timeout() {
         this.pauseMatch();
+        this.soundHorn();
     }
 
 }

@@ -48,7 +48,7 @@ public class PlayerInfo extends PopupWindow {
       
         this.pict = new PlayerPicture(this.di, new SimpleIntegerProperty(0));
         this.build();
-        Scene scene = new Scene(background, 400, 400);
+        Scene scene = new Scene(background, 1024, 768);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
         this.di = new DummyInstructable();
