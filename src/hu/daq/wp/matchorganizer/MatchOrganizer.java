@@ -27,41 +27,52 @@ public class MatchOrganizer implements TimeoutListener {
         this.phases.add(phase);
     }
 
-    public void setupPhase(){
+    public void setupPhase() {
         this.phases.get(this.currentphase).setupPhase();
     }
-    
-    public void jumpToPhase(Integer phasenum){
+
+    public void jumpToPhase(Integer phasenum) {
         this.setCurrentPhase(phasenum);
         this.setupPhase();
     }
-    
-    public void jumToEnd(){
-        this.jumpToPhase(this.phases.size()-1);
+
+    public void jumToEnd() {
+        this.jumpToPhase(this.phases.size() - 1);
     }
-    
+
     public void nextPhase() {
         //if it's not the last phase and if there is any phases at all
         if (this.currentphase < (this.phases.size() - 1) && this.phases.size() != 0) {
-            
+
             if (this.currentphase == null) { //We just started no phases yet
                 this.currentphase = 0;
             } else {
-                if (this.currentphase>=0) this.phases.get(this.currentphase).endPhase();
+                if (this.currentphase >= 0) {
+                    this.phases.get(this.currentphase).endPhase();
+                }
                 this.currentphase++;
             }
-            
+            this.setupPhase();
         }
-        this.setupPhase();
+
+    }
+
+    public void prevPhase() {
+        //if it's not the last phase and if there is any phases at all
+        if (this.currentphase > 0) {
+            this.currentphase--;
+            this.setupPhase();
+        }
+
     }
 
     @Override
     public void timeout() {
         this.nextPhase();
     }
-    public void setCurrentPhase(Integer phasenum){
+
+    public void setCurrentPhase(Integer phasenum) {
         this.currentphase = phasenum;
     }
-    
-    
+
 }

@@ -9,10 +9,10 @@ package hu.daq.wp.matchorganizer;
  *
  * @author DAQ
  */
-public class Break extends MatchPhase{
+public class MidBreak extends MatchPhase{
 
-    public Break(Organizable screen) {
-        super(120000, "Szünet", screen); //2 minutes
+    public MidBreak(Organizable screen) {
+        super(300000, "Szünet", screen); //5 minutes
     }
 
     public boolean wantDistinctTimeEngine(){

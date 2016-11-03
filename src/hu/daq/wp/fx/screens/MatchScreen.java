@@ -317,6 +317,14 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
         }
     }
+    
+    public void nextPhase(){
+        ServiceHandler.getInstance().getOrganizer().nextPhase();
+    }
+
+    public void prevPhase(){
+        ServiceHandler.getInstance().getOrganizer().prevPhase();
+    }    
 
     @Override
     public void setTimeoutListener(TimeoutListener tl) {

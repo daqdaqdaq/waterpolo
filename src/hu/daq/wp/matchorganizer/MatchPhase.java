@@ -44,7 +44,9 @@ public abstract class MatchPhase{
         return availabletimeouts;
     }
     
- 
+    public boolean wantDistinctTimeEngine(){
+        return false;
+    }
     
     //Jobs at the end of the phase eg. sound the horn at match legs' end
     public void endPhase(){

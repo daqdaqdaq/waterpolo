@@ -76,6 +76,10 @@ public class LegInfo extends VBox {
         this.legtime.setTimeToCount(hours, mins, secs);
     }
 
+    public void setTimeEngine(TimeEngine ti){
+        this.legtime.setTimeEngine(ti);
+    }
+    
     public void setTimeToCount(int milisecs) {
         this.legtime.setTimeToCount((double) milisecs);
     }

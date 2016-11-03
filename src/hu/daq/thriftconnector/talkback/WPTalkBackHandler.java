@@ -39,4 +39,14 @@ public class WPTalkBackHandler implements WPTalkBack.Iface {
 
     }
 
+    @Override
+    public void nextphase(String token) throws TException {
+        ms.nextPhase();
+    }
+
+    @Override
+    public void prevphase(String token) throws TException {
+        ms.prevPhase();
+    }
+
 }

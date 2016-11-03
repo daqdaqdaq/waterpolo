@@ -36,7 +36,11 @@ public class OrganizerBuilder {
             mo.addPhase(new MatchLeg(source.getInt("legduration"), legnames.get(numlegs), screen, i+1));
             //put a break between the legs
             if (i<numlegs-1){
-                mo.addPhase(new Break(screen));
+                if (i==1){
+                    mo.addPhase(new MidBreak(screen));
+                } else {
+                    mo.addPhase(new Break(screen));
+                }
             }
         }
         if (source.getInt("numovertimes")>0){

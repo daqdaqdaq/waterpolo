@@ -375,6 +375,16 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.fiverswindow.loadRightTeam(this.rightteam.getTeamId());
             this.fiverswindow.showIt();
         } else {
+            if (mp.wantDistinctTimeEngine()){
+                //If the phase needs its own independent timeengine then give it one and start immediatelly
+                TimeEngine ti = new TimeEngine();
+                this.leginfo.setTimeEngine(ti);                
+                ti.start();
+            } else {
+                this.leginfo.setTimeEngine(this.timeengine);
+            }
+            
+
             this.leginfo.setTimeToCount(mp.getDuration());
             this.leginfo.resetTime();
             this.resetBallTime();
@@ -387,7 +397,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         System.out.println("New phase set up");
 
     }
+    
+    public void nextPhase(){
+        ServiceHandler.getInstance().getOrganizer().nextPhase();
+    }
 
+    public void prevPhase(){
+        ServiceHandler.getInstance().getOrganizer().prevPhase();
+    }
+    
     @Override
     public void setTimeoutListener(TimeoutListener tl) {
         this.leginfo.setTimeoutListener(tl);
