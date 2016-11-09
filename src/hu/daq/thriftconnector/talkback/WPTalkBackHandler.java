@@ -49,4 +49,9 @@ public class WPTalkBackHandler implements WPTalkBack.Iface {
         ms.prevPhase();
     }
 
+    @Override
+    public void synctime(String token, TimeSync times) throws TException {
+        ms.syncTime(times);
+    }
+
 }

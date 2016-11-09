@@ -81,7 +81,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.capnum_label.textProperty().bind(Bindings.createStringBinding(() -> {
             return this.player.getCapnum().getValue().toString() + ".";
         }, this.player.getCapnum()));
-        this.name_label.textProperty().bind(this.player.getName());
+        this.name_label.textProperty().bind(this.player.getShortname());
         //this.name_label.setPrefWidth(150);
         this.goals_label.textProperty().bind(Bindings.createStringBinding(() -> {
             return this.goals.getValue().toString();
@@ -110,6 +110,10 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         return this.penalties.removePenalty();
     }
 
+    public void endPenalty(){
+        this.pfxo.jumpToEnd();
+    }
+            
     public final boolean load(Integer pk) {
         return this.player.load(pk);
     }

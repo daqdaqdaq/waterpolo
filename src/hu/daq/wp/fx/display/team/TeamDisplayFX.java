@@ -133,10 +133,17 @@ public abstract class TeamDisplayFX {
 
     public HashMap<Integer, Integer> getPlayersInPenalty() {
         HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
-        this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
+        //this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
+        //New version put every player into the penalties struct. 0 time to the players who aren't in penalty
+        this.active_players.stream().forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));        
         return res;
     }
+    
+    public void removeAllPenalties(){
+        this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> {E.endPenalty();});    
+    }
 
+    
     public void setAvailableTimeouts(int timeouts) {
         this.reaminingtimeouts = timeouts;
     }

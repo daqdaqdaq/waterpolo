@@ -26,7 +26,7 @@ public class PrevPhase implements Command {
         ScoreBoardScreen sbc = (ScoreBoardScreen) cs;
         try {
             Platform.runLater(() -> {
-                sbc.nextPhase();
+                sbc.prevPhase();
                 
             });
         } catch (Exception e) {

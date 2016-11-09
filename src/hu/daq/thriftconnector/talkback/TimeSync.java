@@ -37,7 +37,8 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
 
   private static final org.apache.thrift.protocol.TField BALLTIME_FIELD_DESC = new org.apache.thrift.protocol.TField("balltime", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField LEGTIME_FIELD_DESC = new org.apache.thrift.protocol.TField("legtime", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField PENALTIES_FIELD_DESC = new org.apache.thrift.protocol.TField("penalties", org.apache.thrift.protocol.TType.LIST, (short)3);
+  private static final org.apache.thrift.protocol.TField ATTACKING_FIELD_DESC = new org.apache.thrift.protocol.TField("attacking", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField PENALTIES_FIELD_DESC = new org.apache.thrift.protocol.TField("penalties", org.apache.thrift.protocol.TType.LIST, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,13 +48,15 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
 
   public int balltime; // required
   public int legtime; // required
+  public String attacking; // required
   public List<PenaltyTime> penalties; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     BALLTIME((short)1, "balltime"),
     LEGTIME((short)2, "legtime"),
-    PENALTIES((short)3, "penalties");
+    ATTACKING((short)3, "attacking"),
+    PENALTIES((short)4, "penalties");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -72,7 +75,9 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
           return BALLTIME;
         case 2: // LEGTIME
           return LEGTIME;
-        case 3: // PENALTIES
+        case 3: // ATTACKING
+          return ATTACKING;
+        case 4: // PENALTIES
           return PENALTIES;
         default:
           return null;
@@ -124,6 +129,8 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "int")));
     tmpMap.put(_Fields.LEGTIME, new org.apache.thrift.meta_data.FieldMetaData("legtime", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "int")));
+    tmpMap.put(_Fields.ATTACKING, new org.apache.thrift.meta_data.FieldMetaData("attacking", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.PENALTIES, new org.apache.thrift.meta_data.FieldMetaData("penalties", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, PenaltyTime.class))));
@@ -137,6 +144,7 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
   public TimeSync(
     int balltime,
     int legtime,
+    String attacking,
     List<PenaltyTime> penalties)
   {
     this();
@@ -144,6 +152,7 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     setBalltimeIsSet(true);
     this.legtime = legtime;
     setLegtimeIsSet(true);
+    this.attacking = attacking;
     this.penalties = penalties;
   }
 
@@ -154,6 +163,9 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     __isset_bitfield = other.__isset_bitfield;
     this.balltime = other.balltime;
     this.legtime = other.legtime;
+    if (other.isSetAttacking()) {
+      this.attacking = other.attacking;
+    }
     if (other.isSetPenalties()) {
       List<PenaltyTime> __this__penalties = new ArrayList<PenaltyTime>(other.penalties.size());
       for (PenaltyTime other_element : other.penalties) {
@@ -173,6 +185,7 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     this.balltime = 0;
     setLegtimeIsSet(false);
     this.legtime = 0;
+    this.attacking = null;
     this.penalties = null;
   }
 
@@ -220,6 +233,30 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
 
   public void setLegtimeIsSet(boolean value) {
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __LEGTIME_ISSET_ID, value);
+  }
+
+  public String getAttacking() {
+    return this.attacking;
+  }
+
+  public TimeSync setAttacking(String attacking) {
+    this.attacking = attacking;
+    return this;
+  }
+
+  public void unsetAttacking() {
+    this.attacking = null;
+  }
+
+  /** Returns true if field attacking is set (has been assigned a value) and false otherwise */
+  public boolean isSetAttacking() {
+    return this.attacking != null;
+  }
+
+  public void setAttackingIsSet(boolean value) {
+    if (!value) {
+      this.attacking = null;
+    }
   }
 
   public int getPenaltiesSize() {
@@ -279,6 +316,14 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
       }
       break;
 
+    case ATTACKING:
+      if (value == null) {
+        unsetAttacking();
+      } else {
+        setAttacking((String)value);
+      }
+      break;
+
     case PENALTIES:
       if (value == null) {
         unsetPenalties();
@@ -298,6 +343,9 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     case LEGTIME:
       return Integer.valueOf(getLegtime());
 
+    case ATTACKING:
+      return getAttacking();
+
     case PENALTIES:
       return getPenalties();
 
@@ -316,6 +364,8 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
       return isSetBalltime();
     case LEGTIME:
       return isSetLegtime();
+    case ATTACKING:
+      return isSetAttacking();
     case PENALTIES:
       return isSetPenalties();
     }
@@ -350,6 +400,15 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
       if (!(this_present_legtime && that_present_legtime))
         return false;
       if (this.legtime != that.legtime)
+        return false;
+    }
+
+    boolean this_present_attacking = true && this.isSetAttacking();
+    boolean that_present_attacking = true && that.isSetAttacking();
+    if (this_present_attacking || that_present_attacking) {
+      if (!(this_present_attacking && that_present_attacking))
+        return false;
+      if (!this.attacking.equals(that.attacking))
         return false;
     }
 
@@ -398,6 +457,16 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetAttacking()).compareTo(other.isSetAttacking());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetAttacking()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.attacking, other.attacking);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetPenalties()).compareTo(other.isSetPenalties());
     if (lastComparison != 0) {
       return lastComparison;
@@ -434,6 +503,14 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     if (!first) sb.append(", ");
     sb.append("legtime:");
     sb.append(this.legtime);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("attacking:");
+    if (this.attacking == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.attacking);
+    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("penalties:");
@@ -504,7 +581,15 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // PENALTIES
+          case 3: // ATTACKING
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.attacking = iprot.readString();
+              struct.setAttackingIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 4: // PENALTIES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
@@ -544,6 +629,11 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
       oprot.writeFieldBegin(LEGTIME_FIELD_DESC);
       oprot.writeI32(struct.legtime);
       oprot.writeFieldEnd();
+      if (struct.attacking != null) {
+        oprot.writeFieldBegin(ATTACKING_FIELD_DESC);
+        oprot.writeString(struct.attacking);
+        oprot.writeFieldEnd();
+      }
       if (struct.penalties != null) {
         oprot.writeFieldBegin(PENALTIES_FIELD_DESC);
         {
@@ -580,15 +670,21 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
       if (struct.isSetLegtime()) {
         optionals.set(1);
       }
-      if (struct.isSetPenalties()) {
+      if (struct.isSetAttacking()) {
         optionals.set(2);
       }
-      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetPenalties()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetBalltime()) {
         oprot.writeI32(struct.balltime);
       }
       if (struct.isSetLegtime()) {
         oprot.writeI32(struct.legtime);
+      }
+      if (struct.isSetAttacking()) {
+        oprot.writeString(struct.attacking);
       }
       if (struct.isSetPenalties()) {
         {
@@ -604,7 +700,7 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TimeSync struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(3);
+      BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.balltime = iprot.readI32();
         struct.setBalltimeIsSet(true);
@@ -614,6 +710,10 @@ public class TimeSync implements org.apache.thrift.TBase<TimeSync, TimeSync._Fie
         struct.setLegtimeIsSet(true);
       }
       if (incoming.get(2)) {
+        struct.attacking = iprot.readString();
+        struct.setAttackingIsSet(true);
+      }
+      if (incoming.get(3)) {
         {
           org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
           struct.penalties = new ArrayList<PenaltyTime>(_list5.size);

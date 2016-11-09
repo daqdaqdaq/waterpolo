@@ -76,7 +76,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     }
     
     public void switchTeam() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer = !this.leftpointer;
         this.rightpointer = !this.rightpointer;
@@ -84,7 +84,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     }
     
     public void switchToLeft() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer = true;
         this.rightpointer = false;
@@ -92,7 +92,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     }
     
     public void switchToRight() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer = false;
         this.rightpointer = true;
@@ -122,6 +122,13 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         }
     }
     
+    public boolean isRightAttacking(){
+        return this.rightpointer;
+    }
+
+    public boolean isLeftAttacking(){
+        return this.leftpointer;
+    }    
     public void start() {
         //this.cw.start();
         ServiceHandler.getInstance().getTimeEngine().start();
@@ -133,7 +140,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     }
     
     public void reset() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
     }
     

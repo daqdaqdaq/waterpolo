@@ -27,7 +27,7 @@ public class BallTimeSwitch implements Command {
         ScoreBoardScreen sbc = (ScoreBoardScreen) cs;
         try {
             Platform.runLater(() -> {
-                sbc.SwitchBallTime();
+                sbc.switchBallTime();
             });
         } catch (Exception e) {
             ErrorWrapper err = new ErrorWrapper();

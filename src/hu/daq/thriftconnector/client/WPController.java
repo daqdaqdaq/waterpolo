@@ -215,7 +215,23 @@ public class WPController extends ThriftClient {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    public void nextPhase() {
+        try {
+            this.client.nextphase(this.token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void prevPhase() {
+        try {
+            this.client.prevphase(this.token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void readyMatch(int leftteamid, int rightteamid, int matchid) {
         try {
             this.client.readymatch(this.token, leftteamid, rightteamid, matchid);

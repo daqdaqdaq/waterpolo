@@ -72,6 +72,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.leftteam = new TeamDisplayLeftFX(this.db);
         this.rightteam = new TeamDisplayRightFX(this.db);
         this.timeengine = ServiceHandler.getInstance().getTimeEngine();
+        this.timeengine.pause();
         this.balltime = new BallTimeDisplay(this.timeengine, BALLTIME);
         this.balltime.getWatch().addTimeoutListener(this);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
@@ -165,8 +166,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         VBox rightteambox = this.rightteam.getPlayerListView();
         playersbox.getChildren().addAll(leftteambox,
                 rightteambox);
-        HBox.setHgrow(leftteambox, Priority.SOMETIMES);
-        HBox.setHgrow(rightteambox, Priority.SOMETIMES);
+        HBox.setHgrow(leftteambox, Priority.ALWAYS);
+        HBox.setHgrow(rightteambox, Priority.ALWAYS);
         return playersbox;
     }
 
@@ -227,7 +228,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.timeengine.pause();
-        this.syncTime();
+        this.pauseMatch();
     }
 
     public void removeGoal(Integer playerid) {
@@ -265,7 +266,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void setBallTime(int milisecs) {
-        this.timeengine.pause();
+        //this.timeengine.pause();
         if (milisecs > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         } else {
@@ -275,7 +276,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void switchBallTimeLeft() {
-        this.timeengine.pause();
+        //this.timeengine.pause();
+        //End all penalties in the defending team
+        this.leftteam.removeAllPenalties();
         this.balltime.switchToLeft();
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
@@ -284,17 +287,27 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void switchBallTimeRight() {
-        this.timeengine.pause();
+        //this.timeengine.pause();
+        //End all penalties in the defending team        
+        this.rightteam.removeAllPenalties();
         this.balltime.switchToRight();
+
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
         this.syncTime();
     }
 
-    public void SwitchBallTime() {
-        this.timeengine.pause();
+    public void switchBallTime() {
+        //this.timeengine.pause();
+        //End all penalties in the defending team
+        if (this.balltime.isRightAttacking()){
+            this.leftteam.removeAllPenalties();
+        } else {
+            this.rightteam.removeAllPenalties();
+        }
         this.balltime.switchTeam();
+        
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
@@ -302,7 +315,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void resetBallTime() {
-        this.timeengine.pause();
+        //this.timeengine.pause();
         this.balltime.reset();
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
@@ -341,7 +354,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void pauseMatch() {
         //Pause the main time engine
         this.timeengine.pause();
-        this.syncTime();
+        this.sendPause();
     }
 
     public void requestTimeout(Integer teamid) {
@@ -357,13 +370,26 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         TimeSync tsync = new TimeSync();
         tsync.setBalltime(this.balltime.getMilis());
         tsync.setLegtime(this.leginfo.getTime());
+        tsync.setAttacking(this.balltime.isRightAttacking()?"R":"L");
+        this.leftteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
+        this.rightteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
+        //And sending it back via the Thrift connection
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).syncTime(tsync);
+    }
+
+    public void sendPause() {
+        //Building time syncronization structure to send back to the controller app
+        TimeSync tsync = new TimeSync();
+        tsync.setBalltime(this.balltime.getMilis());
+        tsync.setLegtime(this.leginfo.getTime());
+        tsync.setAttacking(this.balltime.isRightAttacking()?"R":"L");        
         this.leftteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
         this.rightteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
         //And sending it back via the Thrift connection
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseReceived(tsync);
-
-    }
-
+    }    
+    
+    
     @Override
     public void setupPhase(MatchPhase mp) {
         this.pauseMatch();
@@ -400,6 +426,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     
     public void nextPhase(){
         ServiceHandler.getInstance().getOrganizer().nextPhase();
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+
     }
 
     public void prevPhase(){
@@ -428,8 +456,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     @Override
     public void timeout() {
-        this.pauseMatch();
+        //this.pauseMatch();
         this.soundHorn();
+        this.switchBallTime();
     }
 
 }

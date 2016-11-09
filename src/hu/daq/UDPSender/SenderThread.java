@@ -59,7 +59,7 @@ public class SenderThread extends Thread {
         while (this.run) {
             //System.out.println("Running..."+this.stringtosend);
             if (this.stringtosend.size() > 0) {
-                System.out.println("Sending..." + this.stringtosend.get(0));
+                //System.out.println("Sending..." + this.stringtosend.get(0));
                 try {
                     this.buf = this.stringtosend.get(0).getBytes();
                     this.sendersocket.send(new DatagramPacket(buf, buf.length, this.targetip, this.port));

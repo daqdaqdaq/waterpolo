@@ -8,7 +8,9 @@ package hu.daq.wp.fx.screens;
 import client.Postgres;
 import hu.daq.wp.Team;
 import hu.daq.wp.Teams;
+import hu.daq.wp.fx.AdvancedTeamFX;
 import hu.daq.wp.fx.TeamFX;
+import hu.daq.wp.fx.screens.entityselector.EntitySelectorWindow;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ListCell;
@@ -32,8 +34,9 @@ public class TeamsScreen extends BorderPane implements SubScreen{
     private final FilteredList<Team> filteredteams;
     private final TextField filterfield;
     private final ListView<Team> teamsview;
-    private final TeamFX tf;
+    private final AdvancedTeamFX tf;
     private final Boolean adminonly;
+    
     
     public TeamsScreen(Postgres db) {
         this.adminonly = false;
@@ -42,8 +45,7 @@ public class TeamsScreen extends BorderPane implements SubScreen{
         this.teamsview = new ListView<Team>();
         this.teams = new Teams(db);
         this.filteredteams = new FilteredList<Team>(this.teams.getTeams(), p -> true);
-        this.tf = new TeamFX(db);
-        
+        this.tf = new AdvancedTeamFX(db);
         this.build();
     }
 

@@ -46,7 +46,6 @@ public class ControlPanel extends GridPane {
     private BallTime balltimedisplay;
     private LegInfo leginfo;
 
-
     public ControlPanel() {
         //this.balltimer = new TimeDisplay(false, false, true, true);
         this.balltimeright = new RightButton();
@@ -141,11 +140,10 @@ public class ControlPanel extends GridPane {
         });
 
         this.balltimereset.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).resetBallTime());
-        
+
         //this.settime.setOnAction((ev) -> this.balltimedisplay.showPopOver());
         //Setting the time is available only when the time is paused
         //this.settime.disableProperty().bind(this.balltimedisplay.getWatch().getTimeEngineRunning());
-        
         this.horn.setOnAction((ev) -> ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).soundHorn());
     }
 
@@ -177,6 +175,10 @@ public class ControlPanel extends GridPane {
         return leglabel;
     }
 
+    public BallTime getBallTime(){
+        return this.balltimedisplay;
+    }
+    
     public void setBallTimeClock(int milisecs) {
         this.balltimedisplay.set(milisecs);
     }

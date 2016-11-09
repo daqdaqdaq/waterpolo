@@ -16,7 +16,10 @@ import hu.daq.watch.TimeoutListener;
 import hu.daq.wp.fx.MatchProfileFX;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
 import hu.daq.wp.fx.commonbuttons.EndMatchButton;
+import hu.daq.wp.fx.commonbuttons.LeftButton;
+import hu.daq.wp.fx.commonbuttons.RightButton;
 import hu.daq.wp.fx.commonbuttons.TimeButton;
+import hu.daq.wp.fx.display.balltime.BallTime;
 import hu.daq.wp.fx.display.controlpanel.ControlPanel;
 import hu.daq.wp.fx.display.infopopup.PopupCloseListener;
 import hu.daq.wp.fx.display.player.PlayerControlFX;
@@ -51,6 +54,7 @@ import org.json.JSONException;
  * @author DAQ
  */
 public class MatchScreen extends BorderPane implements SubScreen, Organizable, PopupCloseListener {
+
     private MainPage parent;
     private String securitytoken;
     private final Boolean adminonly;
@@ -63,11 +67,12 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private final AddTeamButton addteam;
     private final ControlPanel controlpanel;
     private final EndMatchButton stopmatch;
+    private final LeftButton prevphase;
+    private final RightButton nextphase;
     private MatchProfileFX matchprofile;
-    
+
     private ToggleGroup showplayertoggle;
     private FiversControlWindow fivers;
-    
 
     public MatchScreen(Postgres db) {
         this.db = db;
@@ -83,6 +88,8 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.matchprofile = new MatchProfileFX(this.db);
         this.controlpanel = new ControlPanel();
         this.fivers = new FiversControlWindow();
+        this.prevphase = new LeftButton();
+        this.nextphase = new RightButton();
         this.fivers.setCloseListener(this);
         this.build();
     }
@@ -121,19 +128,27 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.rightteam.getLoaded().addListener((Observable observable) -> {
             this.controlStartStopButton();
         });
-        
+
         this.matchprofile.getSelectionModel().selectedItemProperty().addListener((Observable observable) -> {
             this.controlStartStopButton();
         });
-        
-        
+
         this.leftteamtime.setOnAction((ev) -> {
             this.controlpanel.pause();
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).requestTimeOut(this.leftteam.getTeamID());
         });
+
         this.rightteamtime.setOnAction((ev) -> {
             this.controlpanel.pause();
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).requestTimeOut(this.rightteam.getTeamID());
+        });
+
+        this.prevphase.setOnAction((ev) -> {
+            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).prevPhase();
+        });
+
+        this.nextphase.setOnAction((ev) -> {
+            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).nextPhase();
         });
     }
 
@@ -174,10 +189,10 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         VBox vb = new VBox(3);
         HBox upperhb = new HBox(3);
         HBox lowerhb = new HBox(3);
-        
-        upperhb.getChildren().addAll(this.addteam);
-        lowerhb.getChildren().addAll(this.matchprofile, this.stopmatch);        
-        vb.getChildren().addAll(upperhb,lowerhb);
+
+        upperhb.getChildren().addAll(this.addteam, this.prevphase, this.nextphase);
+        lowerhb.getChildren().addAll(this.matchprofile, this.stopmatch);
+        vb.getChildren().addAll(upperhb, lowerhb);
         obb.getChildren().add(vb);
         return obb;
     }
@@ -239,8 +254,8 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     }
 
     private void readyMatch() throws JSONException {
-        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(),this.matchprofile.getSelected().getID());
-        ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(),this));
+        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(), this.matchprofile.getSelected().getID());
+        ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(), this));
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(-1);
         this.leftteam.enable();
         this.rightteam.enable();
@@ -254,27 +269,42 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).clearScoreBoard();
     }
 
-    public void pauseReceived(TimeSync tsync) {
-        System.out.println("MS sending pause..");
-        //Pause main time engine
-        this.controlpanel.pause();
-        //and synchronize each clock to to the scoreboard
-        System.out.println("MS sending set..");
+    public void syncTime(TimeSync tsync) {
         Platform.runLater(() -> {
             this.controlpanel.setBallTimeClock(tsync.getBalltime());
             this.controlpanel.setLegTime(tsync.getLegtime());
-
-        });
-        tsync.getPenalties().parallelStream().forEach(E -> {
-            Platform.runLater(() -> {
-                try {
-                    this.getPlayer(E.playerid).setTime(E.msecs);
-                } catch (NullPointerException ex) {
-                    //no penalties, nothing to do
+            BallTime bt = this.controlpanel.getBallTime();
+            if (tsync.getAttacking().equals("R")) {
+                if (bt.isLeftAttacking()) {
+                    bt.switchToRight();
                 }
-            });
+
+            }
+            if (tsync.getAttacking().equals("L")) {
+                if (bt.isRightAttacking()) {
+                    bt.switchToLeft();
+                }
+
+            }
 
         });
+        if (tsync.getPenalties() != null) {
+            tsync.getPenalties().parallelStream().forEach(E -> {
+                Platform.runLater(() -> {
+                    try {
+                        this.getPlayer(E.playerid).setTime(E.msecs);
+                    } catch (NullPointerException ex) {
+                        //no penalties, nothing to do
+                    }
+                });
+
+            });
+        }
+    }
+
+    public void pauseReceived(TimeSync tsync) {
+        this.controlpanel.pause();
+        this.syncTime(tsync);
     }
 
     public PlayerControlFX getPlayer(int playerid) {
@@ -317,14 +347,14 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
         }
     }
-    
-    public void nextPhase(){
+
+    public void nextPhase() {
         ServiceHandler.getInstance().getOrganizer().nextPhase();
     }
 
-    public void prevPhase(){
+    public void prevPhase() {
         ServiceHandler.getInstance().getOrganizer().prevPhase();
-    }    
+    }
 
     @Override
     public void setTimeoutListener(TimeoutListener tl) {
@@ -335,6 +365,5 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     public void cleanupAfterPopup() {
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).closeFivemWindow();
     }
-
 
 }

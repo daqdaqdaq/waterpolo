@@ -8,6 +8,7 @@ package hu.daq.wp.fx;
 import client.Postgres;
 import hu.daq.draganddrop.DragAndDropDecorator;
 import hu.daq.wp.Player;
+import hu.daq.wp.Referee;
 import hu.daq.wp.fx.commonbuttons.EditButton;
 import hu.daq.wp.fx.commonbuttons.SaveButton;
 import hu.daq.wp.fx.controls.NumField;
@@ -34,13 +35,11 @@ import javafx.util.converter.NumberStringConverter;
  *
  * @author DAQ
  */
-public class PlayerFX extends EntityFX{
+public class RefereeFX extends EntityFX{
     
-    Player player;
+    Referee referee;
     Label name_label;
     TextField name_field;
-    Label shortname_label;
-    TextField shortname_field;    
     Button edit_button;
     Button save_button;
     PlayerPicture picture;
@@ -49,35 +48,33 @@ public class PlayerFX extends EntityFX{
     DragAndDropDecorator ddd;
     
     
-    public PlayerFX(Postgres db) {
-        this(new Player(db));
+    public RefereeFX(Postgres db) {
+        this(new Referee(db));
      }
     
-    public PlayerFX(Postgres db, int player_id){
+    public RefereeFX(Postgres db, int referee_id){
         this(db);
-        this.load(player_id);
+        this.load(referee_id);
     }
     
-    public PlayerFX(Player player){
+    public RefereeFX(Referee referee){
         this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
-        this.setStyle("-fx-background-color: #77AACC;");
-        this.player = player;
+        this.setStyle("-fx-background-color: #7788CC;");
+        this.referee = referee;
         this.duplicated = new SimpleBooleanProperty();
-        //this.player = new Player(db);
+        //this.referee = new Player(db);
         this.setMaxSize(250, 50);
         this.setMinSize(250, 50);
         //this.setPadding(new Insets(10));
         //Initializing the controls
-
         
         this.name_label = new Label();
         this.name_field = new TextField();
-        this.shortname_label = new Label();
-        this.shortname_field = new TextField();        
+        
         this.edit_button = new EditButton();
         this.save_button = new SaveButton();    
         this.basegrid = new GridPane();
-        this.picture = new PlayerPicture(this,this.player.getPlayer_pic()); // Adding the player's picture and binding to the player object
+        this.picture = new PlayerPicture(this,this.referee.getReferee_pic()); // Adding the referee's picture and binding to the referee object
         this.picture.setPreserveRatio(true);
         this.picture.setFitHeight(50);
         this.ddd = new DragAndDropDecorator(this.picture);
@@ -87,16 +84,11 @@ public class PlayerFX extends EntityFX{
     
     //Build the layot and make the bindings
     private void build(){
-        
         this.name_field.setPrefWidth(150);
         this.name_label.setPrefWidth(150);
-        this.name_field.textProperty().bindBidirectional(this.player.getName());
-        this.name_label.textProperty().bindBidirectional(this.player.getName());
-        
-        this.shortname_field.setPrefWidth(100);
-        this.shortname_label.setPrefWidth(100);
-        this.shortname_field.textProperty().bindBidirectional(this.player.getShortname());
-        this.shortname_label.textProperty().bindBidirectional(this.player.getShortname());        
+        this.name_field.textProperty().bindBidirectional(this.referee.getName());
+        this.name_label.textProperty().bindBidirectional(this.referee.getName());
+  
         this.edit_button.setOnAction((ActionEvent event) -> {
             editOn();
         });
@@ -112,7 +104,6 @@ public class PlayerFX extends EntityFX{
         this.basegrid.setPadding(new Insets(5));
         this.basegrid.add(this.picture, 0, 0, 1, 2);
         this.basegrid.add(this.name_label, 1, 0, 3, 1);
-        this.basegrid.add(this.shortname_label, 2, 1, 2, 1);
         this.basegrid.add(this.edit_button, 4, 0);
         this.getChildren().add(this.basegrid);
     }
@@ -120,8 +111,6 @@ public class PlayerFX extends EntityFX{
     public void editOn(){
         this.basegrid.getChildren().remove(this.name_label);
         this.basegrid.add(this.name_field, 1, 0, 3, 1);
-        this.basegrid.getChildren().remove(this.shortname_label);        
-        this.basegrid.add(this.shortname_field, 2, 1, 2, 1);        
         this.basegrid.getChildren().remove(this.edit_button);
         this.basegrid.add(this.save_button, 4, 0);
         
@@ -130,89 +119,60 @@ public class PlayerFX extends EntityFX{
     public void editOff(){
         this.basegrid.getChildren().remove(this.name_field);
         this.basegrid.add(this.name_label, 1, 0, 3, 1);
-        this.basegrid.getChildren().remove(this.shortname_field);        
-        this.basegrid.add(this.shortname_label, 2, 1, 2, 1);         
         this.basegrid.getChildren().remove(this.save_button);
         this.basegrid.add(this.edit_button, 4, 0);    
     }
     
     
     public final boolean load(Integer pk){
-        return this.player.load(pk);
+        return this.referee.load(pk);
     }
 
     public final boolean load(HashMap<String, String> data){
-        return this.player.load(data);
+        return this.referee.load(data);
 
     }    
     
     public final boolean save(){
         this.picture.savePic();
-        return this.player.save();
+        return this.referee.save();
     }
     
     public SimpleBooleanProperty getChanged(){
-        return this.player.getChanged();
+        return this.referee.getChanged();
     }
 
     public SimpleBooleanProperty getDuplicated() {
         return duplicated;
     }
     
-    public Integer getCapnum(){
-        return this.player.getCapnum().getValue();
-    }
-    
     public boolean isChanged(){
-        return this.player.getChanged().get();
-    }
-    
-    public SimpleBooleanProperty getActive(){
-        return this.player.getActive();
-    }
-    
-    public void activate(){
-        this.player.getActive().set(true);
-    }
-    
-    public void inactivate(){
-        this.player.getActive().set(false);    
-    }
-    
-    public boolean isActive(){
-        return this.player.getActive().get();
+        return this.referee.getChanged().get();
     }
     
     public boolean isDuplicated(){
         return this.duplicated.get();
     }
-
     @Override
     public String getName() {
-        return this.player.getName().getValueSafe();
-    }
-
+        return this.referee.getName().getValueSafe();
+    }    
     @Override
     public String getID() {
-        return this.player.getID().toString();
-    }    
+        return this.referee.getID().toString();
+    }
 
     @Override
     public Boolean isDragable() {
         return true;
     }
-
     @Override
     public String getType() {
-       return "Player";
-    }
-
-    @Override
-    public Integer getTeamID() {
-        return this.player.getTeam_id().getValue();
+       return "Referee";
     }
     
-    public Player getPlayer(){
-        return this.player;
-    }
+    @Override
+    public Integer getTeamID() {
+        return 0;
+    }    
 }

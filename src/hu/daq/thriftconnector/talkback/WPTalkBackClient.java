@@ -54,6 +54,16 @@ public class WPTalkBackClient extends ThriftClient{
         
     }
 
+    public void syncTime(TimeSync tsync) {
+
+        try {
+            client.synctime(token, tsync);
+        } catch (TException ex) {
+            Logger.getLogger(WPTalkBackClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
     public void sendLegTimeout() {
 
         try {
@@ -63,4 +73,21 @@ public class WPTalkBackClient extends ThriftClient{
         }
         
     }    
+    
+    public void nextPhase(){
+        try {
+            client.nextphase(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPTalkBackClient.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }
+
+    public void prevPhase(){
+        try {
+            client.prevphase(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPTalkBackClient.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }    
+    
 }

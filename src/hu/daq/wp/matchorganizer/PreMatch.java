@@ -12,7 +12,7 @@ package hu.daq.wp.matchorganizer;
 public class PreMatch extends MatchPhase{
 
     public PreMatch(Organizable screen) {
-        super(0, "Rövidesen...", screen);
+        super(1, "Rövidesen...", screen);
     }
     
 }

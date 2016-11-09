@@ -15,26 +15,20 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author DAQ
  */
-public class Player extends Entity {
+public class Coach extends Entity {
     
-    protected SimpleIntegerProperty player_id = new SimpleIntegerProperty();
+    protected SimpleIntegerProperty coach_id = new SimpleIntegerProperty();
     protected SimpleStringProperty name = new SimpleStringProperty(); 
-    protected SimpleStringProperty shortname = new SimpleStringProperty(); 
-    protected SimpleIntegerProperty capnum  = new SimpleIntegerProperty();    
     protected SimpleIntegerProperty team_id = new SimpleIntegerProperty();
-    protected SimpleBooleanProperty active = new SimpleBooleanProperty();
-    protected SimpleIntegerProperty player_pic = new SimpleIntegerProperty();
+    protected SimpleIntegerProperty coach_pic = new SimpleIntegerProperty();
 
     
-    public Player(Postgres db){
+    public Coach(Postgres db){
         super(db);
-        this.player_id.addListener(changelistener);
+        this.coach_id.addListener(changelistener);
         this.name.addListener(changelistener);
-        this.shortname.addListener(changelistener);        
-        this.capnum.addListener(changelistener);
         this.team_id.addListener(changelistener);
-        this.active.addListener(changelistener);
-        this.player_pic.addListener(changelistener);
+        this.coach_pic.addListener(changelistener);
         this.subscribe();
         
     } 
@@ -43,7 +37,7 @@ public class Player extends Entity {
 
     @Override
     public boolean load(Integer pk) {
-        String sendstr = "select * from player where player_id="+pk.toString();
+        String sendstr = "select * from coach where coach_id="+pk.toString();
         boolean success = true;
         HashMap<String,String> rec = null;
         
@@ -58,13 +52,10 @@ public class Player extends Entity {
     @Override
     public boolean load(HashMap<String, String> data) {
         try{
-            this.player_id.set(Integer.parseInt(data.get("player_id")));
+            this.coach_id.set(Integer.parseInt(data.get("coach_id")));
             this.name.set(data.get("name"));
-            this.shortname.set(data.get("shortname"));
-            this.capnum.set(Integer.parseInt(data.get("capnum")));
             this.team_id.set(Integer.parseInt(data.get("team_id")));
-            this.active.set(Boolean.parseBoolean(data.get("active")));
-            this.player_pic.set(Integer.parseInt(data.get("player_pic")));
+            this.coach_pic.set(Integer.parseInt(data.get("coach_pic")));
         } catch (Exception ex){
             System.out.println("Failed to load" + ex.toString());
             return false;
@@ -79,24 +70,18 @@ public class Player extends Entity {
         if (!this.changed.get()) return true;
         
         String sendstr;
-        if (this.player_id.getValue().equals(0)){
-            sendstr = "insert into player (name,shortname,capnum,team_id,player_pic,active) values("
+        if (this.coach_id.getValue().equals(0)){
+            sendstr = "insert into coach (name,team_id,coach_pic) values("
                     +"'"+this.name.getValueSafe()+"', "
-                    +"'"+this.shortname.getValueSafe()+"', "
-                    +this.capnum.getValue().toString()+", "
                     +this.team_id.getValue().toString()+", "
-                    +this.player_pic.getValue().toString()+", "
-                    +"'"+this.active.getValue().toString()+"'"                   
+                    +this.coach_pic.getValue().toString()
                     + ") returning *";
         } else {
-            sendstr = "update player set (name,shortname,capnum,team_id,player_pic,active) =("
+            sendstr = "update coach set (name,team_id,coach_pic) =("
                     +"'"+this.name.getValueSafe()+"', "
-                    +"'"+this.shortname.getValueSafe()+"', "
-                    +this.capnum.getValue().toString()+", "
                     +this.team_id.getValue().toString()+", "
-                    +this.player_pic.getValue().toString()+", "
-                    +"'"+this.active.getValue().toString()+"'"                   
-                    + ") where player_id="+this.player_id.getValue().toString()
+                    +this.coach_pic.getValue().toString()                
+                    + ") where coach_id="+this.coach_id.getValue().toString()
                     +" returning *";        
         }
         try{
@@ -111,73 +96,53 @@ public class Player extends Entity {
     
     @Override
     public String toString(){
-        return ((Integer)this.capnum.get()).toString()+". "+this.name.get()+":"+this.active.toString();
+        return this.name.get();
         
     }
 
-    public SimpleIntegerProperty getPlayer_id() {
-        return player_id;
+    public SimpleIntegerProperty getCoach_id() {
+        return coach_id;
     }
 
     public SimpleStringProperty getName() {
         return name;
     }
 
-    public SimpleStringProperty getShortname() {
-        return shortname;
-    }
-
-    public SimpleIntegerProperty getCapnum() {
-        return capnum;
-    }
-
     public SimpleIntegerProperty getTeam_id() {
         return team_id;
     }
 
-    public SimpleBooleanProperty getActive() {
-        return active;
-    }
-
-    public SimpleIntegerProperty getPlayer_pic() {
-        return player_pic;
-    }
-
-    public void setCapnum(Integer capnum) {
-        this.capnum.set(capnum);
-    }
-
-    public void setTeamid(Integer team_id) {
-        this.team_id.set(team_id);
+    public SimpleIntegerProperty getCoach_pic() {
+        return coach_pic;
     }
 
     @Override
     public void subscribe() {
-        this.db.subscribe("player", this);
+        this.db.subscribe("coach", this);
     }
 
     @Override
     public void unsubscribe() {
-        this.db.unsubscribe("player", this);
+        this.db.unsubscribe("coach", this);
     }
 
     @Override
     public void finalize() throws Throwable {
         System.out.println("finalizing " + this.toString());
-        this.db.unsubscribe("player", this);
+        this.db.unsubscribe("coach", this);
         
     }
 
     @Override
     public void onNotify() {
         System.out.println("notify received by " + this.toString());
-        this.load(this.player_id.getValue());
+        this.load(this.coach_id.getValue());
     }
 
     //Returns the id of the object in a notification mechanism compatible form
     @Override
     public Integer getID() {
-        return this.player_id.getValue();
+        return this.coach_id.getValue();
     }
    
 }

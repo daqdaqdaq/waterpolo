@@ -65,7 +65,7 @@ public class BallTime extends HBox implements TimeoutListener {
     }
 
     public void switchTeam() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer.switchState();
         this.rightpointer.switchState();
@@ -73,7 +73,7 @@ public class BallTime extends HBox implements TimeoutListener {
     }
 
     public void switchToLeft() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer.on();
         this.rightpointer.off();
@@ -81,7 +81,7 @@ public class BallTime extends HBox implements TimeoutListener {
     }
 
     public void switchToRight() {
-        this.pause();
+        //this.pause();
         this.cw.reset();
         this.leftpointer.off();
         this.rightpointer.on();
@@ -106,17 +106,25 @@ public class BallTime extends HBox implements TimeoutListener {
         }
     }
     
+    public boolean isRightAttacking(){
+        return this.rightpointer.on.get();
+    }
+
+    public boolean isLeftAttacking(){
+        return this.leftpointer.on.get();
+    }    
+    
     public void showPopOver(){
         this.tspo.show(this.td);
     }
     
     public void start() {
-        //this.cw.start();
+        this.cw.start();
         ServiceHandler.getInstance().getTimeEngine().start();
     }
 
     public void pause() {
-        //this.cw.pause();
+        this.cw.pause();
         ServiceHandler.getInstance().getTimeEngine().pause();
 
     }
@@ -149,4 +157,5 @@ public class BallTime extends HBox implements TimeoutListener {
         ServiceHandler.getInstance().getHorn().honk();
         this.pause();
     }
+
 }
