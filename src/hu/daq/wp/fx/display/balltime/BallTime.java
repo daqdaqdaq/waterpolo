@@ -6,10 +6,12 @@
 package hu.daq.wp.fx.display.balltime;
 
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.thriftconnector.client.WPController;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.BaseWatch;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;
+import hu.daq.watch.fx.RemoteTransmitter;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.utility.WatchFactory;
 import javafx.scene.Node;
@@ -22,7 +24,7 @@ import javafx.scene.text.Font;
  *
  * @author DAQ
  */
-public class BallTime extends HBox implements TimeoutListener {
+public class BallTime extends HBox implements TimeoutListener,RemoteTransmitter {
 
     Integer seconds;
     CountdownWatch cw;
@@ -41,7 +43,9 @@ public class BallTime extends HBox implements TimeoutListener {
         this.rightpointer = new PointerTriangleRight(Color.GREEN, Color.TRANSPARENT);
         this.switchToLeft();
         this.td = WatchFactory.getWatchDisplay(cw);
+        this.td.enableTimeSetPopOver();
         this.td.setFont(new Font(60));
+        td.attachTransmitter(this);
         this.tspo = new TimeSetPopOver(this);
         this.build();
     }
@@ -157,5 +161,8 @@ public class BallTime extends HBox implements TimeoutListener {
         ServiceHandler.getInstance().getHorn().honk();
         this.pause();
     }
-
+    @Override
+    public void transmit(int milisec) {
+        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).setBallTime(milisec);
+    }
 }

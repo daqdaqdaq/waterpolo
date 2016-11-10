@@ -24,6 +24,7 @@ import hu.daq.wp.fx.display.commands.FivemGoal;
 import hu.daq.wp.fx.display.commands.Goal;
 import hu.daq.wp.fx.display.commands.HidePlayerInfo;
 import hu.daq.wp.fx.display.commands.Honk;
+import hu.daq.wp.fx.display.commands.LegTimeSet;
 import hu.daq.wp.fx.display.commands.LoadTeams;
 import hu.daq.wp.fx.display.commands.NextPhase;
 import hu.daq.wp.fx.display.commands.PauseMatch;
@@ -450,6 +451,25 @@ public class WPDisplayHandler implements WPDisplay.Iface {
 
             throw new FailedOperation("Unauthorized!");
         }        
+    }
+
+    @Override
+    public void setlegtime(String token, int milisec) throws FailedOperation, TException {
+        if (cs.checkToken(token)) {
+            Command comm = new LegTimeSet(milisec);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }            
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }
+    }
+
+    @Override
+    public void setballtime(String token, int milisec) throws FailedOperation, TException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

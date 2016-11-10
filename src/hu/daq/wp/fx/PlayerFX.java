@@ -159,6 +159,10 @@ public class PlayerFX extends EntityFX{
         return duplicated;
     }
     
+    public void setCapnum(Integer capnum){
+        this.player.setCapnum(capnum);
+    }
+    
     public Integer getCapnum(){
         return this.player.getCapnum().getValue();
     }

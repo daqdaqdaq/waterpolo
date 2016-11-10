@@ -53,4 +53,9 @@ public abstract class MatchPhase{
         //Do nothing usually
     }
     
+    @Override
+    public String toString(){
+        return this.phasename +":"+this.milisec + ":" +this.wantDistinctTimeEngine();
+    }
+    
 }

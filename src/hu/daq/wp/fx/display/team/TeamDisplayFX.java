@@ -153,7 +153,7 @@ public abstract class TeamDisplayFX {
             ServiceHandler.getInstance().getTimeEngine().pause();
             ServiceHandler.getInstance().getHorn().honk();
             this.reaminingtimeouts--;
-            TimeOutWindow tow = new TimeOutWindow(20);
+            TimeOutWindow tow = new TimeOutWindow(60);
             tow.loadTeam(this.team);
             tow.showIt();
         }

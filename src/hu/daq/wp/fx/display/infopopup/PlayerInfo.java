@@ -58,13 +58,13 @@ public class PlayerInfo extends PopupWindow {
         this.vb.setAlignment(Pos.CENTER);
         this.teamname.setFont(new Font(30));
         this.teamname.setWrappingWidth(400);
-        this.teamname.setFill(Color.YELLOW);
-        this.playername.setFill(Color.YELLOW);
+        this.teamname.setFill(Color.WHITE);
+        this.playername.setFill(Color.WHITE);
         this.teamname.setEffect(TextEffect.getNewerNeonEffect());
         this.playername.setEffect(TextEffect.getNewerNeonEffect());        
         this.teamname.setTextAlignment(TextAlignment.CENTER);
         this.playername.setFont(new Font(30));
-        Color bgcolor = new Color(0.2,0.2,0.2,0.9);
+        Color bgcolor = new Color(0.2,0.2,0.2,0.98);
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.vb.getChildren().addAll(this.teamname,this.pict,this.playername);
         this.background.getChildren().add(vb);

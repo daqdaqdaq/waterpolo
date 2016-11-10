@@ -9,6 +9,7 @@ import client.Postgres;
 import hu.daq.wp.Team;
 import hu.daq.wp.Teams;
 import hu.daq.wp.fx.AdvancedTeamFX;
+import hu.daq.wp.fx.Instructable;
 import hu.daq.wp.fx.TeamFX;
 import hu.daq.wp.fx.screens.entityselector.EntitySelectorWindow;
 import javafx.collections.transformation.FilteredList;
@@ -26,7 +27,7 @@ import javafx.util.Callback;
  *
  * @author DAQ
  */
-public class TeamsScreen extends BorderPane implements SubScreen{
+public class TeamsScreen extends BorderPane implements SubScreen, Instructable{
     
     private MainPage parent;
     private final Postgres db;
@@ -46,6 +47,7 @@ public class TeamsScreen extends BorderPane implements SubScreen{
         this.teams = new Teams(db);
         this.filteredteams = new FilteredList<Team>(this.teams.getTeams(), p -> true);
         this.tf = new AdvancedTeamFX(db);
+        this.tf.setToNotify(this);
         this.build();
     }
 
@@ -127,5 +129,10 @@ public class TeamsScreen extends BorderPane implements SubScreen{
     @Override
     public Boolean isAdminOnly() {
         return this.adminonly;
+    }
+
+    @Override
+    public void execute() {
+        this.teams.load();
     }
 }

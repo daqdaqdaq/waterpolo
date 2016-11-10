@@ -5,10 +5,13 @@
  */
 package hu.daq.wp.fx.display.leginfo;
 
+import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.thriftconnector.client.WPController;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.BaseWatch;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;
+import hu.daq.watch.fx.RemoteTransmitter;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.utility.WatchFactory;
 import javafx.geometry.Pos;
@@ -28,7 +31,7 @@ import javafx.scene.text.Text;
  *
  * @author DAQ
  */
-public class LegInfo extends VBox {
+public class LegInfo extends VBox implements RemoteTransmitter{
 
     private final BaseWatch legtime;
     private Label legname;
@@ -46,6 +49,7 @@ public class LegInfo extends VBox {
         this.legtime.setTimeToCount(0, 1, 1);
         TimeDisplay td = WatchFactory.getSimpleWatchDisplay(this.legtime);
         td.enableTimeSetPopOver();
+        td.attachTransmitter(this);
         //HBox td = new HBox();
         //td.getChildren().addAll(new Label("0"),new Label(":"),new Label("00"));
         td.setFontSize(50);
@@ -107,5 +111,8 @@ public class LegInfo extends VBox {
     public int getRemainingTime() {
         return this.legtime.getRemainingTime();
     }
-
+    @Override
+    public void transmit(int milisec) {
+        ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).setLegTime(milisec);
+    }
 }

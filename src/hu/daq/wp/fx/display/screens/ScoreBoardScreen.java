@@ -106,8 +106,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     private HBox buildDataBox() {
         HBox databox = new HBox(10);
+        databox.setId("databox");
         databox.setPadding(new Insets(0, 5, 0, 5));
-        databox.setStyle("-fx-background-color: #404040;");
+        //databox.setStyle("-fx-background-color: #181818;");
         VBox leftteambox = this.buildScoreAndNameBox(leftteam);
         VBox rightteambox = this.buildScoreAndNameBox(rightteam);
         VBox centerinfobox = this.buildCenterInfoBox();
@@ -401,27 +402,41 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.fiverswindow.loadRightTeam(this.rightteam.getTeamId());
             this.fiverswindow.showIt();
         } else {
-            if (mp.wantDistinctTimeEngine()){
-                //If the phase needs its own independent timeengine then give it one and start immediatelly
-                TimeEngine ti = new TimeEngine();
-                this.leginfo.setTimeEngine(ti);                
-                ti.start();
-            } else {
-                this.leginfo.setTimeEngine(this.timeengine);
-            }
-            
-
+            System.out.println("Setting up new phase: "+mp.toString());
             this.leginfo.setTimeToCount(mp.getDuration());
+            System.out.println("Duration is set");
             this.leginfo.resetTime();
+            System.out.println("Leginfo: "+this.leginfo.getRemainingTime());
             this.resetBallTime();
             this.syncTime();
+            System.out.println("Balltime reseted");
             this.leginfo.setLegName(mp.getPhaseName());
             this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
             this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
+            System.out.println("Leginfo: "+this.leginfo.getRemainingTime());            
+            if (mp.wantDistinctTimeEngine()){
+                System.out.println("Substitute TimeEngine has been made");
+                //If the phase needs its own independent timeengine then give it one and start immediatelly
+                TimeEngine ti = new TimeEngine();
+                this.leginfo.setTimeEngine(ti);                
+                System.out.println("Substitute Time engine is set");
+                ti.start();
+                System.out.println("Substitute is started");
+                
+            } else {
+                this.leginfo.setTimeEngine(this.timeengine);
+            System.out.println("Original Time engine is set");                
+            }
         }
         this.syncTime();
         System.out.println("New phase set up");
 
+    }
+    
+    
+    public void setLegTime(int milisec){
+        this.leginfo.setTime(milisec);
+        this.syncTime();        
     }
     
     public void nextPhase(){
@@ -458,7 +473,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void timeout() {
         //this.pauseMatch();
         this.soundHorn();
-        this.switchBallTime();
+        if (this.leginfo.getRemainingTime()>0){
+            this.switchBallTime();
+        }
     }
 
 }

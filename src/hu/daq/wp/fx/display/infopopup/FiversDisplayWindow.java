@@ -49,7 +49,7 @@ public class FiversDisplayWindow extends PopupWindow {
         this.rightteam = new TeamDisplayRightFiveFX(ServiceHandler.getInstance().getDb());
         this.build();
         Scene scene = new Scene(this.background);
-        Color bgcolor = new Color(0.2,0.2,0.2,0.9);
+        Color bgcolor = new Color(0.2,0.2,0.2,0.98);
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.background.setBorder(new Border(new BorderStroke(new Color(0.4,0.4,0.4,0.7), BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5)))); 
         scene.setFill(Color.TRANSPARENT);

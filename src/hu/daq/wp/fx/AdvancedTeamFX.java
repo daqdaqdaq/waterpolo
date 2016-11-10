@@ -7,6 +7,7 @@ package hu.daq.wp.fx;
 
 import client.Postgres;
 import hu.daq.draganddrop.DragObjectDecorator;
+import hu.daq.wp.Entity;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.commonbuttons.AddPlayerButton;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
@@ -64,6 +65,7 @@ public class AdvancedTeamFX extends VBox {
     ObservableList<PlayerFX> passive_players;
     ListView<PlayerFX> passive_playerlist;
     VBox roster;
+    Instructable tonotify;
 
     private EntitySelectorWindow esw;
     Postgres db;
@@ -139,6 +141,10 @@ public class AdvancedTeamFX extends VBox {
         this.buildRoster();
     }
 
+    public void setToNotify(Instructable tonotify){
+        this.tonotify = tonotify;
+    }
+    
     //Build the layot and make the bindings
     private void build() {
         HBox teamholder = new HBox();
@@ -147,7 +153,7 @@ public class AdvancedTeamFX extends VBox {
         teamholder.getChildren().addAll(this.name_field, this.add_team_button, this.save_button, this.openentitiesbutton);
         HBox selectorholder = new HBox(10);
         selectorholder.getChildren().addAll(this.passive_playerlist,this.roster);
-        this.getChildren().addAll(teamholder, selectorholder);
+        this.getChildren().addAll(teamholder, selectorholder, this.add_player_button);
         this.name_field.textProperty().bindBidirectional(this.team.getTeamname());
         this.add_player_button.setOnAction((ActionEvent e) -> {
             this.addPlayer();
@@ -155,6 +161,7 @@ public class AdvancedTeamFX extends VBox {
 
         this.save_button.setOnAction((ActionEvent e) -> {
             this.save();
+            this.tonotify.execute();
         });
 
         this.add_team_button.setOnAction((ActionEvent e) -> {
@@ -207,6 +214,8 @@ public class AdvancedTeamFX extends VBox {
     public void newTeam() {
         this.team = new Team(this.db);
         this.name_field.setText("Új csapat");
+        this.passive_players.clear();
+        this.clearRoster();
 
     }
 
@@ -267,6 +276,8 @@ public class AdvancedTeamFX extends VBox {
     private void addPlayer() {
         PlayerFX pf = new PlayerFX(this.team.getDb());
         pf.player.getTeam_id().setValue(this.team.getTeam_id().getValue());
+        pf.setCapnum(0);
+        pf.inactivate();
         pf.editOn();
         pf.name_field.requestFocus();
         this.passive_players.add(pf);
@@ -283,4 +294,6 @@ public class AdvancedTeamFX extends VBox {
         player.save();
         this.passive_players.add(player);
     }
+
+
 }

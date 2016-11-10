@@ -9,6 +9,7 @@ import hu.daq.keyevent.KeyEventHandler;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.client.WPController;
+import hu.daq.watch.fx.RemoteTransmitter;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.wp.fx.commonbuttons.GlyphButton;
 import hu.daq.wp.fx.commonbuttons.HornButton;
@@ -56,6 +57,7 @@ public class ControlPanel extends GridPane {
         this.horn = new HornButton();
         this.leglabel = new Label();
         this.balltimedisplay = new BallTime(ServiceHandler.getInstance().getTimeEngine(), 30);
+       
         this.leginfo = new LegInfo(ServiceHandler.getInstance().getTimeEngine());
         KeyEventHandler keh = ServiceHandler.getInstance().getKeyEventHandler();
         SettingsHandler sh = ServiceHandler.getInstance().getSettings();

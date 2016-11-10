@@ -205,6 +205,13 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public void setLegTime(Integer secs) {
+        try {
+            this.client.setlegtime(token, secs);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
     /*
      Obsolete! Use readymatch instead!
      */

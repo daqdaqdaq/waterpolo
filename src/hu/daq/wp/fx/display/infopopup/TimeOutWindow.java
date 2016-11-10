@@ -40,7 +40,7 @@ public class TimeOutWindow extends PopupWindow{
     public TimeOutWindow(int duration) {
         super(duration);
         this.background = new StackPane();
-        Color bgcolor = new Color(0.2,0.2,0.2,0.9);
+        Color bgcolor = new Color(0.2,0.2,0.2,0.98);
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.background.setBorder(new Border(new BorderStroke(new Color(0.4,0.4,0.4,0.7), BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5)))); 
         this.teamname = new Label();        
@@ -60,7 +60,7 @@ public class TimeOutWindow extends PopupWindow{
         this.teamname.setFont(new Font(30));
         this.teamname.setWrapText(true);
         this.teamname.setAlignment(Pos.CENTER);
-        RingDisplay td = WatchFactory.getRingDisplay(this.cw, 300, Color.YELLOW);
+        RingDisplay td = WatchFactory.getRingDisplay(this.cw, 300, Color.WHITE);
         //td.setFont(new Font(30));
         VBox.setVgrow(td, Priority.ALWAYS);
         vb.getChildren().addAll(header,this.teamname, td);
