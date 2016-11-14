@@ -272,7 +272,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
 
     public void syncTime(TimeSync tsync) {
         Platform.runLater(() -> {
-            this.controlpanel.setBallTimeClock(tsync.getBalltime());
+
             this.controlpanel.setLegTime(tsync.getLegtime());
             BallTime bt = this.controlpanel.getBallTime();
             if (tsync.getAttacking().equals("R")) {
@@ -287,8 +287,9 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
                 }
 
             }
-
+            this.controlpanel.setBallTimeClock(tsync.getBalltime());
         });
+        
         if (tsync.getPenalties() != null) {
             tsync.getPenalties().parallelStream().forEach(E -> {
                 Platform.runLater(() -> {
