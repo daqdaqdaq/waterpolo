@@ -13,24 +13,35 @@ import hu.daq.UDPSender.SenderThread;
  */
 public class Horn {
     private SenderThread st;
-    private Integer honktimemilisecs = 1000;
+    private Integer honktimeshort = 1;
+    private Integer honktimelong = 3;    
     
     public Horn(SenderThread st) {
         this.st = st;
     }
 
-    public Horn(SenderThread st, Integer honktime) {
+    public Horn(SenderThread st, Integer shorthonktime, Integer longhonktime) {
         this(st);
-        this.honktimemilisecs = honktime;
+        this.setShortHonkTime(shorthonktime);
+        this.setLongHonkTime(longhonktime);
+        
     }
 
-    public void setHonkTime(Integer honktime){
-        this.honktimemilisecs = honktime;
+    protected void setShortHonkTime(Integer honktime){
+        this.honktimeshort = honktime;
     }
     
-    public void honk(){
-        this.honk(this.honktimemilisecs);
+    protected void setLongHonkTime(Integer honktime){
+        this.honktimelong = honktime;
+    }    
+
+    public void honkShort(){
+        this.honk(this.honktimeshort);
     }
+
+    public void honkLong(){
+        this.honk(this.honktimelong);
+    }    
     
     public void honk(Integer honktime){
         this.st.sendString("D"+honktime.toString());

@@ -158,7 +158,7 @@ public class BallTime extends HBox implements TimeoutListener,RemoteTransmitter 
     @Override
     public void timeout() {
         //Sound the horn
-        ServiceHandler.getInstance().getHorn().honk();
+        //ServiceHandler.getInstance().getHorn().honk();
         this.pause();
     }
     @Override

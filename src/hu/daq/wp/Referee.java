@@ -49,6 +49,7 @@ public class Referee extends Entity {
 
     @Override
     public boolean load(HashMap<String, String> data) {
+        this.unsubscribe();
         try{
             this.referee_id.set(Integer.parseInt(data.get("referee_id")));
             this.name.set(data.get("name"));
@@ -58,6 +59,7 @@ public class Referee extends Entity {
             return false;
         }
         this.changed.set(false); //This is the original state of the object after loading 
+        this.subscribe();
         return true;
     }
 

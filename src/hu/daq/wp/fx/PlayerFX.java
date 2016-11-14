@@ -219,4 +219,9 @@ public class PlayerFX extends EntityFX{
     public Player getPlayer(){
         return this.player;
     }
+    
+    @Override
+    public String toString(){
+        return this.player.toString();
+    }
 }

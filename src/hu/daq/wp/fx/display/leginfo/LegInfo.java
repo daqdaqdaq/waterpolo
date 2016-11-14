@@ -14,29 +14,25 @@ import hu.daq.watch.TimeoutListener;
 import hu.daq.watch.fx.RemoteTransmitter;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.utility.WatchFactory;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 /**
  *
  * @author DAQ
  */
-public class LegInfo extends VBox implements RemoteTransmitter{
+public class LegInfo extends HBox implements RemoteTransmitter{
 
     private final BaseWatch legtime;
     private Label legname;
+    private TimeDisplay td;
 
     public LegInfo(TimeEngine te) {
+        super(5);
         this.legtime = new CountdownWatch(te);
         this.legname = new Label();
         this.build();
@@ -45,9 +41,10 @@ public class LegInfo extends VBox implements RemoteTransmitter{
     private void build() {
         //this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.legname.setFont(new Font(40));
+        this.legname.setPadding(Insets.EMPTY);
         //We set it to a fake amount and let the WatchFactory generate a correct display format
         this.legtime.setTimeToCount(0, 1, 1);
-        TimeDisplay td = WatchFactory.getSimpleWatchDisplay(this.legtime);
+        this.td = WatchFactory.getSimpleWatchDisplay(this.legtime);
         td.enableTimeSetPopOver();
         td.attachTransmitter(this);
         //HBox td = new HBox();
@@ -58,7 +55,8 @@ public class LegInfo extends VBox implements RemoteTransmitter{
         //this.add(legname, 0, 0);
         //this.add(td,0,1);
         this.getChildren().addAll(this.legname, td);
-        VBox.setVgrow(td, Priority.NEVER);
+        HBox.setHgrow(td, Priority.NEVER);
+        td.setPadding(Insets.EMPTY);
         //GridPane.setHalignment(legname, HPos.CENTER);
         //GridPane.setHalignment(td, HPos.CENTER);        
         //Set it back to 0. 
@@ -104,6 +102,11 @@ public class LegInfo extends VBox implements RemoteTransmitter{
         return (int) this.legtime.getComputedmilis().get();
     }
 
+    public void setFontSize(double size){
+        this.td.setFont(new Font(size));
+        this.legname.setFont(new Font(size));
+    }
+    
     public void setTime(int milisecs){
         this.legtime.set(milisecs);
     }

@@ -157,7 +157,23 @@ public class Team extends Entity{
         return this.getPlayersLowLevel(sendstr);
     }    
     
-    
+    public Coach getCoach(){
+        String sendstr = "select * from coach where team_id="+this.team_id.getValue().toString();
+        
+        List<HashMap<String,String>> rec;
+        try{
+            rec = this.db.query(sendstr);
+            if (rec.size()>0){
+                Coach c = new Coach(this.db);
+                c.load(rec.get(0));
+                return c;
+            }
+  
+        } catch (Exception e){
+
+        }
+        return null; 
+    }
     
     
     @Override

@@ -12,15 +12,22 @@ import hu.daq.servicehandler.ServiceHandler;
  * @author DAQ
  */
 public class Overtime extends MatchPhase{
-
-    public Overtime(int milisec, Organizable screen) {
+    protected Integer phasenum;
+    
+    public Overtime(int milisec, Organizable screen, Integer phasenum) {
         super(milisec, "Hosszabbítás", screen);
+        this.phasenum = phasenum;        
     }
     
 
     
     @Override
     public void endPhase(){
-        ServiceHandler.getInstance().getHorn().honk();
+        ServiceHandler.getInstance().getHorn().honkLong();
     }    
+    
+   @Override
+    public Integer getPhaseNum(){
+        return this.phasenum;
+    }     
 }

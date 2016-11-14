@@ -7,6 +7,7 @@ package hu.daq.wp.fx;
 
 import client.Postgres;
 import hu.daq.draganddrop.DragObjectDecorator;
+import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.utils.MappedList;
 import hu.daq.wp.Team;
 import hu.daq.wp.Teams;
@@ -131,4 +132,6 @@ public class TeamListFX extends StackPane {
     public ObservableList<TeamSimpleFX> getTeamFX(){
         return this.teamsfx;
     }
+
+
 }

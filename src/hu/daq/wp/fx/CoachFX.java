@@ -180,4 +180,7 @@ public class CoachFX extends EntityFX{
         return this.coach.getTeam_id().getValue();
     }
  
+    public Coach getCoach(){
+        return this.coach;
+    }
 }

@@ -25,7 +25,7 @@ public class GoalPopup extends PlayerInfo{
     
     public GoalPopup(){
         super();
-        this.setWidth(600);
+        //this.setWidth(600);
         this.vb.setMaxWidth(this.getWidth()*0.7);
         this.animationoverlay = new StackPane();
         this.animationoverlay.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,null,null)));

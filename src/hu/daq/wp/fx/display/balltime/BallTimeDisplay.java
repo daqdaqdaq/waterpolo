@@ -43,9 +43,9 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     Background toright;
     
     public BallTimeDisplay(TimeEngine te, Integer seconds) {
-        this.setPrefSize(100, 100);
-        this.setMinSize(100, 100);
-        this.setMaxSize(100, 100);
+        this.setPrefSize(200, 80);
+        this.setMinSize(200, 80);
+        this.setMaxSize(200, 80);
         this.seconds = seconds;
         this.cw = new CountdownWatch(te, 0, 0, seconds);
         this.cw.start();
@@ -53,14 +53,14 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         this.td = WatchFactory.getTsecHidingWatchDisplay(cw);
         StackPane.setAlignment(this.td, Pos.CENTER);
         Stop[] stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(1, Color.GREEN)};
-        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.3, 0.7, 0, 1, true, CycleMethod.NO_CYCLE, stops), null, null));
-        this.toright = new Background(new BackgroundFill(new LinearGradient(0.7, 0.7, 1, 1, true, CycleMethod.NO_CYCLE, stops), null, null));        
+        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 0, 0, true, CycleMethod.NO_CYCLE, stops), null, null));
+        this.toright = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops), null, null));        
         this.switchToLeft();
         this.build();
     }
     
     private void build() {
-        this.getStyleClass().add("glowdown");
+        
         //this.td.setPrefHeight(40);
         this.getChildren().addAll(this.td);
     }
@@ -164,7 +164,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     @Override
     public void timeout() {
         //Sound the horn
-        ServiceHandler.getInstance().getHorn().honk();
+        ServiceHandler.getInstance().getHorn().honkShort();
         this.pause();
     }
 }

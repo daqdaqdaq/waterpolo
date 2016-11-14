@@ -16,8 +16,14 @@ import java.util.HashMap;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -31,7 +37,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     Label name_label;
     Label goals_label;
     PenaltiesFX penalties;
-    PlayerFXDisplayOverlay pfxo;
+    AdvancedPlayerFXDisplayOverlay pfxo;
     SimpleIntegerProperty goals = new SimpleIntegerProperty();
     ColumnConstraints capnumconst = new ColumnConstraints();
     ColumnConstraints nameconst = new ColumnConstraints();
@@ -48,13 +54,14 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
 
     public PlayerDisplayFX(Player player) {
-        //this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setId("playerdisplay");
         this.player = player;
-        this.setMaxWidth(980);
-        this.setMaxHeight(35);
-        this.setMinHeight(35);
-        Font sizeing = new Font(33);
+        this.setMaxWidth(490);
+        this.setMinWidth(490);        
+        this.setMaxHeight(40);
+        this.setMinHeight(40);
+        Font sizeing = new Font(35);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();
@@ -63,12 +70,12 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.goals_label.setFont(sizeing);
         this.penalties = new PenaltiesFX(new CircleFactory(), 80);
         //this.penalties.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
-        this.pfxo = new PlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
+        this.pfxo = new AdvancedPlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         this.penalties.setFillHeight(true);
         this.goals.set(0);
         //Size constraints
-        capnumconst.setPercentWidth(10);
-        nameconst.setPercentWidth(55);
+        capnumconst.setPercentWidth(13);
+        nameconst.setPercentWidth(52);
         penaltiesconst.setPercentWidth(20);
         goalsconst.setPercentWidth(15);
 

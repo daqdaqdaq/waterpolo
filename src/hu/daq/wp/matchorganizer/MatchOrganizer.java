@@ -74,5 +74,11 @@ public class MatchOrganizer implements TimeoutListener {
     public void setCurrentPhase(Integer phasenum) {
         this.currentphase = phasenum;
     }
+    
+    public Integer getTimeoutsByPhaseType(String name){
+        Integer i = (int)(this.phases.stream().filter(E -> {return E.getAvailableTimeouts()>0&&E.getClass().getName().equalsIgnoreCase(name);}).count()); 
+        System.out.println("Num "+name +"s :"+i);
+        return i;
+    }
 
 }

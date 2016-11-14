@@ -5,6 +5,7 @@
  */
 package hu.daq.wp;
 
+
 import client.Notifiable;
 import client.Postgres;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public abstract class Entity implements Notifiable{
             //System.out.println(o.toString() + "changed");
             changed.set(true);
         };
-
+        
     }
     
     public abstract boolean load(Integer pk);

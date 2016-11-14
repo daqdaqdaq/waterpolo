@@ -73,6 +73,7 @@ public class ControlPanel extends GridPane {
     private void build() {
         this.setMaxWidth(200);
         this.setMinWidth(200);
+        this.leginfo.setFontSize(20);
         //this.setGridLinesVisible(true);
         this.setHgap(5);
         this.setVgap(5);

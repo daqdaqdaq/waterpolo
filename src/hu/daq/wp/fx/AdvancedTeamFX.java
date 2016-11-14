@@ -7,6 +7,10 @@ package hu.daq.wp.fx;
 
 import client.Postgres;
 import hu.daq.draganddrop.DragObjectDecorator;
+import hu.daq.draganddrop.DropObjectDecorator;
+import hu.daq.draganddrop.ObjectReceiver;
+import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.wp.Coach;
 import hu.daq.wp.Entity;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.commonbuttons.AddPlayerButton;
@@ -37,6 +41,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -54,7 +59,7 @@ import org.controlsfx.control.ListSelectionView;
  *
  * @author DAQ
  */
-public class AdvancedTeamFX extends VBox {
+public class AdvancedTeamFX extends VBox implements ObjectReceiver{
 
     Team team;
     TextField name_field;
@@ -66,6 +71,7 @@ public class AdvancedTeamFX extends VBox {
     ListView<PlayerFX> passive_playerlist;
     VBox roster;
     Instructable tonotify;
+    CoachPosition coach;
 
     private EntitySelectorWindow esw;
     Postgres db;
@@ -89,9 +95,11 @@ public class AdvancedTeamFX extends VBox {
         this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setPadding(new Insets(3));
         //Initializing the controls
+        this.coach = new CoachPosition(this);
         this.passive_players = FXCollections.observableList(new ArrayList<PlayerFX>());     
         this.roster = new VBox(2);
         this.passive_playerlist = new ListView<PlayerFX>();
+        DropObjectDecorator.decorate(this.passive_playerlist, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);
         this.passive_playerlist.setItems(passive_players);
         this.passive_playerlist.setCellFactory(new Callback<ListView<PlayerFX>, ListCell<PlayerFX>>() {
 
@@ -150,7 +158,7 @@ public class AdvancedTeamFX extends VBox {
         HBox teamholder = new HBox();
         teamholder.setPadding(new Insets(10, 10, 10, 10));
         teamholder.setSpacing(10);
-        teamholder.getChildren().addAll(this.name_field, this.add_team_button, this.save_button, this.openentitiesbutton);
+        teamholder.getChildren().addAll(this.name_field, this.add_team_button, this.save_button, this.openentitiesbutton, this.coach);
         HBox selectorholder = new HBox(10);
         selectorholder.getChildren().addAll(this.passive_playerlist,this.roster);
         this.getChildren().addAll(teamholder, selectorholder, this.add_player_button);
@@ -192,6 +200,7 @@ public class AdvancedTeamFX extends VBox {
         if (this.team.load(pk)) {
             this.esw.setSelectedTeam(pk);
             this.loadPlayers();
+            this.loadCoach();
             return true;
         }
         return false;
@@ -201,6 +210,7 @@ public class AdvancedTeamFX extends VBox {
         if (this.team.load(data)) {
             this.esw.setSelectedTeam(this.team.getID());
             this.loadPlayers();
+            this.loadCoach();
             return true;
         }
         return false;
@@ -216,6 +226,7 @@ public class AdvancedTeamFX extends VBox {
         this.name_field.setText("Új csapat");
         this.passive_players.clear();
         this.clearRoster();
+        this.coach.clearCoach();
 
     }
 
@@ -227,6 +238,14 @@ public class AdvancedTeamFX extends VBox {
         return this.team.getChanged().get();
     }
 
+    private void loadCoach(){
+        this.coach.clearCoach();
+        Coach c = this.team.getCoach();
+        if (c!=null){
+            this.coach.setCoach(new CoachFX(c));
+        }
+    }
+    
     /*
      get the players sort them out for active and passive branches and put 
      them to the right observable list
@@ -293,6 +312,45 @@ public class AdvancedTeamFX extends VBox {
         player.inactivate();
         player.save();
         this.passive_players.add(player);
+    }
+
+    @Override
+    public void handleObject(Object source, String object) {
+        System.out.println("Handling.... another" + object + ":" + source);
+
+        /*
+         Drag between windows a bit akward and sets the dragsource to null
+         In that case try to get the drag source from the ServiceHandler. Don't forget to store it in there!!!        
+         */
+        if (source == null) {
+            source = ServiceHandler.getInstance().getDragSource();
+        }
+        EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
+        
+        System.out.println("The source is:" + dsource.toString());
+        if (dsource.getType().equals("Player")) {
+            System.out.println("The type is:" + dsource.getType()+": "+((PlayerFX)dsource).toString());
+
+            ((PlayerFX)dsource).getPlayer().setTeamid(this.getTeamID());
+            ((PlayerFX)dsource).getPlayer().setCapnum(0);
+            ((PlayerFX)dsource).inactivate();
+            ((PlayerFX)dsource).save();            
+
+            PlayerFX p = new PlayerFX(this.db);
+            p.load(((PlayerFX)dsource).getPlayer().getID());
+            p.getPlayer().setTeamid(this.getTeamID());
+            p.getPlayer().setCapnum(0);
+            p.inactivate();
+            p.save();
+
+            //((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
+            this.passive_players.add(p);
+        }
+    }
+
+    void handleCoachRemove(CoachFX coach) {
+        coach.getCoach().setTeamid(0);
+        coach.save();
     }
 
 

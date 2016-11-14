@@ -11,6 +11,7 @@ import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.player.PlayerDisplayRightFX;
 import java.util.stream.Collectors;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Pos;
 
 /**
  *
@@ -20,14 +21,17 @@ public class TeamDisplayRightFX extends TeamDisplayFX{
 
     public TeamDisplayRightFX(Postgres db) {
         super(db);
+        this.playerlist.setAlignment(Pos.TOP_LEFT);        
     }
 
     public TeamDisplayRightFX(Postgres db, int team_id) {
         super(db, team_id);
+        this.playerlist.setAlignment(Pos.TOP_LEFT);          
     }
 
     public TeamDisplayRightFX(Team team) {
         super(team);
+        this.playerlist.setAlignment(Pos.TOP_LEFT);          
     }
 
     /**

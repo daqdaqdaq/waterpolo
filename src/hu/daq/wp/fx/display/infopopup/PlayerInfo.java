@@ -64,7 +64,7 @@ public class PlayerInfo extends PopupWindow {
         this.playername.setEffect(TextEffect.getNewerNeonEffect());        
         this.teamname.setTextAlignment(TextAlignment.CENTER);
         this.playername.setFont(new Font(30));
-        Color bgcolor = new Color(0.2,0.2,0.2,0.98);
+        Color bgcolor = new Color(0.2,0.2,0.2,0.7);
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.vb.getChildren().addAll(this.teamname,this.pict,this.playername);
         this.background.getChildren().add(vb);

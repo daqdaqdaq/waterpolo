@@ -23,16 +23,21 @@ public class MatchLeg extends MatchPhase{
     
     @Override
     public String getPhaseName(){
-        return this.phasenum.toString()+". "+this.phasename;
+        return RomanNumber.get(this.phasenum)+"-";
     }  
     
     @Override
     public void endPhase(){
         try {
             Horn h = ServiceHandler.getInstance().getHorn();
-            h.honk();
+            h.honkLong();
         } catch (Exception ex){
             //Fail silently if there is no horn. Silently :)
         }
     }
+    
+    @Override
+    public Integer getPhaseNum(){
+        return this.phasenum;
+    }    
 }

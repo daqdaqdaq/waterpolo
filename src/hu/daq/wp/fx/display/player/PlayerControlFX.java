@@ -50,7 +50,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Postgres db) {
         super(db);
         this.setStyle("-fx-background-color: #77AACC;");
-        Font sizeing = new Font(24);
+        Font sizeing = new Font(15);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();
@@ -71,7 +71,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Postgres db, int player_id) {
         super(db, player_id);
         this.setStyle("-fx-background-color: #77AACC;");
-        Font sizeing = new Font(24);
+        Font sizeing = new Font(15);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();
@@ -92,7 +92,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public PlayerControlFX(Player player) {
         super(player);
         this.setStyle("-fx-background-color: #77AACC;");
-        Font sizeing = new Font(24);
+        Font sizeing = new Font(15);
         this.capnum_label = new Label();
         this.capnum_label.setFont(sizeing);
         this.name_label = new Label();
@@ -116,6 +116,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     @Override
     protected void build() {
         this.setMaxHeight(USE_COMPUTED_SIZE);
+        this.setMinWidth(USE_COMPUTED_SIZE);
+        this.setMaxWidth(USE_COMPUTED_SIZE);        
         this.capnum_label.textProperty().bind(Bindings.createStringBinding(() -> {
             return this.player.getCapnum().getValue().toString() + ".";
         }, this.player.getCapnum()));

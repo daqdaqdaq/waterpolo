@@ -58,4 +58,7 @@ public abstract class MatchPhase{
         return this.phasename +":"+this.milisec + ":" +this.wantDistinctTimeEngine();
     }
     
+    public Integer getPhaseNum(){
+        return 0;
+    }
 }

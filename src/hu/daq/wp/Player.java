@@ -77,7 +77,7 @@ public class Player extends Entity {
     public boolean save() {
         //Nothing has changed nothing to save
         if (!this.changed.get()) return true;
-        
+  
         String sendstr;
         if (this.player_id.getValue().equals(0)){
             sendstr = "insert into player (name,shortname,capnum,team_id,player_pic,active) values("

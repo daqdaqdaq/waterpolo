@@ -46,7 +46,7 @@ public class OrganizerBuilder {
         if (source.getInt("numovertimes")>0){
             mo.addPhase(new Break(screen));
             for (int i=0; i<source.getInt("numovertimes");i++){
-                mo.addPhase(new Overtime(source.getInt("overtimeduration"),screen));
+                mo.addPhase(new Overtime(source.getInt("overtimeduration"),screen, i+1));
                 mo.addPhase(new Break(screen));                
             }
         }

@@ -25,73 +25,59 @@ import javafx.scene.paint.Color;
  *
  * @author DAQ
  */
-public class PlayerRosterPosition extends HBox implements ObjectReceiver {
+public class CoachPosition extends HBox implements ObjectReceiver {
 
-    private Integer capnum;
     private DeleteButton delbutton;
-    private StackPane playerholder;
+    private StackPane coachholder;
     private AdvancedTeamFX parentobj;
-    private PlayerFX player;
+    private CoachFX coach;
 
-    public PlayerRosterPosition(Integer capnum, AdvancedTeamFX parent) {
+    public CoachPosition(AdvancedTeamFX parent) {
         super(3);
         this.parentobj = parent;
-        this.capnum = capnum;
         this.delbutton = new DeleteButton();
-        this.playerholder = new StackPane();
-        
-        Label sign = new Label("Játékos");
-        sign.setTextFill(new Color(0.7,0.7,0.7,1));
-        this.playerholder.getChildren().add(sign);
-        this.playerholder.setBackground(new Background(new BackgroundFill(new Color(0.9,0.9,0.9,1),null,null)));
+        this.coachholder = new StackPane();
         this.build();
     }
 
     private void build() {
         DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);        
         this.setMinHeight(50);
+        this.coachholder.setMinWidth(250);
         this.setAlignment(Pos.CENTER);
-        this.playerholder.setMinWidth(250);
-        this.delbutton.setOnAction(e -> this.removePlayer());
-        
-        
-        Label capnumlabel = new Label(this.capnum.toString());
-        capnumlabel.setPrefWidth(20);
-        HBox.setHgrow(capnumlabel, Priority.NEVER);
+        this.delbutton.setOnAction(e -> this.removeCoach());
         HBox.setHgrow(this.delbutton, Priority.NEVER);
-        HBox.setHgrow(this.playerholder, Priority.SOMETIMES);
-        this.getChildren().addAll(capnumlabel, this.playerholder, this.delbutton);
+        HBox.setHgrow(this.coachholder, Priority.SOMETIMES);
+        Label sign = new Label("Edző");
+        sign.setTextFill(new Color(0.7,0.7,0.7,1));
+        this.coachholder.getChildren().add(sign);
+        this.coachholder.setBackground(new Background(new BackgroundFill(new Color(0.9,0.9,0.9,1),null,null)));        
+        this.getChildren().addAll(this.coachholder, this.delbutton);
     }
 
-    public void setPlayer(PlayerFX player) {
-        if (this.player != null) {
-            this.removePlayer();
+    public void setCoach(CoachFX coach) {
+        if (this.coach != null) {
+            this.removeCoach();
         }
-        this.player = player;
-        this.playerholder.getChildren().add(this.player);
-        player.getPlayer().setCapnum(this.capnum);
-        player.getPlayer().setTeamid(this.parentobj.getTeamID());
-        player.activate();
-        player.save();
+        this.coach = coach;
+        this.coachholder.getChildren().add(this.coach);
+        coach.getCoach().setTeamid(this.parentobj.getTeamID());
+        coach.save();
     }
 
-    public void removePlayer() {
-        if (this.player != null) {
-            this.parentobj.handlePlayerRemove(this.player);
-            this.playerholder.getChildren().remove(this.player);
-            this.player = null;
-        }
-    }
-
-    public void clearPlayer() {
-        if (this.player != null) {
-            this.playerholder.getChildren().remove(this.player);
-            this.player = null;
+    public void removeCoach() {
+        if (this.coach != null) {
+            this.parentobj.handleCoachRemove(this.coach);
+            this.coachholder.getChildren().remove(this.coach);
+            this.coach = null;
         }
     }
 
-    public Integer getCapnum() {
-        return capnum;
+    public void clearCoach() {
+        if (this.coach != null) {
+            this.coachholder.getChildren().remove(this.coach);
+            this.coach = null;
+        }
     }
 
     @Override
@@ -108,10 +94,12 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver {
         EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
         
         System.out.println("The source is:" + dsource.toString());
-        if (dsource.getType().equals("Player")) {
+        if (dsource.getType().equals("Coach")) {
             System.out.println("The type is:" + dsource.getType());
-            ((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
-            this.setPlayer((PlayerFX)dsource);
+            CoachFX p = new CoachFX(((CoachFX)dsource).getCoach().getDb());
+            p.load(((CoachFX)dsource).getCoach().getID());
+            //((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
+            this.setCoach(p);
         }
 
     }

@@ -10,6 +10,7 @@ import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.display.infopopup.TimeOutWindow;
 import hu.daq.wp.fx.display.player.PlayerDisplayFX;
+import hu.daq.wp.fx.display.timeouts.TimeoutDisplay;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.beans.binding.Bindings;
@@ -19,10 +20,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextBoundsType;
 
 /**
  *
@@ -37,6 +46,7 @@ public abstract class TeamDisplayFX {
     ObservableList<PlayerDisplayFX> active_players;
     SimpleIntegerProperty teamgoals;
     VBox playerlist;
+    TimeoutDisplay tod;
     Integer reaminingtimeouts = 0;
 
     public TeamDisplayFX(Postgres db) {
@@ -55,17 +65,20 @@ public abstract class TeamDisplayFX {
         //this.active_players = new SortedList<PlayerDisplayFX>(FXCollections.observableList(new ArrayList<PlayerDisplayFX>()));
         this.active_players = FXCollections.observableList(new ArrayList<PlayerDisplayFX>());
         //this.active_players .setComparator((l, r) -> l.compareTo(r));
-        this.playerlist = new VBox(3);
+        this.playerlist = new VBox(1);
         this.playerlist.setMinWidth(400);
+        this.playerlist.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.playerlist.setPrefHeight(USE_COMPUTED_SIZE);
         this.teamnamelabel = new Label("");
-         this.teamnamelabel.setWrapText(true);
+        //this.teamnamelabel.setWrapText(true);
         this.teamnamelabel.setTextAlignment(TextAlignment.CENTER);
+        
         this.teamnamelabel.textProperty().bind(this.getTeamName());
         this.teamnamelabel.setFont(new Font(24));
         this.goalslabel = new Label("");
         this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
-        this.goalslabel.setFont(new Font(24));        
+        this.goalslabel.setFont(new Font(24));    
+        tod = new TimeoutDisplay();
 
     }
 
@@ -148,11 +161,16 @@ public abstract class TeamDisplayFX {
         this.reaminingtimeouts = timeouts;
     }
 
-    public void requestTimeout() {
+    public void requestTimeout(Integer phasenum) {
         if (this.reaminingtimeouts > 0) {
             ServiceHandler.getInstance().getTimeEngine().pause();
-            ServiceHandler.getInstance().getHorn().honk();
+            ServiceHandler.getInstance().getHorn().honkShort();
             this.reaminingtimeouts--;
+            if (phasenum>10){
+                this.tod.addOvertimeTimeout(phasenum-10);
+            } else {
+                this.tod.addMatchTimeout(phasenum);            
+            }    
             TimeOutWindow tow = new TimeOutWindow(60);
             tow.loadTeam(this.team);
             tow.showIt();
@@ -166,4 +184,10 @@ public abstract class TeamDisplayFX {
         this.teamgoals.set(0);
         
     }
+
+    public TimeoutDisplay getTimeoutDisplay() {
+        return tod;
+    }
+    
+    
 }
