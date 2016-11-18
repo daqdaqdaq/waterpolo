@@ -13,6 +13,7 @@ import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.thriftconnector.thrift.TimeReport;
 import hu.daq.thriftconnector.thrift.WPDisplay;
 import hu.daq.wp.fx.display.commands.AddFivemPlayer;
+import hu.daq.wp.fx.display.commands.AttackerPenalty;
 import hu.daq.wp.fx.display.commands.BallTimeLeft;
 import hu.daq.wp.fx.display.commands.BallTimeReset;
 import hu.daq.wp.fx.display.commands.BallTimeRight;
@@ -20,6 +21,7 @@ import hu.daq.wp.fx.display.commands.BallTimeSet;
 import hu.daq.wp.fx.display.commands.BallTimeSwitch;
 import hu.daq.wp.fx.display.commands.ClearScoreBoard;
 import hu.daq.wp.fx.display.commands.CloseFivemWindow;
+import hu.daq.wp.fx.display.commands.DefenderPenalty;
 import hu.daq.wp.fx.display.commands.FivemGoal;
 import hu.daq.wp.fx.display.commands.Goal;
 import hu.daq.wp.fx.display.commands.HidePlayerInfo;
@@ -35,6 +37,7 @@ import hu.daq.wp.fx.display.commands.RemoveFivemGoal;
 import hu.daq.wp.fx.display.commands.RemoveGoal;
 import hu.daq.wp.fx.display.commands.RemovePenalty;
 import hu.daq.wp.fx.display.commands.RequestTimeout;
+import hu.daq.wp.fx.display.commands.SetPenalty;
 import hu.daq.wp.fx.display.commands.ShowPlayerInfo;
 import hu.daq.wp.fx.display.commands.StartMatch;
 import hu.daq.wp.fx.display.control.Command;
@@ -470,6 +473,53 @@ public class WPDisplayHandler implements WPDisplay.Iface {
     @Override
     public void setballtime(String token, int milisec) throws FailedOperation, TException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void attackerfoul(String token) throws FailedOperation, TException {
+        if (cs.checkToken(token)) {
+            Command comm = new AttackerPenalty();
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }            
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }
+    }
+
+    @Override
+    public void defenderfoul(String token) throws FailedOperation, TException {
+        if (cs.checkToken(token)) {
+            Command comm = new DefenderPenalty();
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }            
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }        
+    }
+
+    @Override
+    public void doublefoul(String token) throws FailedOperation, TException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setfoul(String token, int playerid, int milisec) throws FailedOperation, TException {
+       if (cs.checkToken(token)) {
+            Command comm = new SetPenalty(playerid,milisec);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }            
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }         
     }
 
 

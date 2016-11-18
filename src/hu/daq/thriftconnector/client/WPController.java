@@ -5,6 +5,7 @@
  */
 package hu.daq.thriftconnector.client;
 
+import hu.daq.thriftconnector.client.ReconnectingThriftClient.Options;
 import hu.daq.thriftconnector.thrift.ClientData;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.thriftconnector.thrift.WPDisplay;
@@ -33,6 +34,7 @@ public class WPController extends ThriftClient {
                 this.transport.open();
 
                 TProtocol protocol = new TBinaryProtocol(transport);
+                //this.client = (WPDisplay.Client)ReconnectingThriftClient.wrap(new WPDisplay.Client(protocol), new Options(5,50));
                 this.client = new WPDisplay.Client(protocol);
                 System.out.println("Connection to server has established");
             } catch (TException x) {
@@ -117,6 +119,38 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public void attackerPenalty() {
+        try {
+            this.client.attackerfoul(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void defenderPenalty() {
+        try {
+            this.client.defenderfoul(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+
+    public void doublePenalty() {
+        try {
+            this.client.doublefoul(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void setPenalty(Integer playerid, Integer milisec) {
+        try {
+            this.client.setfoul(token, playerid, milisec);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+    
     public void addPenalty(Integer playerid) {
         try {
             this.client.foul(this.token, playerid);

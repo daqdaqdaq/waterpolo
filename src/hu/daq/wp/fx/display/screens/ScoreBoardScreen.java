@@ -257,15 +257,23 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         return  this.leftteam.getPlayer(playerid)!=null;
     }    
     
+    public void attackerPenalty(){
+        this.switchBallTime();
+    }
+    
+    public void defenderPenalty(){
+        this.resetBallTime();
+    }
+    
     public void addPenalty(Integer playerid) {
 
-        this.timeengine.pause();
+        //this.timeengine.pause();
         try {
             this.getPlayer(playerid).addPenalty();
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.pauseMatch();
+        //this.pauseMatch();
         if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
             this.switchBallTimeRight();
                     
@@ -274,6 +282,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.switchBallTimeLeft();
         }        
     }
+
+    public void setPenalty(Integer playerid, Integer milisecs) {
+        try {
+            this.getPlayer(playerid).setPenalty(milisecs);
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.syncTime();
+    }    
 
     public void removePenalty(Integer playerid) {
         try {
@@ -285,12 +302,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     public void addGoal(Integer playerid) {
         try {
+            this.timeengine.pause();         
+            this.pauseMatch();            
             this.getPlayer(playerid).addGoal();
             GoalPopup pi = new GoalPopup();
 
             pi.loadPlayer(this.getPlayer(playerid).getPlayerModel());
             pi.setTimer(5);
             pi.showIt();
+            this.switchBallTime();
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -342,18 +362,18 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void switchBallTimeLeft() {
-        this.timeengine.pause();
+        //this.timeengine.pause();
         //End all penalties in the defending team
         this.leftteam.removeAllPenalties();
         this.balltime.switchToLeft();
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
-        this.sendPause();
+        //this.sendPause();
     }
 
     public void switchBallTimeRight() {
-        this.timeengine.pause();
+        //this.timeengine.pause();
         //End all penalties in the defending team        
         this.rightteam.removeAllPenalties();
         this.balltime.switchToRight();
@@ -361,7 +381,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
-        this.pauseMatch();
+        //this.pauseMatch();
     }
 
     public void switchBallTime() {

@@ -8,7 +8,9 @@ package hu.daq.wp.fx.screens;
 import client.Postgres;
 import hu.daq.draganddrop.DragObjectDecorator;
 import hu.daq.draganddrop.DropObjectDecorator;
+import hu.daq.keyevent.KeyEventHandler;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.client.WPController;
 import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.thrift.FailedOperation;
@@ -22,6 +24,8 @@ import hu.daq.wp.fx.commonbuttons.TimeButton;
 import hu.daq.wp.fx.display.balltime.BallTime;
 import hu.daq.wp.fx.display.controlpanel.ControlPanel;
 import hu.daq.wp.fx.display.infopopup.PopupCloseListener;
+import hu.daq.wp.fx.display.penaltytimer.PenaltyHolder;
+import hu.daq.wp.fx.display.penaltytimer.PenaltyTimer;
 import hu.daq.wp.fx.display.player.PlayerControlFX;
 import hu.daq.wp.fx.display.team.TeamControlFX;
 import hu.daq.wp.fx.display.team.TeamControlLeftFX;
@@ -38,6 +42,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.DataFormat;
@@ -70,10 +75,14 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private final EndMatchButton stopmatch;
     private final LeftButton prevphase;
     private final RightButton nextphase;
+    private final Button attackerpenaltybutton;
+    private final Button defenderpenaltybutton;
+    private final Button doublepenaltybutton;    
     private MatchProfileFX matchprofile;
 
     private ToggleGroup showplayertoggle;
     private FiversControlWindow fivers;
+    private PenaltyHolder ph;
 
     public MatchScreen(Postgres db) {
         this.db = db;
@@ -91,7 +100,12 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.fivers = new FiversControlWindow();
         this.prevphase = new LeftButton();
         this.nextphase = new RightButton();
+        //blind buttons. We dont need them, only the mechanism behind them
+        this.attackerpenaltybutton  = new Button();
+        this.defenderpenaltybutton = new Button();
+        this.doublepenaltybutton = new Button();
         this.fivers.setCloseListener(this);
+        this.ph = new PenaltyHolder();
         this.build();
     }
 
@@ -151,6 +165,25 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.nextphase.setOnAction((ev) -> {
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).nextPhase();
         });
+
+        this.attackerpenaltybutton.setOnAction((ev) -> {
+            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).attackerPenalty();
+            this.attackerPenalty();
+        });
+        
+        this.defenderpenaltybutton.setOnAction((ev) -> {
+            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).defenderPenalty();
+            this.defenderPenalty();
+        });
+        
+        this.doublepenaltybutton.setOnAction((ev) -> {
+            this.doublePenalty();
+        });        
+        KeyEventHandler keh = ServiceHandler.getInstance().getKeyEventHandler();
+        SettingsHandler sh = ServiceHandler.getInstance().getSettings();
+        keh.bindButton(sh.getProperty("key_attackerpenalty"), this.attackerpenaltybutton);        
+        keh.bindButton(sh.getProperty("key_defenderpenalty"), this.defenderpenaltybutton);  
+        keh.bindButton(sh.getProperty("key_doublepenalty"), this.doublepenaltybutton);          
     }
 
     private HBox buildUpperBox() {
@@ -194,7 +227,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         upperhb.getChildren().addAll(this.addteam, this.prevphase, this.nextphase);
         lowerhb.getChildren().addAll(this.matchprofile, this.stopmatch);
         vb.getChildren().addAll(upperhb, lowerhb);
-        obb.getChildren().add(vb);
+        obb.getChildren().addAll(vb, this.ph);
         return obb;
     }
 
@@ -325,6 +358,19 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         return this.adminonly;
     }
 
+    public void attackerPenalty(){
+        this.ph.addPenaltyTimer(new PenaltyTimer(ServiceHandler.getInstance().getTimeEngine()));
+    }
+
+    public void defenderPenalty(){
+        this.ph.addPenaltyTimer(new PenaltyTimer(ServiceHandler.getInstance().getTimeEngine()));
+    }    
+
+    public void doublePenalty(){
+        this.ph.addPenaltyTimer(new PenaltyTimer(ServiceHandler.getInstance().getTimeEngine()));
+        this.ph.addPenaltyTimer(new PenaltyTimer(ServiceHandler.getInstance().getTimeEngine()));
+    }    
+    
     @Override
     public void setupPhase(MatchPhase mp) {
         this.controlpanel.pause();

@@ -103,6 +103,14 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.buildLayout();
     }
 
+    public int setPenalty(int milisec){
+        if (this.getPenaltyTime()==0){
+            this.addPenalty();
+        }
+        this.pfxo.setTime(milisec);
+        return 0;
+    }
+    
     public int addPenalty() {
         //Add a penalty and get the number of penalties
         int p = this.penalties.addPenalty();

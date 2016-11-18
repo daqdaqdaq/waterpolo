@@ -5,6 +5,7 @@
  */
 package hu.daq.thriftconnector.talkback;
 
+import hu.daq.thriftconnector.client.ReconnectingThriftClient;
 import hu.daq.thriftconnector.client.ThriftClient;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ public class WPTalkBackClient extends ThriftClient{
             this.transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
+            //this.client = (WPTalkBack.Client)ReconnectingThriftClient.wrap(new WPTalkBack.Client(protocol), new ReconnectingThriftClient.Options(5,50));
             this.client = new WPTalkBack.Client(protocol);
             System.out.println("Connection to server has established");
         } catch (TException x) {

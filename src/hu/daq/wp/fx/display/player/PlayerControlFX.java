@@ -6,9 +6,12 @@
 package hu.daq.wp.fx.display.player;
 
 import client.Postgres;
+import hu.daq.draganddrop.DropObjectDecorator;
+import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.thriftconnector.client.WPController;
 import hu.daq.watch.CountdownWatch;
+import hu.daq.watch.fx.RemoteTransmitter;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.utility.WatchFactory;
 import hu.daq.wp.Player;
@@ -19,9 +22,12 @@ import hu.daq.wp.fx.commonbuttons.RemoveGoalButton;
 import hu.daq.wp.fx.commonbuttons.RemovePenaltyButton;
 import hu.daq.wp.fx.commonbuttons.ShowPlayerButton;
 import hu.daq.wp.fx.commonbuttons.ToggleGlyphButton;
+import hu.daq.wp.fx.display.penaltytimer.PenaltyTimer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -35,7 +41,7 @@ import javafx.scene.text.Font;
  *
  * @author DAQ
  */
-public abstract class PlayerControlFX extends PlayerDisplayFX {
+public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectReceiver, RemoteTransmitter{
 
     GlyphButton goalbutton;
     GlyphButton penaltybutton;
@@ -115,6 +121,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
 
     @Override
     protected void build() {
+        DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);
         this.setMaxHeight(USE_COMPUTED_SIZE);
         this.setMinWidth(USE_COMPUTED_SIZE);
         this.setMaxWidth(USE_COMPUTED_SIZE);        
@@ -170,6 +177,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
         this.td = WatchFactory.getWatchDisplay(this.cw);
         this.td.setFontSize(20);
         this.td.setVisible(false);
+        this.td.enableTimeSetPopOver();
+        this.td.attachTransmitter(null);
         this.td.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.buildLayout();
     }
@@ -211,4 +220,41 @@ public abstract class PlayerControlFX extends PlayerDisplayFX {
     public Boolean isFinallyOut(){
         return this.penalties.getFinallyout().getValue();
     }
+
+    @Override
+    public int setPenalty(int milisec) {
+        if (this.cw.getComputedmilis().get()==0){
+            this.addPenalty();
+        }
+        ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).setPenalty(this.getPlayerID(), milisec);
+        return 0;
+    }
+    
+    
+    @Override
+    public void handleObject(Object source, String object) {
+        System.out.println("Handling...." + object + ":" + source);
+
+        /*
+         Drag between windows a bit akward and sets the dragsource to null
+         In that case try to get the drag source from the ServiceHandler. Don't forget to store it in there!!!        
+         */
+        if (source == null) {
+            source = ServiceHandler.getInstance().getDragSource();
+        }
+        PenaltyTimer dsource = (PenaltyTimer) source;
+        
+        System.out.println("The source is:" + dsource.toString());
+        if (dsource.getClass().getSimpleName().equals("PenaltyTimer")) {
+            System.out.println("The type is:" +dsource.getClass().getSimpleName());
+            dsource.getHolder().getChildren().remove(dsource);
+            this.setPenalty(dsource.getPenaltyTime());
+        }        
+    }    
+
+    @Override
+    public void transmit(int milisec) {
+        this.setPenalty(milisec);
+    }
+
 }
