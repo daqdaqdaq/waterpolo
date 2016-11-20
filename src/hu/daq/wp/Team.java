@@ -148,7 +148,7 @@ public class Team extends Entity{
     }
     
     public ArrayList<Player> getActivePlayers(){
-        String sendstr = "select * from player where team_id="+this.team_id.getValue().toString()+" and active='t'";
+        String sendstr = "select * from player where team_id="+this.team_id.getValue().toString()+" and active='t' order by capnum";
         return this.getPlayersLowLevel(sendstr);
     }    
     

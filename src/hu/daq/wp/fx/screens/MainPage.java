@@ -15,10 +15,12 @@ import org.controlsfx.dialog.LoginDialog;
  *
  * @author DAQ
  */
-public class MainPage extends TabPane {
+public class MainPage extends TabPane implements MainPageCommon{
 
     private Boolean loggedin;
     private LoginDialog protector;
+    private Integer leftteam;
+    private Integer rightteam;
 
 
     public MainPage(LoginDialog protector) {
@@ -43,5 +45,17 @@ public class MainPage extends TabPane {
         }
     }
     
+    public void setPlayingTeams(Integer leftteam, Integer rightteam){
+        this.leftteam = leftteam;
+        this.rightteam = rightteam;
+              
+    }
 
+    public Integer getLeftTeam(){
+        return this.leftteam;
+    }
+    
+    public Integer getRightTeam(){
+        return this.rightteam;
+    }    
 }

@@ -9,6 +9,10 @@ import hu.daq.thriftconnector.client.ReconnectingThriftClient.Options;
 import hu.daq.thriftconnector.thrift.ClientData;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.thriftconnector.thrift.WPDisplay;
+//import hu.daq.thriftconnector.thrift.WPDisplay;
+import hu.daq.thriftconnector.thrift.WPDisplay.Client;
+//import hu.daq.thriftconnector.thrift.WPDisplay;
+
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,20 +26,22 @@ import org.apache.thrift.protocol.TProtocol;
  */
 public class WPController extends ThriftClient {
 
-    private WPDisplay.Client client;
+    private WPDisplay.Iface client;
 
     public WPController(String url, Integer remoteport, Integer listeningport) {
         super(url, remoteport, listeningport);
     }
 
+    @Override
     public String connect(String token) throws FailedOperation {
         if (!this.transport.isOpen()) {
             try {
                 this.transport.open();
 
                 TProtocol protocol = new TBinaryProtocol(transport);
-                //this.client = (WPDisplay.Client)ReconnectingThriftClient.wrap(new WPDisplay.Client(protocol), new Options(5,50));
-                this.client = new WPDisplay.Client(protocol);
+                client = ReconnectingThriftClient.wrap(new Client(protocol), new Options(5,50));
+                
+                //this.client = new WPDisplay.Client(protocol);
                 System.out.println("Connection to server has established");
             } catch (TException x) {
                 throw new FailedOperation("Connection to server has failed");
@@ -175,6 +181,22 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public void showCoachInfo(Integer coachid) {
+        try {
+            this.client.showcoachinfo(token, coachid);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void showRefereeInfo(Integer refereeid) {
+        try {
+            this.client.showprefereeinfo(token, refereeid);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void hidePlayerInfo() {
         try {
             this.client.hideplayerinfo(this.token);
@@ -305,7 +327,7 @@ public class WPController extends ThriftClient {
         }
     }
 
-    public WPDisplay.Client getClient() {
+    public WPDisplay.Iface getClient() {
         return this.client;
     }
 }

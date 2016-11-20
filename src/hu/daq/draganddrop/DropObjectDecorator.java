@@ -38,7 +38,8 @@ public class DropObjectDecorator {
 
         underlying.setOnDragEntered((DragEvent event) -> {
             System.out.println("Drag entered");
-            underlying.setStyle("-fx-background-color: palegreen");
+            underlying.setId("draghover");
+            //underlying.setStyle("-fx-background-color: palegreen");
             event.consume();
         });
 
@@ -47,7 +48,7 @@ public class DropObjectDecorator {
         //});
         underlying.setOnDragExited((DragEvent event) -> {
             System.out.println("Drag exited");
-            underlying.setStyle("");
+            underlying.setId(null);
             event.consume();
         });
 

@@ -61,7 +61,7 @@ import org.json.JSONException;
  */
 public class MatchScreen extends BorderPane implements SubScreen, Organizable, PopupCloseListener {
 
-    private MainPage parent;
+    private MainPageCommon scparent;
     private String securitytoken;
     private final Boolean adminonly;
     private final Postgres db;
@@ -232,14 +232,14 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     }
 
     @Override
-    public SubScreen addContainer(MainPage nd) {
-        this.parent = nd;
+    public SubScreen addContainer(MainPageCommon nd) {
+        this.scparent = nd;
         return this;
     }
 
     @Override
-    public MainPage getContainer() {
-        return this.parent;
+    public MainPageCommon getContainer() {
+        return this.scparent;
     }
 
     @Override
@@ -291,6 +291,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(), this.matchprofile.getSelected().getID());
         ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(), this));
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(-1);
+        this.scparent.setPlayingTeams(this.leftteam.getTeamID(), this.rightteam.getTeamID());
         this.leftteam.enable();
         this.rightteam.enable();
         this.controlpanel.enable();

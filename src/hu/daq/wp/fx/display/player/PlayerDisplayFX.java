@@ -43,9 +43,11 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     ColumnConstraints nameconst = new ColumnConstraints();
     ColumnConstraints penaltiesconst = new ColumnConstraints();
     ColumnConstraints goalsconst = new ColumnConstraints();
+    Boolean inpenalty;
 
     public PlayerDisplayFX(Postgres db) {
         this(new Player(db));
+        
     }
 
     public PlayerDisplayFX(Postgres db, int player_id) {
@@ -73,6 +75,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.pfxo = new AdvancedPlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         this.penalties.setFillHeight(true);
         this.goals.set(0);
+        this.inpenalty = false;
         //Size constraints
         capnumconst.setPercentWidth(13);
         nameconst.setPercentWidth(52);
@@ -104,9 +107,10 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
 
     public int setPenalty(int milisec){
-        if (this.getPenaltyTime()==0){
+        if (!this.inpenalty){
             this.addPenalty();
         }
+        this.inpenalty = true;
         this.pfxo.setTime(milisec);
         return 0;
     }
@@ -122,11 +126,13 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
 
     public int removePenalty() {
+        this.inpenalty = false;
         this.pfxo.jumpToEnd();
         return this.penalties.removePenalty();
     }
 
     public void endPenalty(){
+        this.inpenalty = false;
         this.pfxo.jumpToEnd();
     }
             
@@ -191,7 +197,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
     
     protected void addOverlay() {
-
+        this.inpenalty = true;
         //this.pfxo = new PlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         this.pfxo.reset();
         this.getChildren().add(this.pfxo);
@@ -200,6 +206,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
 
     @Override
     public void timeout() {
+        this.inpenalty = false;
         this.getChildren().remove(this.pfxo);
         //this.pfxo.reset();
         //System.out.println("Time is running out");

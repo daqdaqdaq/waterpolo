@@ -37,6 +37,7 @@ public class EntitySelectorWindow extends Stage {
 
     public void loadEntities() {
         elf.loadEntities();
+        
         //tlf.getTeamFX().stream().forEach((E) -> {
         //    System.out.println("Decorating...");
         //    DragObjectDecorator.decorate(E, new DragTeamMediator(E), TransferMode.LINK);

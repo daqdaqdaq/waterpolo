@@ -29,7 +29,7 @@ import javafx.util.Callback;
  */
 public class TeamsScreen extends BorderPane implements SubScreen, Instructable{
     
-    private MainPage parent;
+    private MainPageCommon parent;
     private final Postgres db;
     private final Teams teams;
     private final FilteredList<Team> filteredteams;
@@ -111,13 +111,13 @@ public class TeamsScreen extends BorderPane implements SubScreen, Instructable{
     }
 
     @Override
-    public SubScreen addContainer(MainPage nd) {
+    public SubScreen addContainer(MainPageCommon nd) {
         this.parent = nd;
         return this;
     }
 
     @Override
-    public MainPage getContainer() {
+    public MainPageCommon getContainer() {
         return this.parent;
     }
 

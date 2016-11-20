@@ -89,7 +89,10 @@ public final class ReconnectingThriftClient {
     Object proxyObject = Proxy.newProxyInstance(clientInterface.getClassLoader(),
         new Class<?>[] { clientInterface },
         new ReconnectingClientProxy<T>(baseClient, options.getNumRetries(), options.getTimeBetweenRetries()));
-
+        System.out.println("Integface orig:");
+        Arrays.asList(baseClient.getClass().getInterfaces()).stream().forEach(E -> {System.out.println(E.getName());});    
+        System.out.println("Integrface build:");
+        Arrays.asList(((C)proxyObject).getClass().getInterfaces()).stream().forEach(E -> {System.out.println(E.getName());});
     return (C)proxyObject;
   }
 
@@ -106,6 +109,7 @@ public final class ReconnectingThriftClient {
     Class<?>[] interfaces = baseClient.getClass().getInterfaces();
 
     for (Class<?> iface : interfaces) {
+      System.out.println("Integrface found"+iface.getSimpleName());
       if (iface.getSimpleName().equals("Iface") && iface.getEnclosingClass().equals(baseClient.getClass().getEnclosingClass())) {
         return (C)wrap(baseClient, iface, options);
       }

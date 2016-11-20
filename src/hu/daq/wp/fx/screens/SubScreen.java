@@ -13,8 +13,8 @@ public interface SubScreen {
 
     public void initScreen();
     public Boolean isAdminOnly();
-    public SubScreen addContainer(MainPage nd);
-    public MainPage getContainer();
+    public SubScreen addContainer(MainPageCommon nd);
+    public MainPageCommon getContainer();
 
     
 }

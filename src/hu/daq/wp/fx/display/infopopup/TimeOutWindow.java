@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.display.infopopup;
 
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.watch.fx.RingDisplay;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.utility.WatchFactory;
@@ -61,6 +62,11 @@ public class TimeOutWindow extends PopupWindow{
         this.teamname.setWrapText(true);
         this.teamname.setAlignment(Pos.CENTER);
         RingDisplay td = WatchFactory.getRingDisplay(this.cw, 300, Color.WHITE);
+        this.cw.getObservableTime().sec.addListener((ob,ov,nv)->{
+            if (nv.equals(25)){
+                this.quarterHonk();
+            }
+        });
         //td.setFont(new Font(30));
         VBox.setVgrow(td, Priority.ALWAYS);
         vb.getChildren().addAll(header,this.teamname, td);
@@ -73,4 +79,14 @@ public class TimeOutWindow extends PopupWindow{
         this.teamname.setText(team.getTeamname().getValue());
     
     }
+
+    public void quarterHonk(){
+        ServiceHandler.getInstance().getHorn().honkShort();    
+    }
+    
+    @Override
+    public void timeout() {
+        this.close();
+        ServiceHandler.getInstance().getHorn().honkShort();
+    }    
 }

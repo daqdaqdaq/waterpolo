@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.display.infopopup;
 
+import client.Postgres;
 import hu.daq.wp.fx.animation.Animation;
 import javafx.animation.Transition;
 import javafx.scene.control.Label;
@@ -20,11 +21,11 @@ import javafx.scene.text.Font;
  *
  * @author DAQ
  */
-public class GoalPopup extends PlayerInfo{
+public class GoalPopup extends PersonInfo{
     StackPane animationoverlay;
     
-    public GoalPopup(){
-        super();
+    public GoalPopup(Postgres db){
+        super(db);
         //this.setWidth(600);
         this.vb.setMaxWidth(this.getWidth()*0.7);
         this.animationoverlay = new StackPane();

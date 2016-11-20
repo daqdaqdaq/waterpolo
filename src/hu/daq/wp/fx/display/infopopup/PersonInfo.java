@@ -5,7 +5,10 @@
  */
 package hu.daq.wp.fx.display.infopopup;
 
+import client.Postgres;
+import hu.daq.wp.Coach;
 import hu.daq.wp.Player;
+import hu.daq.wp.Referee;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.image.PlayerPicture;
 import hu.daq.wp.fx.texteffects.TextEffect;
@@ -28,8 +31,8 @@ import javafx.scene.text.TextAlignment;
  *
  * @author DAQ
  */
-public class PlayerInfo extends PopupWindow {
-
+public class PersonInfo extends PopupWindow {
+    Postgres db;
     StackPane background;
     PlayerPicture pict;
     Text teamname;
@@ -38,8 +41,9 @@ public class PlayerInfo extends PopupWindow {
     VBox vb;
         
     
-    public PlayerInfo() {
+    public PersonInfo(Postgres db) {
         super();
+        this.db =db;
         this.vb = new VBox();
         this.background = new StackPane();
         
@@ -56,14 +60,14 @@ public class PlayerInfo extends PopupWindow {
 
     private void build() {
         this.vb.setAlignment(Pos.CENTER);
-        this.teamname.setFont(new Font(30));
-        this.teamname.setWrappingWidth(400);
+        this.teamname.setFont(new Font(50));
+        this.teamname.setWrappingWidth(600);
         this.teamname.setFill(Color.WHITE);
         this.playername.setFill(Color.WHITE);
         this.teamname.setEffect(TextEffect.getNewerNeonEffect());
         this.playername.setEffect(TextEffect.getNewerNeonEffect());        
         this.teamname.setTextAlignment(TextAlignment.CENTER);
-        this.playername.setFont(new Font(30));
+        this.playername.setFont(new Font(50));
         Color bgcolor = new Color(0.2,0.2,0.2,0.7);
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.vb.getChildren().addAll(this.teamname,this.pict,this.playername);
@@ -71,8 +75,10 @@ public class PlayerInfo extends PopupWindow {
         
     }
     
-    public void loadPlayer(Player player){
-        Team t = new Team(player.getDb());
+    public void loadPlayer(Integer playerid){
+        Player player = new Player(this.db);
+        player.load(playerid);
+        Team t = new Team(this.db);
         t.load(player.getTeam_id().get());
         this.vb.getChildren().remove(this.pict);        
         this.pict = new PlayerPicture(this.di, player.getPlayer_pic());
@@ -80,8 +86,31 @@ public class PlayerInfo extends PopupWindow {
         this.vb.getChildren().add(1, this.pict);
         this.teamname.setText(t.getTeamname().get());
         this.playername.setText(player.getName().get());
-    
     }
+
+    public void loadCoach(Integer coachid){
+        Coach coach = new Coach(this.db);
+        coach.load(coachid);
+        Team t = new Team(this.db);
+        t.load(coach.getTeam_id().get());
+        this.vb.getChildren().remove(this.pict);        
+        this.pict = new PlayerPicture(this.di, coach.getCoach_pic());
+        this.pict.loadPic();
+        this.vb.getChildren().add(1, this.pict);
+        this.teamname.setText(t.getTeamname().get());
+        this.playername.setText(coach.getName().get());
+    }    
+
+    public void loadReferee(Integer coachid){
+        Referee referee = new Referee(this.db);
+        referee.load(coachid);
+        this.vb.getChildren().remove(this.pict);        
+        this.pict = new PlayerPicture(this.di, referee.getReferee_pic());
+        this.pict.loadPic();
+        this.vb.getChildren().add(1, this.pict);
+        this.teamname.setText("");
+        this.playername.setText(referee.getName().get());
+    }    
     
     public StackPane getBackground(){
         return this.background;

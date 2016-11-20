@@ -183,4 +183,9 @@ public class CoachFX extends EntityFX{
     public Coach getCoach(){
         return this.coach;
     }
+
+    @Override
+    public Integer getIDInt() {
+        return this.coach.getID();
+    }
 }

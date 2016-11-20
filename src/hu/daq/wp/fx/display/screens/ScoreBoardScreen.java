@@ -20,7 +20,7 @@ import hu.daq.wp.MatchProfile;
 import hu.daq.wp.fx.display.balltime.BallTimeDisplay;
 import hu.daq.wp.fx.display.infopopup.FiversDisplayWindow;
 import hu.daq.wp.fx.display.infopopup.GoalPopup;
-import hu.daq.wp.fx.display.infopopup.PlayerInfo;
+import hu.daq.wp.fx.display.infopopup.PersonInfo;
 import hu.daq.wp.fx.display.leginfo.LegInfo;
 import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.team.TeamDisplayFX;
@@ -66,7 +66,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     BallTimeDisplay balltime;
     //BaseWatch legtime;
     LegInfo leginfo;
-    PlayerInfo pi;
+    PersonInfo pi;
     FiversDisplayWindow fiverswindow;
     TimeSender timesender;
     VBox leftteambox;
@@ -87,7 +87,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.balltime.getWatch().addTimeoutListener(this);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
         this.leginfo = new LegInfo(this.timeengine);
-        this.pi = new PlayerInfo();
+        this.pi = new PersonInfo(this.db);
         this.fiverswindow = new FiversDisplayWindow();
         this.leftteambox = this.leftteam.getPlayerListView();
         this.rightteambox = this.rightteam.getPlayerListView();
@@ -273,14 +273,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //this.pauseMatch();
-        if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
+        this.syncTime();
+       /* if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
             this.switchBallTimeRight();
                     
         }   
         if (this.balltime.isRightAttacking()&&this.isRightPlayer(playerid)){
             this.switchBallTimeLeft();
-        }        
+        }*/        
     }
 
     public void setPenalty(Integer playerid, Integer milisecs) {
@@ -305,9 +305,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.timeengine.pause();         
             this.pauseMatch();            
             this.getPlayer(playerid).addGoal();
-            GoalPopup pi = new GoalPopup();
+            GoalPopup pi = new GoalPopup(this.db);
 
-            pi.loadPlayer(this.getPlayer(playerid).getPlayerModel());
+            pi.loadPlayer(playerid);
             pi.setTimer(5);
             pi.showIt();
             this.switchBallTime();
@@ -369,7 +369,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
-        //this.sendPause();
+        this.syncTime();
     }
 
     public void switchBallTimeRight() {
@@ -381,7 +381,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
             this.balltime.set(this.leginfo.getRemainingTime());
         }
-        //this.pauseMatch();
+        this.syncTime();
     }
 
     public void switchBallTime() {
@@ -412,14 +412,31 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     public void showPlayerInfo(Integer playerid) {
         try {
-            this.pi.loadPlayer(this.getPlayer(playerid).getPlayerModel());
+            this.pi.loadPlayer(playerid);
             this.pi.showIt();
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-
+    
+    public void showCoachInfo(Integer playerid) {
+        try {
+            this.pi.loadCoach(playerid);
+            this.pi.showIt();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void showRefereeInfo(Integer playerid) {
+        try {
+            this.pi.loadReferee(playerid);
+            this.pi.showIt();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+    
     public void hidePlayerInfo() {
         try {
             this.pi.close();

@@ -47,27 +47,15 @@ public class Animation {
         move.setToY(100);
         move.setAutoReverse(true);
         move.setCycleCount(2);
-        RotateTransition rotate = new RotateTransition(Duration.millis(1000),goal);
-        rotate.setAxis(new Point3D(1,0,0));
-        rotate.setByAngle(1080);
-        rotate.setCycleCount(1);
         ScaleTransition scale = new ScaleTransition(Duration.millis(1000), goal);
         scale.setToX(20);
         scale.setToY(20);
         scale.setCycleCount(1);
         
         ParallelTransition parallel = new ParallelTransition();
-        parallel.getChildren().addAll(move,rotate,scale,fadein);
+        parallel.getChildren().addAll(move,scale,fadein);
         parallel.setCycleCount(1);
-
-
-        FadeTransition blink = new FadeTransition(Duration.millis(150), goal);
-        blink.setFromValue(1);
-        blink.setToValue(0);
-        blink.setCycleCount(10);        
-        
-        SequentialTransition seq = new SequentialTransition();
-        seq.getChildren().addAll(parallel,blink);   
-        return seq;
+  
+        return parallel;
     }
 }

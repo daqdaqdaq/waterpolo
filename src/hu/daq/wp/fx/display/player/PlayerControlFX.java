@@ -48,11 +48,10 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
     GlyphButton removegoalbutton;
     GlyphButton removepenaltybutton;    
     ToggleGlyphButton showplayerbutton;
-    
     CountdownWatch cw;
     TimeDisplay td;
     ColumnConstraints buttonholderconst = new ColumnConstraints();
-
+    
     public PlayerControlFX(Postgres db) {
         super(db);
         this.setStyle("-fx-background-color: #77AACC;");
@@ -71,6 +70,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         this.showplayerbutton = new ShowPlayerButton();
         this.showplayerbutton.setUserData(this.player.getID());        
         this.cw = new CountdownWatch(ServiceHandler.getInstance().getTimeEngine(), 0, 0, 20);
+
         this.build();
     }
 
@@ -189,6 +189,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
 
     @Override
     protected void addOverlay() {
+        this.inpenalty = true;
         this.penaltybutton.disableProperty().set(true);
         this.goalbutton.disableProperty().set(true);
         this.cw.reset();
@@ -198,6 +199,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
 
     @Override
     public void timeout() {
+        this.inpenalty = false;
         this.penaltybutton.disableProperty().set(false);
         this.goalbutton.disableProperty().set(false);
         
@@ -213,6 +215,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
     
     @Override
     public int removePenalty(){
+        this.inpenalty = false;
         this.cw.jumpToEnd();
         return super.removePenalty();
     }
@@ -223,9 +226,10 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
 
     @Override
     public int setPenalty(int milisec) {
-        if (this.cw.getComputedmilis().get()==0){
+        if (!this.inpenalty){
             this.addPenalty();
         }
+        this.inpenalty = true;
         ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).setPenalty(this.getPlayerID(), milisec);
         return 0;
     }

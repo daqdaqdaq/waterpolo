@@ -38,7 +38,9 @@ import hu.daq.wp.fx.display.commands.RemoveGoal;
 import hu.daq.wp.fx.display.commands.RemovePenalty;
 import hu.daq.wp.fx.display.commands.RequestTimeout;
 import hu.daq.wp.fx.display.commands.SetPenalty;
+import hu.daq.wp.fx.display.commands.ShowCoachInfo;
 import hu.daq.wp.fx.display.commands.ShowPlayerInfo;
+import hu.daq.wp.fx.display.commands.ShowRefereeInfo;
 import hu.daq.wp.fx.display.commands.StartMatch;
 import hu.daq.wp.fx.display.control.Command;
 import hu.daq.wp.fx.display.control.ControllerScreen;
@@ -470,10 +472,6 @@ public class WPDisplayHandler implements WPDisplay.Iface {
         }
     }
 
-    @Override
-    public void setballtime(String token, int milisec) throws FailedOperation, TException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void attackerfoul(String token) throws FailedOperation, TException {
@@ -520,6 +518,36 @@ public class WPDisplayHandler implements WPDisplay.Iface {
 
             throw new FailedOperation("Unauthorized!");
         }         
+    }
+
+    @Override
+    public void showprefereeinfo(String token, int refereeid) throws FailedOperation, TException {
+        if (cs.checkToken(token)) {
+            Command comm = new ShowRefereeInfo(refereeid);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }        
+               
+    }
+
+    @Override
+    public void showcoachinfo(String token, int coachid) throws FailedOperation, TException {
+        if (cs.checkToken(token)) {
+            Command comm = new ShowCoachInfo(coachid);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }        
+        
     }
 
 

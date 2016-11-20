@@ -224,4 +224,10 @@ public class PlayerFX extends EntityFX{
     public String toString(){
         return this.player.toString();
     }
+    
+    @Override
+    public Integer getIDInt() {
+        return this.player.getID();
+    }
+   
 }

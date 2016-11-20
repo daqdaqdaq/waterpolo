@@ -14,7 +14,7 @@ import javafx.scene.layout.StackPane;
  */
 public class SettingsScreen extends StackPane implements SubScreen {
 
-    private MainPage parent;
+    private MainPageCommon parent;
 
     private final Boolean adminonly;
 
@@ -28,13 +28,13 @@ public class SettingsScreen extends StackPane implements SubScreen {
     }
     
     @Override
-    public SubScreen addContainer(MainPage nd) {
+    public SubScreen addContainer(MainPageCommon nd) {
         this.parent = nd;
         return this;
     }
 
     @Override
-    public MainPage getContainer() {
+    public MainPageCommon getContainer() {
         return this.parent;
     }
 

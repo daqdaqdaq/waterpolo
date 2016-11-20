@@ -17,6 +17,7 @@ public abstract class EntityFX extends StackPane implements Instructable{
     SimpleBooleanProperty inuse = new SimpleBooleanProperty(false);
     
     public abstract String getID();
+    public abstract Integer getIDInt();
     public abstract Boolean isDragable();
     public abstract String getName();
     public abstract Integer getTeamID();

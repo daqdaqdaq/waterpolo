@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.display.infopopup;
 
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;

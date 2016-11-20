@@ -69,9 +69,11 @@ public class WPTalkBack {
   public static class Client extends org.apache.thrift.TServiceClient implements Iface {
     public static class Factory implements org.apache.thrift.TServiceClientFactory<Client> {
       public Factory() {}
+      @Override
       public Client getClient(org.apache.thrift.protocol.TProtocol prot) {
         return new Client(prot);
       }
+      @Override
       public Client getClient(org.apache.thrift.protocol.TProtocol iprot, org.apache.thrift.protocol.TProtocol oprot) {
         return new Client(iprot, oprot);
       }
@@ -86,6 +88,7 @@ public class WPTalkBack {
       super(iprot, oprot);
     }
 
+    @Override
     public void legtimeout(String token) throws org.apache.thrift.TException
     {
       send_legtimeout(token);
@@ -98,6 +101,7 @@ public class WPTalkBack {
       sendBase("legtimeout", args);
     }
 
+    @Override
     public void balltimeout(String token) throws org.apache.thrift.TException
     {
       send_balltimeout(token);
@@ -110,6 +114,7 @@ public class WPTalkBack {
       sendBase("balltimeout", args);
     }
 
+    @Override
     public void nextphase(String token) throws org.apache.thrift.TException
     {
       send_nextphase(token);
@@ -130,6 +135,7 @@ public class WPTalkBack {
       return;
     }
 
+    @Override
     public void prevphase(String token) throws org.apache.thrift.TException
     {
       send_prevphase(token);
@@ -150,6 +156,7 @@ public class WPTalkBack {
       return;
     }
 
+    @Override
     public void paused(String token, TimeSync times) throws org.apache.thrift.TException
     {
       send_paused(token, times);
@@ -163,6 +170,7 @@ public class WPTalkBack {
       sendBase("paused", args);
     }
 
+    @Override
     public void synctime(String token, TimeSync times) throws org.apache.thrift.TException
     {
       send_synctime(token, times);
@@ -185,6 +193,7 @@ public class WPTalkBack {
         this.clientManager = clientManager;
         this.protocolFactory = protocolFactory;
       }
+      @Override
       public AsyncClient getAsyncClient(org.apache.thrift.transport.TNonblockingTransport transport) {
         return new AsyncClient(protocolFactory, clientManager, transport);
       }
@@ -194,6 +203,7 @@ public class WPTalkBack {
       super(protocolFactory, clientManager, transport);
     }
 
+    @Override
     public void legtimeout(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       legtimeout_call method_call = new legtimeout_call(token, resultHandler, this, ___protocolFactory, ___transport);
@@ -208,6 +218,7 @@ public class WPTalkBack {
         this.token = token;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("legtimeout", org.apache.thrift.protocol.TMessageType.CALL, 0));
         legtimeout_args args = new legtimeout_args();
@@ -225,6 +236,7 @@ public class WPTalkBack {
       }
     }
 
+    @Override
     public void balltimeout(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       balltimeout_call method_call = new balltimeout_call(token, resultHandler, this, ___protocolFactory, ___transport);
@@ -239,6 +251,7 @@ public class WPTalkBack {
         this.token = token;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("balltimeout", org.apache.thrift.protocol.TMessageType.CALL, 0));
         balltimeout_args args = new balltimeout_args();
@@ -256,6 +269,7 @@ public class WPTalkBack {
       }
     }
 
+    @Override
     public void nextphase(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       nextphase_call method_call = new nextphase_call(token, resultHandler, this, ___protocolFactory, ___transport);
@@ -270,6 +284,7 @@ public class WPTalkBack {
         this.token = token;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("nextphase", org.apache.thrift.protocol.TMessageType.CALL, 0));
         nextphase_args args = new nextphase_args();
@@ -288,6 +303,7 @@ public class WPTalkBack {
       }
     }
 
+    @Override
     public void prevphase(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       prevphase_call method_call = new prevphase_call(token, resultHandler, this, ___protocolFactory, ___transport);
@@ -302,6 +318,7 @@ public class WPTalkBack {
         this.token = token;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("prevphase", org.apache.thrift.protocol.TMessageType.CALL, 0));
         prevphase_args args = new prevphase_args();
@@ -320,6 +337,7 @@ public class WPTalkBack {
       }
     }
 
+    @Override
     public void paused(String token, TimeSync times, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       paused_call method_call = new paused_call(token, times, resultHandler, this, ___protocolFactory, ___transport);
@@ -336,6 +354,7 @@ public class WPTalkBack {
         this.times = times;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("paused", org.apache.thrift.protocol.TMessageType.CALL, 0));
         paused_args args = new paused_args();
@@ -354,6 +373,7 @@ public class WPTalkBack {
       }
     }
 
+    @Override
     public void synctime(String token, TimeSync times, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       synctime_call method_call = new synctime_call(token, times, resultHandler, this, ___protocolFactory, ___transport);
@@ -370,6 +390,7 @@ public class WPTalkBack {
         this.times = times;
       }
 
+      @Override
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("synctime", org.apache.thrift.protocol.TMessageType.CALL, 0));
         synctime_args args = new synctime_args();

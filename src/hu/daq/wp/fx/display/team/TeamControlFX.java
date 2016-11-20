@@ -50,6 +50,7 @@ public abstract class TeamControlFX extends TeamDisplayFX implements ObjectRecei
         super(db);
         this.showplayertoggle = new ToggleGroup();
         this.build();
+        
 
     }
 

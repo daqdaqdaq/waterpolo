@@ -123,6 +123,9 @@ public class RefereeFX extends EntityFX{
         this.basegrid.add(this.edit_button, 4, 0);    
     }
     
+    public Referee getReferee(){
+        return this.referee;
+    }
     
     public final boolean load(Integer pk){
         return this.referee.load(pk);
@@ -174,5 +177,10 @@ public class RefereeFX extends EntityFX{
     @Override
     public Integer getTeamID() {
         return 0;
-    }    
+    } 
+    @Override
+    public Integer getIDInt() {
+        return this.referee.getID();
+    }
+    
 }
