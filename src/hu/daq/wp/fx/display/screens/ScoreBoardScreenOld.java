@@ -56,7 +56,7 @@ import org.json.JSONException;
  *
  * @author DAQ
  */
-public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Organizable, TimeoutListener {
+public class ScoreBoardScreenOld extends BorderPane implements ControlledScreen, Organizable, TimeoutListener {
 
     SimpleBooleanProperty isdraw;
     TeamDisplayLeftFX leftteam;
@@ -75,7 +75,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     //private final static int LEGTIME = 8; 
     private final static int BALLTIME = 30;
 
-    public ScoreBoardScreen(Postgres db) {
+    public ScoreBoardScreenOld(Postgres db) {
 
         this.setPrefSize(1024, 768);
         this.db = db;
@@ -103,14 +103,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //mainbox.setStyle("-fx-background-color: #77AACC;");
         //mainbox.setFillWidth(true);
         mainbox.setMinWidth(1024);
-        //HBox databox = this.buildDataBox();
-        //VBox.setVgrow(databox, Priority.NEVER);
-        //databox.prefWidthProperty().bind(this.widthProperty());
+        HBox databox = this.buildDataBox();
+        VBox.setVgrow(databox, Priority.NEVER);
+        databox.prefWidthProperty().bind(this.widthProperty());
         HBox playersbox = this.buildPlayersBox();
         playersbox.prefWidthProperty().bind(this.widthProperty());
         HBox overtime = this.buildOvertimeBox();
         mainbox.setAlignment(Pos.TOP_CENTER);
-        mainbox.getChildren().addAll(playersbox, overtime);
+        mainbox.getChildren().addAll(databox, playersbox, overtime);
         //VBox.setVgrow(this, Priority.NEVER);
         this.setCenter(mainbox);
 
@@ -131,9 +131,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         return hb;
     }
     
-    private VBox buildDataBox() {
-        VBox vb = new VBox(10);
-        HBox databox = new HBox(20);
+    private HBox buildDataBox() {
+        HBox databox = new HBox(10);
         //databox.setMaxHeight(140);
         databox.setFillHeight(false);
         databox.setId("databox");
@@ -147,13 +146,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //The width of the scorebox is 3/8 (0.375)of the width of the whole box
         leftteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
         rightteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
-        HBox.setHgrow(leftteambox, Priority.SOMETIMES);
-        HBox.setHgrow(rightteambox, Priority.SOMETIMES);        
+
         databox.getChildren().addAll(leftteambox,
+                centerinfobox,
                 rightteambox);
+        HBox.setHgrow(centerinfobox, Priority.ALWAYS);
         //HBox.setHgrow(rightteambox, Priority.ALWAYS);         
-        vb.getChildren().addAll(centerinfobox, databox);
-        return vb;
+
+        return databox;
     }
 
     private VBox buildScoreAndNameBox(TeamDisplayFX team) {
@@ -162,7 +162,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         scoreandname.setAlignment(Pos.CENTER);
         Label teamname = team.getTeamNameLabel();
         teamname.setId("cropedlabel");
-        teamname.setFont(new Font(60));
+        teamname.setFont(new Font(72));
         //FontMetrics metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamname.getFont());
         //teamname.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
 
@@ -170,7 +170,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //VBox.setVgrow(teamname, Priority.NEVER);
         Label teamscore = team.getGoalsLabel();
         teamscore.setId("morecropedlabel");        
-        teamscore.setFont(new Font(80));        
+        teamscore.setFont(new Font(105));        
         //metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamscore.getFont());
         //teamscore.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
         
@@ -186,7 +186,6 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     private VBox buildCenterInfoBox() {
         VBox centerinfobox = new VBox(5);
         centerinfobox.setAlignment(Pos.CENTER);
-        //centerinfobox.setMinWidth(610);
         //Label locationnamelabel = new Label("Dunaújváros");
         //locationnamelabel.setFont(new Font(10));
         TimeEngine datetime = new TimeEngine();
@@ -209,17 +208,13 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     private HBox buildPlayersBox() {
-        HBox playersbox = new HBox(10);
-        playersbox.setAlignment(Pos.CENTER);
-        playersbox.setMinWidth(1023);
-        VBox databox = this.buildDataBox();
+        HBox playersbox = new HBox(40);
         VBox leftteambox = this.leftteam.getPlayerListView();
         VBox rightteambox = this.rightteam.getPlayerListView();
-        playersbox.getChildren().addAll(leftteambox,databox,
+        playersbox.getChildren().addAll(leftteambox,
                 rightteambox);
-        HBox.setHgrow(databox, Priority.ALWAYS);
-        HBox.setHgrow(leftteambox, Priority.NEVER);
-        HBox.setHgrow(rightteambox, Priority.NEVER);
+        HBox.setHgrow(leftteambox, Priority.SOMETIMES);
+        HBox.setHgrow(rightteambox, Priority.SOMETIMES);
         return playersbox;
     }
 
@@ -276,7 +271,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.getPlayer(playerid).addPenalty();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.syncTime();
        /* if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
@@ -292,7 +287,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.getPlayer(playerid).setPenalty(milisecs);
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.syncTime();
     }    
@@ -301,7 +296,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.getPlayer(playerid).removePenalty();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -317,7 +312,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             pi.showIt();
             this.switchBallTime();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.pauseMatch();
     }
@@ -326,7 +321,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.getPlayer(playerid).removeGoal();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -335,7 +330,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.fiverswindow.getPlayer(playerid).addGoal();
 
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -343,7 +338,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.fiverswindow.getPlayer(playerid).removeGoal();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -352,7 +347,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.fiverswindow.addPlayer(playerid);
 
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -420,7 +415,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.pi.loadPlayer(playerid);
             this.pi.showIt();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -429,7 +424,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.pi.loadCoach(playerid);
             this.pi.showIt();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -438,7 +433,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.pi.loadReferee(playerid);
             this.pi.showIt();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
     
@@ -446,7 +441,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         try {
             this.pi.close();
         } catch (Exception ex) {
-            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScoreBoardScreenOld.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

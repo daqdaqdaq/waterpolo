@@ -6,11 +6,14 @@
 package hu.daq.wp.fx.display.player;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Player;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 
 /**
  *
@@ -20,32 +23,44 @@ public class PlayerDisplayRightFX extends PlayerDisplayFX {
 
     public PlayerDisplayRightFX(Postgres db) {
         super(db);
+        this.pfxo = new AdvancedPlayerFXDisplayOverlayRight(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         super.build();
     }
 
     public PlayerDisplayRightFX(Postgres db, int player_id) {
         super(db, player_id);
+        this.pfxo = new AdvancedPlayerFXDisplayOverlayRight(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         super.build();
     }
 
     public PlayerDisplayRightFX(Player player) {
         super(player);
+        this.pfxo = new AdvancedPlayerFXDisplayOverlayRight(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         super.build();
     }
 
     @Override
     protected void buildLayout() {
+        this.setMinWidth(200);        
+        this.setMaxWidth(200); 
+        this.setMaxHeight(50);
+        this.setMinHeight(50);   
+        Font sizeing = new Font(40);
+        this.capnum_label.setFont(sizeing);
+        this.name_label.setFont(sizeing);
+        this.goals_label.setFont(sizeing);         
+        capnumconst.setPercentWidth(30);
+        penaltiesconst.setPercentWidth(40);
+        goalsconst.setPercentWidth(30);         
         GridPane gp = new GridPane();
         this.getChildren().add(gp);
         gp.setAlignment(Pos.CENTER);
         gp.setPadding(new Insets(5));
-        gp.getColumnConstraints().addAll(capnumconst, penaltiesconst, goalsconst, nameconst);
-        gp.add(this.capnum_label, 0, 0);
-        gp.add(this.name_label, 3, 0);
+        gp.getColumnConstraints().addAll(capnumconst, penaltiesconst, goalsconst);
+        gp.add(this.capnum_label, 2, 0);
         gp.add(this.penalties, 1, 0);
-        gp.add(this.goals_label, 2, 0);
+        gp.add(this.goals_label, 0, 0);
         GridPane.setHalignment(this.capnum_label, HPos.CENTER);
-        GridPane.setHalignment(this.name_label, HPos.LEFT);
         GridPane.setHalignment(this.penalties, HPos.CENTER);
         GridPane.setHalignment(this.goals_label, HPos.CENTER);
         //BorderPane.setAlignment(this.capnum_label, Pos.CENTER);

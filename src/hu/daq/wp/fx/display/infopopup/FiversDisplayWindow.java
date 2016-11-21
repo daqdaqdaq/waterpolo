@@ -61,17 +61,17 @@ public class FiversDisplayWindow extends PopupWindow {
         this.background.setPadding(new Insets(30,50,30,50));
         VBox vb = new VBox(20);
         vb.setAlignment(Pos.CENTER);
-        HBox hb = new HBox();
+        HBox hb = new HBox(60);
         Label header = new Label("Büntetők");
         header.setFont(new Font(30));
-       VBox left = this.leftteam.getPlayerListView();
+        VBox left = this.leftteam.getPlayerListView();
         VBox right = this.rightteam.getPlayerListView();
         HBox resbox = this.buildResultBox();
-        hb.getChildren().addAll(left,resbox,right);
+        resbox.setAlignment(Pos.CENTER);
+        hb.getChildren().addAll(left,right);
         HBox.setHgrow(left, Priority.ALWAYS);
         HBox.setHgrow(right, Priority.ALWAYS);
-        HBox.setHgrow(resbox, Priority.ALWAYS);            
-        vb.getChildren().addAll(header, hb);
+        vb.getChildren().addAll(header, resbox, hb);
         VBox.setMargin(hb, Insets.EMPTY);
         this.background.getChildren().add(vb);
         this.sizeToScene();
@@ -80,13 +80,13 @@ public class FiversDisplayWindow extends PopupWindow {
 
     private HBox buildResultBox() {
         
-        HBox resultbox = new HBox();
+        HBox resultbox = new HBox(10);
         Label left = this.leftteam.getGoalsLabel();
-        left.setFont(new Font(30));
+        left.setFont(new Font(50));
         Label right = this.rightteam.getGoalsLabel();
-        right.setFont(new Font(30));        
+        right.setFont(new Font(50));        
         Label dash = new Label("-");
-        dash.setFont(new Font(30));
+        dash.setFont(new Font(50));
         
         resultbox.getChildren().addAll(left,dash,right);    
         return resultbox;

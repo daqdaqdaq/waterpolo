@@ -14,6 +14,7 @@ import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.client.WPController;
 import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.thrift.FailedOperation;
+import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.TimeoutListener;
 import hu.daq.wp.fx.MatchProfileFX;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
@@ -79,7 +80,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private final Button defenderpenaltybutton;
     private final Button doublepenaltybutton;    
     private MatchProfileFX matchprofile;
-
+    private TimeEngine timeengine;
     private ToggleGroup showplayertoggle;
     private FiversControlWindow fivers;
     private PenaltyHolder ph;
@@ -106,6 +107,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.doublepenaltybutton = new Button();
         this.fivers.setCloseListener(this);
         this.ph = new PenaltyHolder();
+        this.timeengine = ServiceHandler.getInstance().getTimeEngine();
         this.build();
     }
 
@@ -389,6 +391,15 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
             });
 
         } else {
+            if (mp.wantDistinctTimeEngine()){
+                //If the phase needs its own independent timeengine then give it one and start immediatelly
+                TimeEngine ti = new TimeEngine();
+                ti.init();
+                this.controlpanel.getLegInfo().setTimeEngine(ti);                
+                ti.start();
+            } else {
+                this.controlpanel.getLegInfo().setTimeEngine(this.timeengine);
+            }            
             Platform.runLater(() -> {
                 this.controlpanel.setTimeToCount(mp.getDuration());
                 this.controlpanel.setLegName(mp.getPhaseName());
@@ -397,6 +408,20 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         }
     }
 
+
+  /*          this.leginfo.setTimeToCount(mp.getDuration());
+            this.leginfo.resetTime();
+            this.resetBallTime();
+            this.syncTime();
+            this.leginfo.setLegName(mp.getPhaseName());
+            this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
+            this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
+ */
+    
+    
+    
+    
+    
     public void nextPhase() {
         ServiceHandler.getInstance().getOrganizer().nextPhase();
     }

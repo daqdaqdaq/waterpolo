@@ -44,7 +44,7 @@ public class PenaltiesFX extends HBox {
         //System.out.println("The width is "+width );
         //spacing beetween the indicators
         //double spacing = (this.widthProperty().getValue() - width) / (MAX_NUM_PENALTIES + 1);
-        this.setSpacing(10);
+        this.setSpacing(5);
         for (int i = 0; i <MAX_NUM_PENALTIES; i++) {
             Shape pen = sf.getShape(psize);
             pen.setFill(Color.LIGHTGREEN);

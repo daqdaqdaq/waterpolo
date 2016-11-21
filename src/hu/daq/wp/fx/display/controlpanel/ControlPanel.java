@@ -209,4 +209,8 @@ public class ControlPanel extends GridPane {
     public void setLegTime(int milisecs) {
         this.leginfo.setTime(milisecs);
     }
+    
+    public LegInfo getLegInfo(){
+        return this.leginfo;
+    }
 }

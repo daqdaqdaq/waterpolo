@@ -72,7 +72,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.goals_label.setFont(sizeing);
         this.penalties = new PenaltiesFX(new CircleFactory(), 80);
         //this.penalties.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
-        this.pfxo = new AdvancedPlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
+        
         this.penalties.setFillHeight(true);
         this.goals.set(0);
         this.inpenalty = false;

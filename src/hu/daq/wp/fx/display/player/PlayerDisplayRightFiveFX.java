@@ -35,6 +35,10 @@ public class PlayerDisplayRightFiveFX extends PlayerDisplayFX {
 
     @Override
     protected void buildLayout() {
+        capnumconst.setPercentWidth(13);
+        nameconst.setPercentWidth(67);
+        penaltiesconst.setPercentWidth(5);
+        goalsconst.setPercentWidth(15);         
         GridPane gp = new GridPane();
         this.getChildren().add(gp);
         gp.setAlignment(Pos.CENTER);

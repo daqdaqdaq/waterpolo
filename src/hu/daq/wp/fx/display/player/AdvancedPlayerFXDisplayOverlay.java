@@ -57,7 +57,7 @@ public class AdvancedPlayerFXDisplayOverlay extends StackPane{
         //hb.getChildren().add(wd);
         //hb.setAlignment(Pos.CENTER);
         //StackPane.setAlignment(wd, Pos.CENTER);
-        this.setAlignment(Pos.CENTER);
+        //this.setAlignment(Pos.CENTER);
         this.getChildren().add(wd);
         
     }
@@ -85,7 +85,7 @@ public class AdvancedPlayerFXDisplayOverlay extends StackPane{
         this.cw.reset();
     }
     
-    private void setBGFill(){
+    protected void setBGFill(){
         BackgroundFill bf;
         if (this.time.sec.get()==0&&this.time.tsec.get()==1){
             bf = new BackgroundFill(new Color(0.0,0.9,0.0,0.8),null,null);

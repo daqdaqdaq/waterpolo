@@ -21,17 +21,20 @@ public class TeamDisplayRightFX extends TeamDisplayFX{
 
     public TeamDisplayRightFX(Postgres db) {
         super(db);
-        this.playerlist.setAlignment(Pos.TOP_LEFT);        
+        this.playerlist.setMinWidth(200);         
+        this.playerlist.setAlignment(Pos.TOP_RIGHT);        
     }
 
     public TeamDisplayRightFX(Postgres db, int team_id) {
         super(db, team_id);
-        this.playerlist.setAlignment(Pos.TOP_LEFT);          
+        this.playerlist.setMinWidth(200);         
+        this.playerlist.setAlignment(Pos.TOP_RIGHT);          
     }
 
     public TeamDisplayRightFX(Team team) {
         super(team);
-        this.playerlist.setAlignment(Pos.TOP_LEFT);          
+        this.playerlist.setMinWidth(200);         
+        this.playerlist.setAlignment(Pos.TOP_RIGHT);          
     }
 
     /**

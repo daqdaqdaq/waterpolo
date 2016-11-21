@@ -22,6 +22,7 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
     PopupCloseListener pcl;
     
     public PopupWindow() {
+        
         this.initStyle(StageStyle.TRANSPARENT);
         this.setAlwaysOnTop(true);
         this.setOnCloseRequest((ev)->this.cleanupOnClose());

@@ -36,6 +36,11 @@ public class PlayerDisplayLeftFiveFX extends PlayerDisplayFX{
 
     @Override
     protected void buildLayout() {
+        
+        capnumconst.setPercentWidth(13);
+        nameconst.setPercentWidth(67);
+        penaltiesconst.setPercentWidth(5);
+        goalsconst.setPercentWidth(15);        
         GridPane gp = new GridPane();
         StackPane.setAlignment(gp, Pos.CENTER);
         this.getChildren().add(gp);
@@ -49,6 +54,7 @@ public class PlayerDisplayLeftFiveFX extends PlayerDisplayFX{
         GridPane.setHalignment(this.name_label, HPos.RIGHT);
         
         GridPane.setHalignment(this.goals_label, HPos.CENTER);
+        
         //GridPane.setAlignment(this.capnum_label, Pos.CENTER);
         //BorderPane.setAlignment(this.name_label, Pos.CENTER_LEFT);
         //BorderPane.setAlignment(this.penalties, Pos.CENTER);
