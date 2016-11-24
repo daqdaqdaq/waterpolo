@@ -41,16 +41,16 @@ public class PlayerDisplayRightFX extends PlayerDisplayFX {
 
     @Override
     protected void buildLayout() {
-        this.setMinWidth(200);        
-        this.setMaxWidth(200); 
+        this.setMinWidth(210);        
+        this.setMaxWidth(210); 
         this.setMaxHeight(50);
         this.setMinHeight(50);   
-        Font sizeing = new Font(40);
+        Font sizeing = new Font(37);
         this.capnum_label.setFont(sizeing);
         this.name_label.setFont(sizeing);
         this.goals_label.setFont(sizeing);         
-        capnumconst.setPercentWidth(30);
-        penaltiesconst.setPercentWidth(40);
+        capnumconst.setPercentWidth(32);
+        penaltiesconst.setPercentWidth(38);
         goalsconst.setPercentWidth(30);         
         GridPane gp = new GridPane();
         this.getChildren().add(gp);

@@ -62,6 +62,9 @@ public class SenderThread extends Thread {
                 //System.out.println("Sending..." + this.stringtosend.get(0));
                 try {
                     this.buf = this.stringtosend.get(0).getBytes();
+                    if (this.stringtosend.get(0).startsWith("D")){
+                        System.out.println("Duda: "+this.stringtosend);
+                    }
                     this.sendersocket.send(new DatagramPacket(buf, buf.length, this.targetip, this.port));
                     this.stringtosend.remove(0);
                 } catch (IOException ex) {

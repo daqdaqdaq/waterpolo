@@ -87,10 +87,16 @@ public class IntroductionScreen extends StackPane implements SubScreen {
         });
 
         this.rightbutton.setOnAction((ev) -> {
+            if (this.introductionlist.size()==0){
+                this.populateIntroductionList();
+            }
             this.showNext();
         });
 
         this.leftbutton.setOnAction((ev) -> {
+            if (this.introductionlist.size()==0){
+                this.populateIntroductionList();
+            }            
             this.showPrev();
         });
 
@@ -155,12 +161,8 @@ public class IntroductionScreen extends StackPane implements SubScreen {
     }
 
     public void loadTeams(Integer leftteamid, Integer rightteamid) {
-        this.introductionlist.clear();
         this.leftteam.getChildren().clear();
         this.rightteam.getChildren().clear();
-        this.introductionlist.add(this.firstreferee.getReferee());
-        this.introductionlist.add(this.secondreferee.getReferee());
-        this.introductionlist.add(this.inspector.getReferee());
         if (rightteam != null && leftteam != null) {
             Coach coach;
             Team t = new Team(this.db);
@@ -169,12 +171,12 @@ public class IntroductionScreen extends StackPane implements SubScreen {
             if (coach != null) {
                 CoachFX c = new CoachFX(coach);
                 this.leftteam.getChildren().add(c);
-                this.introductionlist.add(c);
+
             }
             t.getActivePlayers().stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
                 this.leftteam.getChildren().add(p);
-                this.introductionlist.add(p);
+
             });
 
             t.load(rightteamid);
@@ -182,17 +184,25 @@ public class IntroductionScreen extends StackPane implements SubScreen {
             if (coach != null) {
                 CoachFX c = new CoachFX(coach);
                 this.rightteam.getChildren().add(c);
-                this.introductionlist.add(c);
+
             }
             t.getActivePlayers().stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
                 this.rightteam.getChildren().add(p);
-                this.introductionlist.add(p);
             });
         }
 
     }
 
+    private void populateIntroductionList(){
+        this.introductionlist.clear();
+        this.introductionlist.add(this.firstreferee.getReferee());
+        this.introductionlist.add(this.secondreferee.getReferee());
+        this.introductionlist.add(this.inspector.getReferee());        
+        this.leftteam.getChildren().forEach(E ->{this.introductionlist.add((EntityFX)E);});
+        this.rightteam.getChildren().forEach(E ->{this.introductionlist.add((EntityFX)E);});
+    }
+    
     @Override
     public void initScreen() {
 

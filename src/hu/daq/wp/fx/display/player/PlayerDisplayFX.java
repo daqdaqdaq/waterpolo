@@ -56,7 +56,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
 
     public PlayerDisplayFX(Player player) {
-        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setId("playerdisplay");
         this.player = player;
         this.setMaxWidth(490);

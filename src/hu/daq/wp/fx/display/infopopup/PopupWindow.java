@@ -9,6 +9,8 @@ import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;
+import javafx.application.ConditionalFeature;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -22,8 +24,9 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
     PopupCloseListener pcl;
     
     public PopupWindow() {
-        
-        this.initStyle(StageStyle.TRANSPARENT);
+        if (Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)){
+            this.initStyle(StageStyle.TRANSPARENT);
+        }
         this.setAlwaysOnTop(true);
         this.setOnCloseRequest((ev)->this.cleanupOnClose());
     }

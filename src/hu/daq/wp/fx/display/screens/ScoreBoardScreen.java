@@ -100,6 +100,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     private void build() {
         VBox mainbox = new VBox();
+        mainbox.setPadding(new Insets(10,0,10,0));
         //mainbox.setStyle("-fx-background-color: #77AACC;");
         //mainbox.setFillWidth(true);
         mainbox.setMinWidth(1024);
@@ -117,7 +118,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //AnchorPane.setTopAnchor(mainbox, 0.0);
     }
     private HBox buildOvertimeBox(){
-        HBox hb = new HBox(320);
+        HBox hb = new HBox(150);
         //hb.setMinWidth(1024);
         
         hb.setAlignment(Pos.CENTER);
@@ -133,6 +134,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     
     private VBox buildDataBox() {
         VBox vb = new VBox(10);
+        vb.setAlignment(Pos.TOP_CENTER);
         HBox databox = new HBox(20);
         //databox.setMaxHeight(140);
         databox.setFillHeight(false);
@@ -140,9 +142,9 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //databox.setPadding(new Insets(0, 5, 0, 5));
         //databox.setStyle("-fx-background-color: #181818;");
         VBox leftteambox = this.buildScoreAndNameBox(leftteam);
-        leftteambox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //leftteambox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         VBox rightteambox = this.buildScoreAndNameBox(rightteam);
-        rightteambox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //rightteambox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         VBox centerinfobox = this.buildCenterInfoBox();
         //The width of the scorebox is 3/8 (0.375)of the width of the whole box
         leftteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
@@ -151,8 +153,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         HBox.setHgrow(rightteambox, Priority.SOMETIMES);        
         databox.getChildren().addAll(leftteambox,
                 rightteambox);
-        //HBox.setHgrow(rightteambox, Priority.ALWAYS);         
-        vb.getChildren().addAll(centerinfobox, databox);
+        VBox.setVgrow(this.balltime, Priority.ALWAYS);         
+        vb.getChildren().addAll(centerinfobox, databox, this.balltime);
         return vb;
     }
 
@@ -161,20 +163,20 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //scoreandname.setMaxHeight(140);
         scoreandname.setAlignment(Pos.CENTER);
         Label teamname = team.getTeamNameLabel();
-        teamname.setId("cropedlabel");
-        teamname.setFont(new Font(60));
+        //teamname.setId("cropedlabel");
+        teamname.setFont(new Font(55));
         //FontMetrics metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamname.getFont());
         //teamname.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
 
-        teamname.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //teamname.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         //VBox.setVgrow(teamname, Priority.NEVER);
         Label teamscore = team.getGoalsLabel();
-        teamscore.setId("morecropedlabel");        
+        //teamscore.setId("morecropedlabel");        
         teamscore.setFont(new Font(80));        
         //metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamscore.getFont());
         //teamscore.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
         
-        teamscore.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //teamscore.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
 
         //VBox.setVgrow(teamscore, Priority.NEVER);        
         
@@ -194,17 +196,17 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //StackPane centertimebox = new StackPane();
         //centertimebox.setPrefSize(100, 100);
 
-        this.balltime.setFont(new Font(70));
+        this.balltime.setFont(new Font(90));
         //this.balltime.setTeamNodes(this.leftteambox, this.rightteambox);
         //this.balltime.fillHeightProperty().set(true);
 
         //centertimebox.getChildren().add(this.balltime);
-        centerinfobox.getChildren().addAll(
+        centerinfobox.getChildren().add(
                 //locationnamelabel,
                 //     new DateFX(datetime, new Font(5)),
                 //     new TimeFX(datetime, new Font(5)),
-                this.leginfo,
-                this.balltime);
+                this.leginfo
+                );
         return centerinfobox;
     }
 

@@ -23,7 +23,8 @@ public class MatchLeg extends MatchPhase{
     
     @Override
     public String getPhaseName(){
-        return RomanNumber.get(this.phasenum)+"-";
+        //return RomanNumber.get(this.phasenum)+"-";
+        return RomanNumber.get(this.phasenum)+". "+this.phasename;
     }  
     
     @Override

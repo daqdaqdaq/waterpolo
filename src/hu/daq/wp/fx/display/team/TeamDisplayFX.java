@@ -67,7 +67,7 @@ public abstract class TeamDisplayFX {
         //this.active_players .setComparator((l, r) -> l.compareTo(r));
         this.playerlist = new VBox(1);
         this.playerlist.setMinWidth(400);
-        this.playerlist.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
+        //this.playerlist.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.playerlist.setPrefHeight(USE_COMPUTED_SIZE);
         this.teamnamelabel = new Label("");
         //this.teamnamelabel.setWrapText(true);

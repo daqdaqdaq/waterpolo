@@ -63,7 +63,7 @@ public class TimeOutWindow extends PopupWindow{
         this.teamname.setAlignment(Pos.CENTER);
         RingDisplay td = WatchFactory.getRingDisplay(this.cw, 300, Color.WHITE);
         this.cw.getObservableTime().sec.addListener((ob,ov,nv)->{
-            if (nv.equals(25)){
+            if (nv.equals(15)){
                 this.quarterHonk();
             }
         });

@@ -19,13 +19,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 /**
  *
  * @author DAQ
  */
-public class LegInfo extends HBox implements RemoteTransmitter{
+public class LegInfo extends VBox implements RemoteTransmitter{
 
     private final BaseWatch legtime;
     private Label legname;
@@ -55,7 +56,7 @@ public class LegInfo extends HBox implements RemoteTransmitter{
         //this.add(legname, 0, 0);
         //this.add(td,0,1);
         this.getChildren().addAll(this.legname, td);
-        HBox.setHgrow(td, Priority.NEVER);
+        VBox.setVgrow(td, Priority.NEVER);
         td.setPadding(Insets.EMPTY);
         //GridPane.setHalignment(legname, HPos.CENTER);
         //GridPane.setHalignment(td, HPos.CENTER);        

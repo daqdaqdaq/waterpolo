@@ -12,6 +12,8 @@ import hu.daq.wp.Referee;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.image.PlayerPicture;
 import hu.daq.wp.fx.texteffects.TextEffect;
+import javafx.application.ConditionalFeature;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -68,7 +70,12 @@ public class PersonInfo extends PopupWindow {
         this.playername.setEffect(TextEffect.getNewerNeonEffect());        
         this.teamname.setTextAlignment(TextAlignment.CENTER);
         this.playername.setFont(new Font(50));
-        Color bgcolor = new Color(0.2,0.2,0.2,0.7);
+        Color bgcolor;
+        if (Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)){
+            bgcolor = new Color(0.2,0.2,0.2,0.7);
+        } else {
+            bgcolor = new Color(0.2,0.2,0.2,0.95);
+        }
         this.background.setBackground(new Background(new BackgroundFill(bgcolor,new CornerRadii(3), new Insets(5))));
         this.vb.getChildren().addAll(this.teamname,this.pict,this.playername);
         this.background.getChildren().add(vb);

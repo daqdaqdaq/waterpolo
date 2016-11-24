@@ -20,7 +20,7 @@ public class AdvancedPlayerFXDisplayOverlayLeft extends AdvancedPlayerFXDisplayO
 
     public AdvancedPlayerFXDisplayOverlayLeft(PlayerDisplayFX underlaying, TimeEngine te, Integer secs) {
         super(underlaying, te, secs);
-        this.setAlignment(Pos.CENTER_RIGHT);
+        this.wd.setAlignment(Pos.CENTER_RIGHT);
         
     }
 
@@ -32,6 +32,6 @@ public class AdvancedPlayerFXDisplayOverlayLeft extends AdvancedPlayerFXDisplayO
             double size = this.getWidth()-(this.getWidth()*((float)(this.time.sec.get()*10+this.time.tsec.get())/(float)(this.milistocount/100)));
             bf = new BackgroundFill(new Color(0.5,0.0,0.0,0.8),null,new Insets(0,0,0,size));
         }
-        this.setBackground(new Background(bf));
+        this.sp.setBackground(new Background(bf));
     }    
 }
