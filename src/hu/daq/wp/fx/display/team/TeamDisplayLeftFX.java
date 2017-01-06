@@ -6,9 +6,13 @@
 package hu.daq.wp.fx.display.team;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.player.PlayerDisplayLeftFX;
+import hu.daq.wp.fx.display.player.PlayerDisplayLeftFXDummy;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
@@ -19,14 +23,14 @@ import javafx.geometry.Pos;
  */
 public class TeamDisplayLeftFX extends TeamDisplayFX{
 
-    public TeamDisplayLeftFX(Postgres db) {
-        super(db);
+    public TeamDisplayLeftFX() {
+        super();
         this.playerlist.setMinWidth(200);        
         this.playerlist.setAlignment(Pos.TOP_LEFT);
     }
 
-    public TeamDisplayLeftFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamDisplayLeftFX(int team_id) {
+        super(team_id);
         this.playerlist.setMinWidth(200);        
         this.playerlist.setAlignment(Pos.TOP_LEFT);        
     }
@@ -42,10 +46,19 @@ public class TeamDisplayLeftFX extends TeamDisplayFX{
      */
     @Override
     protected void loadPlayers() {
-        this.active_players.clear();
-        this.active_players.addAll(this.team.getActivePlayers()
+        this.active_players.clear();        
+        HashMap<Integer,PlayerDisplayFX> al = new HashMap<Integer,PlayerDisplayFX>();
+        ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamId())
+                .stream().map(PlayerDisplayLeftFX::new).forEach(E -> al.put(E.getCapnum(), E));
+                
+        for (int i=1;i<=14;i++){
+            this.active_players.add(al.getOrDefault(i, new PlayerDisplayLeftFXDummy(i)));
+        }
+        
+/*        this.active_players.addAll(ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamId())
                 .stream().map(PlayerDisplayLeftFX::new)
                 .collect(Collectors.toList()));
+        */
         SortedList<PlayerDisplayFX> p = new SortedList<PlayerDisplayFX>(this.active_players); 
         p.setComparator((l, r) -> l.compareTo(r));
         this.playerlist.getChildren().setAll(p);

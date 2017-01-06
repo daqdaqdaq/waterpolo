@@ -6,6 +6,7 @@
 package hu.daq.wp.fx.display.team;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.player.PlayerDisplayRightFX;
@@ -19,12 +20,12 @@ import javafx.collections.transformation.SortedList;
  */
 public class TeamDisplayRightFiveFX extends TeamDisplayFiveFX{
 
-    public TeamDisplayRightFiveFX(Postgres db) {
-        super(db);
+    public TeamDisplayRightFiveFX() {
+        super();
     }
 
-    public TeamDisplayRightFiveFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamDisplayRightFiveFX(int team_id) {
+        super(team_id);
     }
 
     public TeamDisplayRightFiveFX(Team team) {
@@ -36,7 +37,7 @@ public class TeamDisplayRightFiveFX extends TeamDisplayFiveFX{
    @Override
     protected void loadPlayers() {
         this.active_players.clear();
-        this.active_players.addAll(this.team.getActivePlayers()
+        this.active_players.addAll(ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamId())
                 .stream().map(PlayerDisplayRightFiveFX::new)
                 .collect(Collectors.toList()));
         SortedList<PlayerDisplayFX> p = new SortedList<PlayerDisplayFX>(this.active_players); 

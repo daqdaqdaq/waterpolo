@@ -79,15 +79,15 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
         this.setPrefSize(1024, 768);
         this.db = db;
-        this.leftteam = new TeamDisplayLeftFX(this.db);
-        this.rightteam = new TeamDisplayRightFX(this.db);
+        this.leftteam = new TeamDisplayLeftFX();
+        this.rightteam = new TeamDisplayRightFX();
         this.timeengine = ServiceHandler.getInstance().getTimeEngine();
         this.timeengine.pause();
         this.balltime = new BallTimeDisplay(this.timeengine, BALLTIME);
         this.balltime.getWatch().addTimeoutListener(this);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
         this.leginfo = new LegInfo(this.timeengine);
-        this.pi = new PersonInfo(this.db);
+        this.pi = new PersonInfo();
         this.fiverswindow = new FiversDisplayWindow();
         this.leftteambox = this.leftteam.getPlayerListView();
         this.rightteambox = this.rightteam.getPlayerListView();
@@ -118,7 +118,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //AnchorPane.setTopAnchor(mainbox, 0.0);
     }
     private HBox buildOvertimeBox(){
-        HBox hb = new HBox(150);
+        HBox hb = new HBox(120);
         //hb.setMinWidth(1024);
         
         hb.setAlignment(Pos.CENTER);
@@ -172,7 +172,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //VBox.setVgrow(teamname, Priority.NEVER);
         Label teamscore = team.getGoalsLabel();
         //teamscore.setId("morecropedlabel");        
-        teamscore.setFont(new Font(80));        
+        teamscore.setFont(new Font(100));        
         //metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamscore.getFont());
         //teamscore.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
         
@@ -234,13 +234,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     }
 
     public void loadMatchProfile(Integer profileid) throws JSONException {
-        MatchProfile mp = new MatchProfile(this.db);
-        mp.load(profileid);
+        MatchProfile mp = ServiceHandler.getInstance().getDbService().getMatchProfile(profileid);
         ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(mp, this));
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(0);
         ServiceHandler.getInstance().getOrganizer().setupPhase();
+        this.balltime.setTimeToCount(ServiceHandler.getInstance().getOrganizer().getBallTimeInSecs());
         this.leftteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());
-        this.rightteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());        
+        this.rightteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());     
+       
     }
 
     private PlayerDisplayFX getPlayer(Integer playerid) throws Exception {
@@ -312,7 +313,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.timeengine.pause();         
             this.pauseMatch();            
             this.getPlayer(playerid).addGoal();
-            GoalPopup pi = new GoalPopup(this.db);
+            GoalPopup pi = new GoalPopup();
 
             pi.loadPlayer(playerid);
             pi.setTimer(5);
@@ -550,12 +551,13 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     
     public void nextPhase(){
         ServiceHandler.getInstance().getOrganizer().nextPhase();
-        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).nextPhase();
 
     }
 
     public void prevPhase(){
         ServiceHandler.getInstance().getOrganizer().prevPhase();
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).prevPhase();
     }
     
     @Override

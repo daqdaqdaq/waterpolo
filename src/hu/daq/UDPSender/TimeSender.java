@@ -45,7 +45,14 @@ public class TimeSender extends UDPSenderConnector {
         //convert to string and if it's under 10 concat the tenth secs 
         String s = secs.toString() + (secs < 10 ? "." + this.ot.tsec.getValue().toString() : "");
         //first caracter indicates the state of the time 
-        this.tosend.set((this.watch.getTimeEngineRunning().get()&&s!="0.0" ? "N" : "I") + s);
+        if (s.equals("0.0")){
+            this.tosend.set("N"+s);
+            this.tosend.set("N"+s);
+            this.tosend.set("N"+s);
+        } else{
+            this.tosend.set("N"+s);
+        }
+        //this.tosend.set((this.watch.getTimeEngineRunning().get()&&s!="0.0" ? "N" : "I") + s);
     }
 
 }

@@ -14,14 +14,14 @@ import hu.daq.wp.Team;
  */
 public abstract class TeamDisplayFiveFX extends TeamDisplayFX {
 
-    public TeamDisplayFiveFX(Postgres db) {
-        super(db);
+    public TeamDisplayFiveFX() {
+        super();
         
 
     }
 
-    public TeamDisplayFiveFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamDisplayFiveFX(int team_id) {
+        super(team_id);
 
     }
 

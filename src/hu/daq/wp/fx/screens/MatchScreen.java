@@ -6,6 +6,7 @@
 package hu.daq.wp.fx.screens;
 
 import client.Postgres;
+import hu.daq.dialog.DialogBuilder;
 import hu.daq.draganddrop.DragObjectDecorator;
 import hu.daq.draganddrop.DropObjectDecorator;
 import hu.daq.keyevent.KeyEventHandler;
@@ -43,6 +44,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
@@ -90,13 +92,13 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.adminonly = false;
         //this.teamselector = new TeamListFX(this.db);    
         //this.teamselector.setVisible(false);
-        this.leftteam = new TeamControlLeftFX(this.db);
-        this.rightteam = new TeamControlRightFX(this.db);
+        this.leftteam = new TeamControlLeftFX();
+        this.rightteam = new TeamControlRightFX();
         this.rightteamtime = new TimeButton();
         this.leftteamtime = new TimeButton();
         this.stopmatch = new EndMatchButton();
         this.addteam = new AddTeamButton();
-        this.matchprofile = new MatchProfileFX(this.db);
+        this.matchprofile = new MatchProfileFX();
         this.controlpanel = new ControlPanel();
         this.fivers = new FiversControlWindow();
         this.prevphase = new LeftButton();
@@ -185,7 +187,9 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         SettingsHandler sh = ServiceHandler.getInstance().getSettings();
         keh.bindButton(sh.getProperty("key_attackerpenalty"), this.attackerpenaltybutton);        
         keh.bindButton(sh.getProperty("key_defenderpenalty"), this.defenderpenaltybutton);  
-        keh.bindButton(sh.getProperty("key_doublepenalty"), this.doublepenaltybutton);          
+        keh.bindButton(sh.getProperty("key_doublepenalty"), this.doublepenaltybutton);         
+        keh.bindButton(sh.getProperty("key_leftrequesttime"), this.leftteamtime);  
+        keh.bindButton(sh.getProperty("key_rightrequesttime"), this.rightteamtime);         
     }
 
     private HBox buildUpperBox() {
@@ -270,9 +274,11 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
                 String user = ServiceHandler.getInstance().getThriftConnector().getClient().connect(token);
                 this.readyMatch();
             } catch (FailedOperation ex) {
-                ServiceHandler.getInstance().showError("A kijelző nem elérhető", ex.errormsg);
+                Alert errdialog = DialogBuilder.getErrorDialog("A kijelző nem elérhető", ex.errormsg);
+                errdialog.showAndWait();
             } catch (JSONException ex) {
-                ServiceHandler.getInstance().showError("Meccs profil hiba", "A meccs profil betöltése sikertelen");
+                Alert errdialog = DialogBuilder.getErrorDialog("Meccs profil hiba", "A meccs profil betöltése sikertelen");
+                errdialog.showAndWait();
             }
 
         } else {
@@ -292,6 +298,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private void readyMatch() throws JSONException {
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(), this.matchprofile.getSelected().getID());
         ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(), this));
+        this.controlpanel.getBallTime().setTimeToCount(ServiceHandler.getInstance().getOrganizer().getBallTimeInSecs());
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(-1);
         this.scparent.setPlayingTeams(this.leftteam.getTeamID(), this.rightteam.getTeamID());
         this.leftteam.enable();

@@ -41,8 +41,8 @@ public abstract class PlayerControlFiveFX extends PlayerDisplayFX {
     GlyphButton removegoalbutton;
     ColumnConstraints buttonholderconst = new ColumnConstraints();
 
-    public PlayerControlFiveFX(Postgres db) {
-        super(db);
+    public PlayerControlFiveFX() {
+        super();
         this.goalbutton = new GoalButton();
 
         this.removegoalbutton = new RemoveGoalButton();
@@ -51,8 +51,8 @@ public abstract class PlayerControlFiveFX extends PlayerDisplayFX {
         this.build();
     }
 
-    public PlayerControlFiveFX(Postgres db, int player_id) {
-        super(db, player_id);
+    public PlayerControlFiveFX(int player_id) {
+        super(player_id);
         this.goalbutton = new GoalButton();
         this.removegoalbutton = new RemoveGoalButton();
 

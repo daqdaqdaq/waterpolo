@@ -8,6 +8,7 @@ package hu.daq.wp.fx.display.team;
 import client.Postgres;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Team;
+import hu.daq.wp.fx.EntityFX;
 import hu.daq.wp.fx.display.infopopup.TimeOutWindow;
 import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.timeouts.TimeoutDisplay;
@@ -37,9 +38,8 @@ import javafx.scene.text.TextBoundsType;
  *
  * @author DAQ
  */
-public abstract class TeamDisplayFX {
+public abstract class TeamDisplayFX extends EntityFX<Team>{
 
-    Postgres db;
     Team team;
     Label goalslabel;
     Label teamnamelabel;
@@ -49,18 +49,16 @@ public abstract class TeamDisplayFX {
     TimeoutDisplay tod;
     Integer reaminingtimeouts = 0;
 
-    public TeamDisplayFX(Postgres db) {
-        this(new Team(db));
+    public TeamDisplayFX() {
+        this(new Team());
+        
     }
 
-    public TeamDisplayFX(Postgres db, int team_id) {
-        this(db);
+    public TeamDisplayFX(int team_id) {
         this.load(team_id);
     }
 
     public TeamDisplayFX(Team team) {
-        this.db = team.getDb();
-        this.team = team;
         this.teamgoals = new SimpleIntegerProperty(0);
         //this.active_players = new SortedList<PlayerDisplayFX>(FXCollections.observableList(new ArrayList<PlayerDisplayFX>()));
         this.active_players = FXCollections.observableList(new ArrayList<PlayerDisplayFX>());
@@ -72,48 +70,39 @@ public abstract class TeamDisplayFX {
         this.teamnamelabel = new Label("");
         //this.teamnamelabel.setWrapText(true);
         this.teamnamelabel.setTextAlignment(TextAlignment.CENTER);
-        
-        this.teamnamelabel.textProperty().bind(this.getTeamName());
         this.teamnamelabel.setFont(new Font(24));
         this.goalslabel = new Label("");
-        this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
-        this.goalslabel.setFont(new Font(24));    
+        this.goalslabel.setFont(new Font(24));
+        this.setEntity(team);
         tod = new TimeoutDisplay();
 
     }
-
+   @Override
+    protected void setEntity(Team entity) {
+        this.team = entity;
+        this.teamnamelabel.textProperty().bind(this.getTeamName());
+        this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
+        
+    }
+    
+    
     public Integer getTeamId() {
         return this.team.getID();
     }
 
     public final boolean load(Integer pk) {
         System.out.println("Loading:" + pk);
-        if (this.team.load(pk)) {
-            this.loadPlayers();
-            this.active_players.stream().forEach((PlayerDisplayFX E) -> {
-                E.getGoals().addListener((ObservableValue<? extends Number> observable, Number ov, Number nv) -> {
-                    this.teamgoals.setValue(this.teamgoals.get() - (int) ov + (int) nv);
-                    //System.out.println("Changed:"+ov.toString()+"->"+nv.toString());
-                });
-            });
-            return true;
-        }
-        return false;
-    }
+        this.setEntity(ServiceHandler.getInstance().getDbService().getTeam(pk));
 
-    public boolean load(HashMap<String, String> data) {
-        if (this.team.load(data)) {
-            this.loadPlayers();
-            this.active_players.stream().forEach((PlayerDisplayFX E) -> {
-                E.getGoals().addListener((ObservableValue<? extends Number> observable, Number ov, Number nv) -> {
-                    this.teamgoals.setValue(this.teamgoals.get() - (int) ov + (int) nv);
-                    //System.out.println("Changed:"+ov.toString()+"->"+nv.toString());
-                });
+        this.loadPlayers();
+        this.active_players.stream().forEach((PlayerDisplayFX E) -> {
+            E.getGoals().addListener((ObservableValue<? extends Number> observable, Number ov, Number nv) -> {
+                this.teamgoals.setValue(this.teamgoals.get() - (int) ov + (int) nv);
+                //System.out.println("Changed:"+ov.toString()+"->"+nv.toString());
             });
-            //this.teamgoals.bind(Bindings.createIntegerBinding(() -> this.active_players.stream().mapToInt(E -> E.getGoals().getValue()).sum(), this.active_players));
-            return true;
-        }
-        return false;
+        });
+        return true;
+
     }
 
     protected abstract void loadPlayers();
@@ -132,14 +121,14 @@ public abstract class TeamDisplayFX {
     }
 
     public Label getGoalsLabel() {
-        
+
         return this.goalslabel;
     }
 
     public SimpleIntegerProperty getTeamgoals() {
         return teamgoals;
     }
-    
+
     public PlayerDisplayFX getPlayer(Integer id) {
         return this.active_players.stream().filter(E -> E.getPlayerID() == id).findAny().orElse(null);
     }
@@ -148,15 +137,16 @@ public abstract class TeamDisplayFX {
         HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
         //this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
         //New version put every player into the penalties struct. 0 time to the players who aren't in penalty
-        this.active_players.stream().forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));        
+        this.active_players.stream().forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
         return res;
     }
-    
-    public void removeAllPenalties(){
-        this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> {E.endPenalty();});    
+
+    public void removeAllPenalties() {
+        this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> {
+            E.endPenalty();
+        });
     }
 
-    
     public void setAvailableTimeouts(int timeouts) {
         this.reaminingtimeouts = timeouts;
     }
@@ -166,11 +156,11 @@ public abstract class TeamDisplayFX {
             ServiceHandler.getInstance().getTimeEngine().pause();
             ServiceHandler.getInstance().getHorn().honkShort();
             this.reaminingtimeouts--;
-            if (phasenum>10){
-                this.tod.addOvertimeTimeout(phasenum-10);
+            if (phasenum > 10) {
+                this.tod.addOvertimeTimeout(phasenum - 10);
             } else {
-                this.tod.addMatchTimeout(phasenum);            
-            }    
+                this.tod.addMatchTimeout(phasenum);
+            }
             TimeOutWindow tow = new TimeOutWindow(60);
             tow.loadTeam(this.team);
             tow.showIt();
@@ -182,12 +172,53 @@ public abstract class TeamDisplayFX {
         this.playerlist.getChildren().clear();
         this.active_players.clear();
         this.teamgoals.set(0);
-        
+
     }
 
     public TimeoutDisplay getTimeoutDisplay() {
         return tod;
     }
-    
-    
+
+    @Override
+    public String getID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getIDInt() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Boolean isDragable() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getTeamID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void editOn() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void onDelete() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+ 
+
 }

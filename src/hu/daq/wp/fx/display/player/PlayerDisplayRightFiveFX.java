@@ -18,13 +18,13 @@ import javafx.scene.layout.GridPane;
  */
 public class PlayerDisplayRightFiveFX extends PlayerDisplayFX {
 
-    public PlayerDisplayRightFiveFX(Postgres db) {
-        super(db);
+    public PlayerDisplayRightFiveFX() {
+        super();
         super.build();
     }
 
     public PlayerDisplayRightFiveFX(Postgres db, int player_id) {
-        super(db, player_id);
+        super(player_id);
         super.build();
     }
 

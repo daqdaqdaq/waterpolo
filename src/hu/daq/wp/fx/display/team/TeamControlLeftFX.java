@@ -6,6 +6,7 @@
 package hu.daq.wp.fx.display.team;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.display.player.PlayerControlFX;
 import hu.daq.wp.fx.display.player.PlayerControlLeftFX;
@@ -19,12 +20,12 @@ import javafx.collections.transformation.SortedList;
  */
 public class TeamControlLeftFX extends TeamControlFX{
 
-    public TeamControlLeftFX(Postgres db) {
-        super(db);
+    public TeamControlLeftFX() {
+        super();
     }
 
-    public TeamControlLeftFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamControlLeftFX(int team_id) {
+        super(team_id);
     }
 
     public TeamControlLeftFX(Team team) {
@@ -37,7 +38,7 @@ public class TeamControlLeftFX extends TeamControlFX{
     @Override
     protected void loadPlayers() {
         this.active_players.clear();
-        this.active_players.addAll(this.team.getActivePlayers()
+        this.active_players.addAll(ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamId())
                 .stream().map(PlayerControlLeftFX::new)
                 .collect(Collectors.toList()));
         this.active_players.stream().forEach((PlayerDisplayFX E)->{((PlayerControlFX)E).getShowPlayerButton().setToggleGroup(showplayertoggle); });

@@ -85,6 +85,7 @@ public abstract class AdvancedPlayerFXDisplayOverlay extends StackPane{
     
     public void setTime(int milisec){
         this.cw.set(milisec);
+        this.setBGFill();
     }
     
     public int getTime(){

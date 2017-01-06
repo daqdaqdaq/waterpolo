@@ -21,7 +21,7 @@ public class TeamSelectorWindow extends Stage {
 
     public TeamSelectorWindow(Postgres db) {
         this.db = db;
-        this.tlf = new TeamListFX(this.db);
+        this.tlf = new TeamListFX();
         this.build();
         
     }

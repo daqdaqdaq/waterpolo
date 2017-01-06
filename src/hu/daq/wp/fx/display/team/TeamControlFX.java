@@ -46,16 +46,16 @@ public abstract class TeamControlFX extends TeamDisplayFX implements ObjectRecei
     SimpleBooleanProperty loaded;
     ToggleGroup showplayertoggle;
 
-    public TeamControlFX(Postgres db) {
-        super(db);
+    public TeamControlFX() {
+        super();
         this.showplayertoggle = new ToggleGroup();
         this.build();
         
 
     }
 
-    public TeamControlFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamControlFX(int team_id) {
+        super(team_id);
         this.showplayertoggle = new ToggleGroup();        
         this.build();
         
@@ -100,7 +100,7 @@ public abstract class TeamControlFX extends TeamDisplayFX implements ObjectRecei
         //this.dragsource.setInuse(Boolean.FALSE);
         this.loaded.set(false);
         this.team.reset();
-
+        this.teamgoals.set(0);
         this.playerlist.getChildren().clear();
         this.delteambutton.disableProperty().set(true);
         this.dragsource.setInuse(Boolean.FALSE);

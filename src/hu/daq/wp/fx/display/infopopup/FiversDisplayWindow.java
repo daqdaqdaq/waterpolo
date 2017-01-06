@@ -45,8 +45,8 @@ public class FiversDisplayWindow extends PopupWindow {
     public FiversDisplayWindow() {
         super();
         this.background = new StackPane();
-        this.leftteam = new TeamDisplayLeftFiveFX(ServiceHandler.getInstance().getDb());
-        this.rightteam = new TeamDisplayRightFiveFX(ServiceHandler.getInstance().getDb());
+        this.leftteam = new TeamDisplayLeftFiveFX();
+        this.rightteam = new TeamDisplayRightFiveFX();
         this.build();
         Scene scene = new Scene(this.background);
         Color bgcolor = new Color(0.2,0.2,0.2,0.98);

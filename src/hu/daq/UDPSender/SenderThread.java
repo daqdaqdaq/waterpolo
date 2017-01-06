@@ -90,6 +90,7 @@ public class SenderThread extends Thread {
 
     @Override
     public void finalize() {
+        this.sendString("S");
         this.stopSender();
     }
 }

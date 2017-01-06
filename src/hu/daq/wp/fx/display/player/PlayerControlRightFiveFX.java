@@ -22,12 +22,12 @@ import javafx.scene.layout.StackPane;
  */
 public class PlayerControlRightFiveFX extends PlayerControlFiveFX {
 
-    public PlayerControlRightFiveFX(Postgres db) {
-        super(db);
+    public PlayerControlRightFiveFX() {
+        super();
     }
 
-    public PlayerControlRightFiveFX(Postgres db, int player_id) {
-        super(db, player_id);
+    public PlayerControlRightFiveFX(int player_id) {
+        super(player_id);
     }
 
     public PlayerControlRightFiveFX(Player player) {

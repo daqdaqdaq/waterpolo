@@ -6,9 +6,8 @@
 package hu.daq.wp.fx;
 
 import client.Postgres;
-import hu.daq.wp.Coaches;
-import hu.daq.wp.Players;
-import hu.daq.wp.Referees;
+import hu.daq.servicehandler.ServiceHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +20,10 @@ import javafx.collections.ObservableList;
  */
 public class EntitiesFX {
 
-    Postgres db;
 
 
-    public EntitiesFX(Postgres db) {
-        this.db = db;
+
+    public EntitiesFX() {
      
     }
    
@@ -40,20 +38,19 @@ public class EntitiesFX {
     
     public List<EntityFX> loadPlayers(){
         
-        Players players = new Players(db);
-        return players.load().stream().map(PlayerFX::new).collect(Collectors.toList());
+        return ServiceHandler.getInstance().getDbService().getPlayers().stream().map(PlayerFX::new).collect(Collectors.toList());
 
         
     }
 
     public List<EntityFX> loadReferees(){
-        Referees ents = new Referees(db);
-        return ents.load().stream().map(RefereeFX::new).collect(Collectors.toList());
+
+        return ServiceHandler.getInstance().getDbService().getReferees().stream().map(RefereeFX::new).collect(Collectors.toList());
     }    
 
     public List<EntityFX> loadCoaches(){
-        Coaches ents = new Coaches(db);
-        return ents.load().stream().map(CoachFX::new).collect(Collectors.toList());
+
+        return ServiceHandler.getInstance().getDbService().getCoaches().stream().map(CoachFX::new).collect(Collectors.toList());
     }
 
 }

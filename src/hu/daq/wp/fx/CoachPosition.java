@@ -8,6 +8,7 @@ package hu.daq.wp.fx;
 import hu.daq.draganddrop.DropObjectDecorator;
 import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.wp.Entity;
 import hu.daq.wp.fx.commonbuttons.DeleteButton;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -25,7 +26,7 @@ import javafx.scene.paint.Color;
  *
  * @author DAQ
  */
-public class CoachPosition extends HBox implements ObjectReceiver {
+public class CoachPosition extends HBox implements ObjectReceiver, EntityFXHolder {
 
     private DeleteButton delbutton;
     private StackPane coachholder;
@@ -41,7 +42,7 @@ public class CoachPosition extends HBox implements ObjectReceiver {
     }
 
     private void build() {
-        DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);        
+        DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);
         this.setMinHeight(50);
         this.coachholder.setMinWidth(250);
         this.setAlignment(Pos.CENTER);
@@ -49,9 +50,9 @@ public class CoachPosition extends HBox implements ObjectReceiver {
         HBox.setHgrow(this.delbutton, Priority.NEVER);
         HBox.setHgrow(this.coachholder, Priority.SOMETIMES);
         Label sign = new Label("Edző");
-        sign.setTextFill(new Color(0.7,0.7,0.7,1));
+        sign.setTextFill(new Color(0.7, 0.7, 0.7, 1));
         this.coachholder.getChildren().add(sign);
-        this.coachholder.setBackground(new Background(new BackgroundFill(new Color(0.9,0.9,0.9,1),null,null)));        
+        this.coachholder.setBackground(new Background(new BackgroundFill(new Color(0.9, 0.9, 0.9, 1), null, null)));
         this.getChildren().addAll(this.coachholder, this.delbutton);
     }
 
@@ -61,8 +62,10 @@ public class CoachPosition extends HBox implements ObjectReceiver {
         }
         this.coach = coach;
         this.coachholder.getChildren().add(this.coach);
-        coach.getCoach().setTeamid(this.parentobj.getTeamID());
-        coach.save();
+        if (!coach.getCoach().getTeam_id().getValue().equals(this.parentobj.getTeamID())) {
+            coach.getCoach().setTeamid(this.parentobj.getTeamID());
+            coach.save();
+        }
     }
 
     public void removeCoach() {
@@ -92,15 +95,20 @@ public class CoachPosition extends HBox implements ObjectReceiver {
             source = ServiceHandler.getInstance().getDragSource();
         }
         EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
-        
+
         System.out.println("The source is:" + dsource.toString());
         if (dsource.getType().equals("Coach")) {
             System.out.println("The type is:" + dsource.getType());
-            CoachFX p = new CoachFX(((CoachFX)dsource).getCoach().getDb());
-            p.load(((CoachFX)dsource).getCoach().getID());
+            CoachFX p = new CoachFX(((CoachFX) dsource).getCoach());
+            //p.load(((CoachFX)dsource).getCoach().getID());
             //((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
             this.setCoach(p);
         }
 
     }
+    
+   @Override
+    public void remove(EntityFX ent) {
+        this.clearCoach();
+    }    
 }

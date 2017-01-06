@@ -57,7 +57,7 @@ public class IntroductionScreen extends StackPane implements SubScreen {
 
     public IntroductionScreen(Postgres db) {
         this.db = db;
-        this.esw = new EntitySelectorWindow(this.db);
+        this.esw = new EntitySelectorWindow();
         this.rightteam = new VBox(1);
         this.leftteam = new VBox(1);
         this.firstreferee = new RefereePosition("Játékvezető");
@@ -165,28 +165,27 @@ public class IntroductionScreen extends StackPane implements SubScreen {
         this.rightteam.getChildren().clear();
         if (rightteam != null && leftteam != null) {
             Coach coach;
-            Team t = new Team(this.db);
-            t.load(leftteamid);
-            coach = t.getCoach();
+            //Team t = ServiceHandler.getInstance().getDbService().getTeam(leftteamid);
+            coach = ServiceHandler.getInstance().getDbService().getCoachOfTeam(leftteamid);
             if (coach != null) {
                 CoachFX c = new CoachFX(coach);
                 this.leftteam.getChildren().add(c);
 
             }
-            t.getActivePlayers().stream().forEach(E -> {
+            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(leftteamid).stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
                 this.leftteam.getChildren().add(p);
 
             });
 
-            t.load(rightteamid);
-            coach = t.getCoach();
+            
+            coach = ServiceHandler.getInstance().getDbService().getCoachOfTeam(rightteamid);
             if (coach != null) {
                 CoachFX c = new CoachFX(coach);
                 this.rightteam.getChildren().add(c);
 
             }
-            t.getActivePlayers().stream().forEach(E -> {
+            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(rightteamid).stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
                 this.rightteam.getChildren().add(p);
             });

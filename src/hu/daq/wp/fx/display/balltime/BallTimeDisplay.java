@@ -13,6 +13,7 @@ import hu.daq.watch.TimeoutListener;
 import hu.daq.watch.fx.TimeDisplay;
 import hu.daq.watch.fx.TimeDisplayTsecHiding;
 import hu.daq.watch.utility.WatchFactory;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
@@ -41,6 +42,8 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     TimeDisplay td;
     Background tolleft;
     Background toright;
+    Background tolleftpaused;
+    Background torightpaused;    
     
     public BallTimeDisplay(TimeEngine te, Integer seconds) {
         this.setPrefSize(200, 80);
@@ -52,9 +55,10 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         this.switchTeam();
         this.td = WatchFactory.getTsecHidingWatchDisplay(cw);
         StackPane.setAlignment(this.td, Pos.CENTER);
-        Stop[] stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(1, Color.GREEN)};
-        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 0, 0, true, CycleMethod.NO_CYCLE, stops), null, null));
-        this.toright = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops), null, null));        
+        this.cw.getTimeEngineRunning().addListener((ObservableValue<? extends Boolean> ob,Boolean ov,Boolean nv)->{
+            this.setIndicatorColor(nv);
+        });
+        this.setIndicatorColor(false);
         this.switchToLeft();
         this.build();
     }
@@ -63,6 +67,24 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         
         //this.td.setPrefHeight(40);
         this.getChildren().addAll(this.td);
+    }
+    
+    public void setTimeToCount(int secs){
+        this.seconds = secs;
+        this.cw.setTimeToCount(0, 0, secs);
+    }
+    
+    
+    private void setIndicatorColor(Boolean isrunning){
+        Stop[] stops;
+        if (isrunning){
+            stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(1, Color.GREEN)};
+        } else{
+            stops = new Stop[]{new Stop(0, Color.TRANSPARENT), new Stop(1, Color.RED)};
+        }
+        this.tolleft = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 0, 0, true, CycleMethod.NO_CYCLE, stops), null, null));
+        this.toright = new Background(new BackgroundFill(new LinearGradient(0.5, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops), null, null));            
+        this.highlightTeam();
     }
     
     public void setFont(Font f) {

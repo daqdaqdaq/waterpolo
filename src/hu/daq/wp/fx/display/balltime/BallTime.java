@@ -59,6 +59,11 @@ public class BallTime extends HBox implements TimeoutListener,RemoteTransmitter 
         this.getChildren().addAll(this.leftpointer, this.td, this.rightpointer);
     }
 
+    public void setTimeToCount(int secs){
+        this.seconds = secs;
+        this.cw.setTimeToCount(0, 0, secs);
+    }
+    
     public void setFont(Font f) {
         this.td.setFont(f);
     }

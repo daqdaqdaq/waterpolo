@@ -24,8 +24,8 @@ import javafx.scene.text.Font;
 public class GoalPopup extends PersonInfo{
     StackPane animationoverlay;
     
-    public GoalPopup(Postgres db){
-        super(db);
+    public GoalPopup(){
+
         //this.setWidth(600);
         this.vb.setMaxWidth(this.getWidth()*0.7);
         this.animationoverlay = new StackPane();

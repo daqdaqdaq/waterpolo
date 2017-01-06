@@ -21,12 +21,12 @@ import javafx.collections.transformation.SortedList;
  */
 public class TeamControlRightFiveFX extends TeamControlFX {
 
-    public TeamControlRightFiveFX(Postgres db) {
-        super(db);
+    public TeamControlRightFiveFX() {
+        super();
     }
 
-    public TeamControlRightFiveFX(Postgres db, int team_id) {
-        super(db, team_id);
+    public TeamControlRightFiveFX(int team_id) {
+        super(team_id);
     }
 
     public TeamControlRightFiveFX(Team team) {
@@ -39,7 +39,7 @@ public class TeamControlRightFiveFX extends TeamControlFX {
     @Override
     protected void loadPlayers() {
         this.active_players.clear();
-        this.active_players.addAll(this.team.getActivePlayers()
+        this.active_players.addAll(ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamID())
                 .stream().map(PlayerControlRightFiveFX::new)
                 .collect(Collectors.toList()));
 

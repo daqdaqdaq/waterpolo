@@ -22,14 +22,13 @@ import javafx.scene.text.Font;
  */
 public class PlayerDisplayLeftFX extends PlayerDisplayFX{
 
-    public PlayerDisplayLeftFX(Postgres db) {
-        super(db);
+    public PlayerDisplayLeftFX() {
         this.pfxo = new AdvancedPlayerFXDisplayOverlayLeft(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         super.build();
     }
 
-    public PlayerDisplayLeftFX(Postgres db, int player_id) {
-        super(db, player_id);
+    public PlayerDisplayLeftFX(int player_id) {
+        super(player_id);
         this.pfxo = new AdvancedPlayerFXDisplayOverlayLeft(this, ServiceHandler.getInstance().getTimeEngine(), 20);
         super.build();
     }

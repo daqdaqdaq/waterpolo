@@ -7,6 +7,7 @@ package hu.daq.wp.fx;
 
 import client.Postgres;
 import hu.daq.draganddrop.DragAndDropDecorator;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Player;
 import hu.daq.wp.Referee;
 import hu.daq.wp.fx.commonbuttons.EditButton;
@@ -35,7 +36,7 @@ import javafx.util.converter.NumberStringConverter;
  *
  * @author DAQ
  */
-public class RefereeFX extends EntityFX{
+public class RefereeFX extends EntityFX<Referee>{
     
     Referee referee;
     Label name_label;
@@ -48,19 +49,16 @@ public class RefereeFX extends EntityFX{
     DragAndDropDecorator ddd;
     
     
-    public RefereeFX(Postgres db) {
-        this(new Referee(db));
-     }
     
-    public RefereeFX(Postgres db, int referee_id){
-        this(db);
-        this.load(referee_id);
+    public RefereeFX(int referee_id){
+
+        this(ServiceHandler.getInstance().getDbService().getReferee(referee_id));
     }
     
     public RefereeFX(Referee referee){
         this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setStyle("-fx-background-color: #7788CC;");
-        this.referee = referee;
+
         this.duplicated = new SimpleBooleanProperty();
         //this.referee = new Player(db);
         this.setMaxSize(250, 50);
@@ -70,7 +68,7 @@ public class RefereeFX extends EntityFX{
         
         this.name_label = new Label();
         this.name_field = new TextField();
-        
+        this.setEntity(referee);
         this.edit_button = new EditButton();
         this.save_button = new SaveButton();    
         this.basegrid = new GridPane();
@@ -81,13 +79,25 @@ public class RefereeFX extends EntityFX{
         this.ddd.registerFileReceiver(this.picture);
         this.build();        
     }
+
+    @Override
+    protected void setEntity(Referee entity){
+        this.referee = entity;
+        this.name_field.textProperty().bindBidirectional(this.referee.getName());
+        this.name_label.textProperty().bindBidirectional(this.referee.getName()); 
+        this.deleted.bind(this.referee.getDeleted());
+        this.deleted.addListener((ob, ov, nv) -> {
+            if (nv.equals(Boolean.TRUE)) {
+                this.removeMe();
+            }
+        });        
+    }
     
     //Build the layot and make the bindings
     private void build(){
         this.name_field.setPrefWidth(150);
         this.name_label.setPrefWidth(150);
-        this.name_field.textProperty().bindBidirectional(this.referee.getName());
-        this.name_label.textProperty().bindBidirectional(this.referee.getName());
+
   
         this.edit_button.setOnAction((ActionEvent event) -> {
             editOn();
@@ -127,18 +137,13 @@ public class RefereeFX extends EntityFX{
         return this.referee;
     }
     
-    public final boolean load(Integer pk){
-        return this.referee.load(pk);
+    public final void load(Integer pk){
+        this.setEntity(ServiceHandler.getInstance().getDbService().getReferee(pk));
     }
-
-    public final boolean load(HashMap<String, String> data){
-        return this.referee.load(data);
-
-    }    
-    
+  
     public final boolean save(){
         this.picture.savePic();
-        return this.referee.save();
+        return ServiceHandler.getInstance().getDbService().save(this.referee);
     }
     
     public SimpleBooleanProperty getChanged(){
@@ -181,6 +186,11 @@ public class RefereeFX extends EntityFX{
     @Override
     public Integer getIDInt() {
         return this.referee.getID();
+    }
+
+    @Override
+    protected void onDelete() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

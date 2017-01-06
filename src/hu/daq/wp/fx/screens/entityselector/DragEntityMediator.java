@@ -20,7 +20,7 @@ public class DragEntityMediator implements DragObjectMediator<EntityFX> {
 
     public DragEntityMediator(EntityFX ent) {
         this.ent = ent;
-        System.out.println("Mediator's built");
+        //System.out.println("Mediator's built");
     }
 
     @Override

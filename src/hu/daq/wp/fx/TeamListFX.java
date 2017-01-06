@@ -8,10 +8,12 @@ package hu.daq.wp.fx;
 import client.Postgres;
 import hu.daq.draganddrop.DragObjectDecorator;
 import hu.daq.draganddrop.ObjectReceiver;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.utils.MappedList;
 import hu.daq.wp.Team;
-import hu.daq.wp.Teams;
+
 import hu.daq.wp.fx.screens.teamselector.DragTeamMediator;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -30,8 +32,7 @@ import javafx.util.Callback;
 public class TeamListFX extends StackPane {
     
 
-    private final Postgres db;
-    private final Teams teams;
+
     private final FilteredList<TeamSimpleFX> filteredteams;
     private final TextField filterfield;
     private final ListView<TeamSimpleFX> teamsview;
@@ -40,21 +41,19 @@ public class TeamListFX extends StackPane {
 
 
     
-    public TeamListFX(Postgres db, Governed target) {
+    public TeamListFX(Governed target) {
         
-        this.db = db;
         this.filterfield = new TextField();
         this.teamsview = new ListView<TeamSimpleFX>();
-        this.teams = new Teams(db);
-        this.teamsfx = new MappedList<TeamSimpleFX, Team>(this.teams.getTeams(),(E)->{return new TeamSimpleFX(E);});
+        this.teamsfx = new MappedList<TeamSimpleFX, Team>(FXCollections.observableList(ServiceHandler.getInstance().getDbService().getTeams()),(E)->{return new TeamSimpleFX(E);});
         this.filteredteams = new FilteredList<TeamSimpleFX>(teamsfx , p -> {return true;});
        
         this.target = target;
         this.build();
     }
 
-    public TeamListFX(Postgres db){
-        this(db,null);
+    public TeamListFX(){
+        this(null);
     }
     
     private void build() {
@@ -121,13 +120,10 @@ public class TeamListFX extends StackPane {
     
     
     public void loadTeams() {
-        this.teams.load();
+       // this.teams.load();
         
     }
 
-    public Teams getTeams(){
-        return this.teams;
-    }
     
     public ObservableList<TeamSimpleFX> getTeamFX(){
         return this.teamsfx;

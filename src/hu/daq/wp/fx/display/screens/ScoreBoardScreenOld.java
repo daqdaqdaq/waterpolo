@@ -79,15 +79,15 @@ public class ScoreBoardScreenOld extends BorderPane implements ControlledScreen,
 
         this.setPrefSize(1024, 768);
         this.db = db;
-        this.leftteam = new TeamDisplayLeftFX(this.db);
-        this.rightteam = new TeamDisplayRightFX(this.db);
+        this.leftteam = new TeamDisplayLeftFX();
+        this.rightteam = new TeamDisplayRightFX();
         this.timeengine = ServiceHandler.getInstance().getTimeEngine();
         this.timeengine.pause();
         this.balltime = new BallTimeDisplay(this.timeengine, BALLTIME);
         this.balltime.getWatch().addTimeoutListener(this);
         this.timesender = new TimeSender(this.balltime.getWatch(), ServiceHandler.getInstance().getSenderthread());
         this.leginfo = new LegInfo(this.timeengine);
-        this.pi = new PersonInfo(this.db);
+        this.pi = new PersonInfo();
         this.fiverswindow = new FiversDisplayWindow();
         this.leftteambox = this.leftteam.getPlayerListView();
         this.rightteambox = this.rightteam.getPlayerListView();
@@ -227,8 +227,7 @@ public class ScoreBoardScreenOld extends BorderPane implements ControlledScreen,
     }
 
     public void loadMatchProfile(Integer profileid) throws JSONException {
-        MatchProfile mp = new MatchProfile(this.db);
-        mp.load(profileid);
+        MatchProfile mp = ServiceHandler.getInstance().getDbService().getMatchProfile(profileid);
         ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(mp, this));
         ServiceHandler.getInstance().getOrganizer().setCurrentPhase(0);
         ServiceHandler.getInstance().getOrganizer().setupPhase();
@@ -305,7 +304,7 @@ public class ScoreBoardScreenOld extends BorderPane implements ControlledScreen,
             this.timeengine.pause();         
             this.pauseMatch();            
             this.getPlayer(playerid).addGoal();
-            GoalPopup pi = new GoalPopup(this.db);
+            GoalPopup pi = new GoalPopup();
 
             pi.loadPlayer(playerid);
             pi.setTimer(5);

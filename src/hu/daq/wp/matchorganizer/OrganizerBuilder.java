@@ -30,24 +30,26 @@ public class OrganizerBuilder {
         MatchOrganizer mo = new MatchOrganizer();
         //Meccs elötti állapot
         mo.addPhase(new PreMatch(screen));
+        mo.setBallTimeInSecs(source.getInt("balltimelength"));
         Integer numlegs = source.getInt("numlegs");
+        
         for (int i=0; i<numlegs; i++){
             //build and add a leg
             mo.addPhase(new MatchLeg(source.getInt("legduration"), legnames.get(numlegs), screen, i+1));
             //put a break between the legs
             if (i<numlegs-1){
                 if (i==1){
-                    mo.addPhase(new MidBreak(screen));
+                    mo.addPhase(new Break(screen,source.getInt("midbreakduration")));
                 } else {
-                    mo.addPhase(new Break(screen));
+                    mo.addPhase(new Break(screen,source.getInt("breakduration")));
                 }
             }
         }
         if (source.getInt("numovertimes")>0){
-            mo.addPhase(new Break(screen));
+            mo.addPhase(new Break(screen,source.getInt("breakduration")));
             for (int i=0; i<source.getInt("numovertimes");i++){
                 mo.addPhase(new Overtime(source.getInt("overtimeduration"),screen, i+1));
-                mo.addPhase(new Break(screen));                
+                mo.addPhase(new Break(screen,source.getInt("breakduration")));                
             }
         }
         mo.addPhase(new Fivers(screen));

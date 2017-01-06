@@ -6,6 +6,7 @@
 package hu.daq.wp.fx.display.infopopup;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Coach;
 import hu.daq.wp.Player;
 import hu.daq.wp.Referee;
@@ -34,7 +35,7 @@ import javafx.scene.text.TextAlignment;
  * @author DAQ
  */
 public class PersonInfo extends PopupWindow {
-    Postgres db;
+
     StackPane background;
     PlayerPicture pict;
     Text teamname;
@@ -43,9 +44,8 @@ public class PersonInfo extends PopupWindow {
     VBox vb;
         
     
-    public PersonInfo(Postgres db) {
+    public PersonInfo() {
         super();
-        this.db =db;
         this.vb = new VBox();
         this.background = new StackPane();
         
@@ -83,10 +83,8 @@ public class PersonInfo extends PopupWindow {
     }
     
     public void loadPlayer(Integer playerid){
-        Player player = new Player(this.db);
-        player.load(playerid);
-        Team t = new Team(this.db);
-        t.load(player.getTeam_id().get());
+        Player player = ServiceHandler.getInstance().getDbService().getPlayer(playerid);
+        Team t = ServiceHandler.getInstance().getDbService().getTeam(player.getTeam_id().get());
         this.vb.getChildren().remove(this.pict);        
         this.pict = new PlayerPicture(this.di, player.getPlayer_pic());
         this.pict.loadPic();
@@ -96,10 +94,8 @@ public class PersonInfo extends PopupWindow {
     }
 
     public void loadCoach(Integer coachid){
-        Coach coach = new Coach(this.db);
-        coach.load(coachid);
-        Team t = new Team(this.db);
-        t.load(coach.getTeam_id().get());
+        Coach coach = ServiceHandler.getInstance().getDbService().getCoach(coachid);
+        Team t = ServiceHandler.getInstance().getDbService().getTeam(coach.getTeam_id().get());
         this.vb.getChildren().remove(this.pict);        
         this.pict = new PlayerPicture(this.di, coach.getCoach_pic());
         this.pict.loadPic();
@@ -109,8 +105,7 @@ public class PersonInfo extends PopupWindow {
     }    
 
     public void loadReferee(Integer coachid){
-        Referee referee = new Referee(this.db);
-        referee.load(coachid);
+        Referee referee = ServiceHandler.getInstance().getDbService().getReferee(coachid);
         this.vb.getChildren().remove(this.pict);        
         this.pict = new PlayerPicture(this.di, referee.getReferee_pic());
         this.pict.loadPic();

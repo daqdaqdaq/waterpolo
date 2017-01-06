@@ -12,6 +12,7 @@ import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Coach;
 import hu.daq.wp.Entity;
+import hu.daq.wp.Player;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.commonbuttons.AddPlayerButton;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
@@ -59,7 +60,7 @@ import org.controlsfx.control.ListSelectionView;
  *
  * @author DAQ
  */
-public class AdvancedTeamFX extends VBox implements ObjectReceiver{
+public class AdvancedTeamFX extends VBox implements ObjectReceiver {
 
     Team team;
     TextField name_field;
@@ -74,29 +75,28 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
     CoachPosition coach;
 
     private EntitySelectorWindow esw;
-    Postgres db;
-
-    public AdvancedTeamFX(Postgres db) {
-        this(new Team(db));
+    
+    public AdvancedTeamFX() {
+        this(new Team());
     }
-
-    public AdvancedTeamFX(Postgres db, int team_id) {
-        this(db);
-        this.load(team_id);
+    
+    public AdvancedTeamFX(int team_id) {
+        this(ServiceHandler.getInstance().getDbService().getTeam(team_id));
+        //this.load(team_id);
     }
 
     public AdvancedTeamFX(Team team) {
-        this.team = team;
-        this.db = this.team.getDb();
+
         //this.player = new Player(db);
         this.setMaxWidth(600);
         this.setMinWidth(600);
-
+        this.name_field = new TextField();
+        this.setEntity(team);
         this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setPadding(new Insets(3));
         //Initializing the controls
         this.coach = new CoachPosition(this);
-        this.passive_players = FXCollections.observableList(new ArrayList<PlayerFX>());     
+        this.passive_players = FXCollections.observableList(new ArrayList<PlayerFX>());
         this.roster = new VBox(2);
         this.passive_playerlist = new ListView<PlayerFX>();
         DropObjectDecorator.decorate(this.passive_playerlist, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);
@@ -125,14 +125,13 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
             }
         });
 
-        this.name_field = new TextField();
+
         this.save_button = new SaveButton();
         this.add_player_button = new AddPlayerButton();
         this.add_team_button = new AddTeamButton();
         this.openentitiesbutton = new AddPlayerButton();
 
-
-        this.esw = new EntitySelectorWindow(this.db);
+        this.esw = new EntitySelectorWindow();
         //Setup the listeners on the active and passive lists to set the incomming players to the aproppriate state
         this.passive_players.addListener((ListChangeListener.Change<? extends PlayerFX> c) -> {
             while (c.next()) {
@@ -149,10 +148,16 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         this.buildRoster();
     }
 
-    public void setToNotify(Instructable tonotify){
-        this.tonotify = tonotify;
+    public void setEntity(Team entity){
+        this.team = entity;
+        this.name_field.textProperty().bindBidirectional(this.team.getTeamname());
+        
     }
     
+    public void setToNotify(Instructable tonotify) {
+        this.tonotify = tonotify;
+    }
+
     //Build the layot and make the bindings
     private void build() {
         HBox teamholder = new HBox();
@@ -160,9 +165,8 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         teamholder.setSpacing(10);
         teamholder.getChildren().addAll(this.name_field, this.add_team_button, this.save_button, this.openentitiesbutton, this.coach);
         HBox selectorholder = new HBox(10);
-        selectorholder.getChildren().addAll(this.passive_playerlist,this.roster);
+        selectorholder.getChildren().addAll(this.passive_playerlist, this.roster);
         this.getChildren().addAll(teamholder, selectorholder, this.add_player_button);
-        this.name_field.textProperty().bindBidirectional(this.team.getTeamname());
         this.add_player_button.setOnAction((ActionEvent e) -> {
             this.addPlayer();
         });
@@ -181,7 +185,7 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
             this.esw.show();
         });
         this.save_button.disableProperty().bind(Bindings.not(this.getChanged()));
-  
+
     }
 
     private void buildRoster() {
@@ -190,40 +194,29 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         }
 
     }
-    private void clearRoster(){
+
+    private void clearRoster() {
         this.roster.getChildren().stream().forEach(E -> {
-            ((PlayerRosterPosition)E).clearPlayer();
+            ((PlayerRosterPosition) E).clearPlayer();
         });
     }
-            
-    public final boolean load(Integer pk) {
-        if (this.team.load(pk)) {
-            this.esw.setSelectedTeam(pk);
-            this.loadPlayers();
-            this.loadCoach();
-            return true;
-        }
-        return false;
-    }
 
-    public final boolean load(HashMap<String, String> data) {
-        if (this.team.load(data)) {
-            this.esw.setSelectedTeam(this.team.getID());
-            this.loadPlayers();
-            this.loadCoach();
-            return true;
-        }
-        return false;
+    public final void load(Integer pk) {
+        this.setEntity(ServiceHandler.getInstance().getDbService().getTeam(pk));
+        this.esw.setSelectedTeam(pk);
+        this.loadPlayers();
+        this.loadCoach();
+
     }
 
     public final boolean save() {
         this.savePlayers();
-        return this.team.save();
+        return ServiceHandler.getInstance().getDbService().save(this.team);
     }
 
     public void newTeam() {
-        this.team = new Team(this.db);
-        this.name_field.setText("Új csapat");
+        this.setEntity(new Team());
+        this.team.teamname.set("Új csapat");
         this.passive_players.clear();
         this.clearRoster();
         this.coach.clearCoach();
@@ -238,14 +231,14 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         return this.team.getChanged().get();
     }
 
-    private void loadCoach(){
+    private void loadCoach() {
         this.coach.clearCoach();
-        Coach c = this.team.getCoach();
-        if (c!=null){
+        Coach c = ServiceHandler.getInstance().getDbService().getCoachOfTeam(this.team.getID());
+        if (c != null) {
             this.coach.setCoach(new CoachFX(c));
         }
     }
-    
+
     /*
      get the players sort them out for active and passive branches and put 
      them to the right observable list
@@ -254,12 +247,12 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         this.passive_players.clear();
         this.clearRoster();
         //Map which holds the active and passive players' list
-        Map<Boolean, List<PlayerFX>> m = this.team.getPlayers()
+        Map<Boolean, List<PlayerFX>> m = ServiceHandler.getInstance().getDbService().getPlayersOfTeam(this.team.getID())
                 .stream().map(PlayerFX::new)
                 .collect(Collectors.partitioningBy(x -> x.isActive()));
         this.passive_players.addAll(m.get(false));
         m.get(true).stream().forEach(E -> {
-            System.out.println("positioning "+E.toString());
+            //System.out.println("positioning "+E.toString());
             PlayerRosterPosition pos = this.getPlayerPosition(E.getCapnum());
             if (pos != null) {
                 pos.setPlayer(E);
@@ -293,8 +286,8 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
     }
 
     private void addPlayer() {
-        PlayerFX pf = new PlayerFX(this.team.getDb());
-        pf.player.getTeam_id().setValue(this.team.getTeam_id().getValue());
+        PlayerFX pf = new PlayerFX(new Player());
+        pf.player.getTeam_id().setValue(this.team.getID());
         pf.setCapnum(0);
         pf.inactivate();
         pf.editOn();
@@ -326,18 +319,17 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
             source = ServiceHandler.getInstance().getDragSource();
         }
         EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
-        
+
         System.out.println("The source is:" + dsource.toString());
         if (dsource.getType().equals("Player")) {
-            System.out.println("The type is:" + dsource.getType()+": "+((PlayerFX)dsource).toString());
+            System.out.println("The type is:" + dsource.getType() + ": " + ((PlayerFX) dsource).toString());
 
-            ((PlayerFX)dsource).getPlayer().setTeamid(this.getTeamID());
-            ((PlayerFX)dsource).getPlayer().setCapnum(0);
-            ((PlayerFX)dsource).inactivate();
-            ((PlayerFX)dsource).save();            
+            ((PlayerFX) dsource).getPlayer().setTeamid(this.getTeamID());
+            ((PlayerFX) dsource).getPlayer().setCapnum(0);
+            ((PlayerFX) dsource).inactivate();
+            ((PlayerFX) dsource).save();
 
-            PlayerFX p = new PlayerFX(this.db);
-            p.load(((PlayerFX)dsource).getPlayer().getID());
+            PlayerFX p = new PlayerFX(((PlayerFX) dsource).getPlayer());
             p.getPlayer().setTeamid(this.getTeamID());
             p.getPlayer().setCapnum(0);
             p.inactivate();
@@ -352,6 +344,5 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver{
         coach.getCoach().setTeamid(0);
         coach.save();
     }
-
 
 }

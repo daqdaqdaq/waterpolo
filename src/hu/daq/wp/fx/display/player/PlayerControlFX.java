@@ -52,8 +52,10 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
     TimeDisplay td;
     ColumnConstraints buttonholderconst = new ColumnConstraints();
     
-    public PlayerControlFX(Postgres db) {
-        super(db);
+    public PlayerControlFX() {
+        super();
+        this.setMaxWidth(200);
+        this.setMinWidth(200); 
         this.setStyle("-fx-background-color: #77AACC;");
         Font sizeing = new Font(15);
         this.capnum_label = new Label();
@@ -74,8 +76,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         this.build();
     }
 
-    public PlayerControlFX(Postgres db, int player_id) {
-        super(db, player_id);
+    public PlayerControlFX(int player_id) {
+        super(player_id);
         this.setStyle("-fx-background-color: #77AACC;");
         Font sizeing = new Font(15);
         this.capnum_label = new Label();
@@ -178,7 +180,7 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         this.td.setFontSize(20);
         this.td.setVisible(false);
         this.td.enableTimeSetPopOver();
-        this.td.attachTransmitter(null);
+        this.td.attachTransmitter(this);
         this.td.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.buildLayout();
     }
@@ -217,7 +219,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
     public int removePenalty(){
         this.inpenalty = false;
         this.cw.jumpToEnd();
-        return super.removePenalty();
+        return this.penalties.removePenalty();
+        //return super.removePenalty();
     }
     
     public Boolean isFinallyOut(){

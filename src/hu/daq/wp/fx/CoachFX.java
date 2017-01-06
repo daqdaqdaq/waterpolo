@@ -7,6 +7,7 @@ package hu.daq.wp.fx;
 
 import client.Postgres;
 import hu.daq.draganddrop.DragAndDropDecorator;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Coach;
 import hu.daq.wp.Player;
 import hu.daq.wp.fx.commonbuttons.EditButton;
@@ -35,7 +36,7 @@ import javafx.util.converter.NumberStringConverter;
  *
  * @author DAQ
  */
-public class CoachFX extends EntityFX{
+public class CoachFX extends EntityFX<Coach>{
     
     Coach coach;
     Label name_label;
@@ -48,29 +49,21 @@ public class CoachFX extends EntityFX{
     DragAndDropDecorator ddd;
     
     
-    public CoachFX(Postgres db) {
-        this(new Coach(db));
-     }
+
     
-    public CoachFX(Postgres db, int coach_id){
-        this(db);
-        this.load(coach_id);
+    public CoachFX(int coach_id){
+        this(ServiceHandler.getInstance().getDbService().getCoach(coach_id));
     }
     
     public CoachFX(Coach coach){
         this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         this.setStyle("-fx-background-color: #55AACC;");
-        this.coach = coach;
         this.duplicated = new SimpleBooleanProperty();
-        //this.coach = new Player(db);
         this.setMaxSize(250, 50);
         this.setMinSize(250, 50);
-        //this.setPadding(new Insets(10));
-        //Initializing the controls
-        
         this.name_label = new Label();
         this.name_field = new TextField();
-        
+        this.setEntity(coach);
         this.edit_button = new EditButton();
         this.save_button = new SaveButton();    
         this.basegrid = new GridPane();
@@ -82,17 +75,26 @@ public class CoachFX extends EntityFX{
         this.build();        
     }
     
+    @Override
+    protected void setEntity(Coach entity){
+        this.coach = entity;
+        this.name_field.textProperty().bindBidirectional(this.coach.getName());
+        this.name_label.textProperty().bindBidirectional(this.coach.getName());   
+        this.deleted.bind(this.coach.getDeleted());
+        this.deleted.addListener((ob, ov, nv) -> {
+            if (nv.equals(Boolean.TRUE)) {
+                this.removeMe();
+            }
+        });        
+    }     
     //Build the layot and make the bindings
     private void build(){
         
         this.name_field.setPrefWidth(150);
         this.name_label.setPrefWidth(150);
-        this.name_field.textProperty().bindBidirectional(this.coach.getName());
-        this.name_label.textProperty().bindBidirectional(this.coach.getName());
         this.edit_button.setOnAction((ActionEvent event) -> {
             editOn();
         });
-        
         this.save_button.setOnAction((ActionEvent event) -> {
             if (save()){
                 editOff();
@@ -124,18 +126,16 @@ public class CoachFX extends EntityFX{
     }
     
     
-    public final boolean load(Integer pk){
-        return this.coach.load(pk);
+    public final void load(Integer pk){
+        this.coach = ServiceHandler.getInstance().getDbService().getCoach(pk);
     }
 
-    public final boolean load(HashMap<String, String> data){
-        return this.coach.load(data);
-
-    }    
+    
     
     public final boolean save(){
         this.picture.savePic();
-        return this.coach.save();
+        
+        return ServiceHandler.getInstance().getDbService().save(this.coach);
     }
     
     public SimpleBooleanProperty getChanged(){
@@ -187,5 +187,10 @@ public class CoachFX extends EntityFX{
     @Override
     public Integer getIDInt() {
         return this.coach.getID();
+    }
+
+    @Override
+    protected void onDelete() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

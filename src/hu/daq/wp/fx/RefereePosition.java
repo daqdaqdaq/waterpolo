@@ -8,6 +8,7 @@ package hu.daq.wp.fx;
 import hu.daq.draganddrop.DropObjectDecorator;
 import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.wp.Entity;
 import hu.daq.wp.fx.commonbuttons.DeleteButton;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -25,7 +26,7 @@ import javafx.scene.paint.Color;
  *
  * @author DAQ
  */
-public class RefereePosition extends HBox implements ObjectReceiver {
+public class RefereePosition extends HBox implements ObjectReceiver, EntityFXHolder {
 
     private DeleteButton delbutton;
     private StackPane coachholder;
@@ -102,5 +103,10 @@ public class RefereePosition extends HBox implements ObjectReceiver {
             this.setCoach(p);
         }
 
+    }
+    
+    @Override
+    public void remove(EntityFX ent) {
+        this.clearCoach();
     }
 }

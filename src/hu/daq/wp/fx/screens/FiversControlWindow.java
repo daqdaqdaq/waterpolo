@@ -49,8 +49,8 @@ public class FiversControlWindow extends PopupWindow {
         super();
         
         this.background = new BorderPane();
-        this.leftteam = new TeamControlLeftFiveFX(ServiceHandler.getInstance().getDb());
-        this.rightteam = new TeamControlRightFiveFX(ServiceHandler.getInstance().getDb());
+        this.leftteam = new TeamControlLeftFiveFX();
+        this.rightteam = new TeamControlRightFiveFX();
         this.build();
         Scene scene = new Scene(this.background,800,600);
         this.initStyle(StageStyle.UTILITY);

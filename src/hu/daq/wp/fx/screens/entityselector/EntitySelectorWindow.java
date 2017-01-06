@@ -21,9 +21,8 @@ public class EntitySelectorWindow extends Stage {
     private Postgres db;
     private EntityListFX elf;
 
-    public EntitySelectorWindow(Postgres db) {
-        this.db = db;
-        this.elf = new EntityListFX(this.db);
+    public EntitySelectorWindow() {
+        this.elf = new EntityListFX();
         this.build();
         
     }

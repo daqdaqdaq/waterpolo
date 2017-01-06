@@ -19,13 +19,13 @@ import javafx.scene.layout.StackPane;
  */
 public class PlayerDisplayLeftFiveFX extends PlayerDisplayFX{
 
-    public PlayerDisplayLeftFiveFX(Postgres db) {
-        super(db);
+    public PlayerDisplayLeftFiveFX() {
+        super();
         super.build();
     }
 
-    public PlayerDisplayLeftFiveFX(Postgres db, int player_id) {
-        super(db, player_id);
+    public PlayerDisplayLeftFiveFX(int player_id) {
+        super(player_id);
         super.build();
     }
 

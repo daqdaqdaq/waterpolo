@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.display.timeouts;
 
+import hu.daq.wp.fx.display.penalties.CircleFactory;
 import hu.daq.wp.matchorganizer.MatchOrganizer;
 import java.util.ArrayList;
 import javafx.geometry.Pos;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
@@ -26,31 +28,35 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 public class TimeoutDisplay extends StackPane {
 
     GlyphFont fontawesome;
-    ArrayList<Glyph> matchlegs;
-    ArrayList<Glyph> overtimes;
+    ArrayList<Shape> matchlegs;
+    ArrayList<Shape> overtimes;
 
     public TimeoutDisplay() {
 
-        this.matchlegs = new ArrayList<Glyph>();
-        this.overtimes = new ArrayList<Glyph>();
+        this.matchlegs = new ArrayList<Shape>();
+        this.overtimes = new ArrayList<Shape>();
         this.fontawesome = GlyphFontRegistry.font("FontAwesome");
     }
 
     public void setUp(MatchOrganizer organizer) {
         this.matchlegs.clear();
         this.overtimes.clear();
+        CircleFactory cf = new CircleFactory();
         System.out.println("TO nums: " + organizer.getTimeoutsByPhaseType("hu.daq.wp.matchorganizer.MatchLeg"));
         for (int i = 0; i < organizer.getTimeoutsByPhaseType("hu.daq.wp.matchorganizer.MatchLeg"); i++) {
-            Glyph g = this.fontawesome.create(FontAwesome.Glyph.CLOCK_ALT);
-            g.setColor(Color.GREEN);
-            g.setFontSize(30);
+            //Glyph g = this.fontawesome.create(FontAwesome.Glyph.CLOCK_ALT);
+            Shape g = cf.getShape(38);
+            g.setFill(Color.GREEN);
+            //g.setFontSize(30);
             this.matchlegs.add(g);
         }
 
         for (int i = 0; i < organizer.getTimeoutsByPhaseType("hu.daq.wp.matchorganizer.Overtime"); i++) {
-            Glyph g = this.fontawesome.create(FontAwesome.Glyph.CLOCK_ALT);
-            g.setColor(Color.GREEN);
-            g.setFontSize(30);
+            //Glyph g = this.fontawesome.create(FontAwesome.Glyph.CLOCK_ALT);
+            //g.setColor(Color.GREEN);
+            //g.setFontSize(30);
+            Shape g = cf.getShape(38);
+            g.setFill(Color.GREEN);            
             this.overtimes.add(g);
         }
         this.build();
@@ -61,7 +67,7 @@ public class TimeoutDisplay extends StackPane {
 
         this.getChildren().clear();
         hb.setAlignment(Pos.CENTER);
-        for (Glyph g : this.matchlegs) {
+        for (Shape g : this.matchlegs) {
             Label l = new Label();
             l.setGraphic(g);
             hb.getChildren().add(l);
@@ -72,7 +78,7 @@ public class TimeoutDisplay extends StackPane {
             r.setMinWidth(20);
             r.setMinWidth(20);
             hb.getChildren().add(r);
-            for (Glyph g : this.overtimes) {
+            for (Shape g : this.overtimes) {
                 Label l = new Label();
                 l.setGraphic(g);
                 hb.getChildren().add(l);
@@ -82,11 +88,11 @@ public class TimeoutDisplay extends StackPane {
     }
 
     public void addMatchTimeout(Integer num) {
-        this.matchlegs.get(num - 1).setColor(Color.RED);
+        this.matchlegs.get(num - 1).setFill(Color.RED);
     }
 
     public void addOvertimeTimeout(Integer num) {
-        this.overtimes.get(num - 1).setColor(Color.RED);
+        this.overtimes.get(num - 1).setFill(Color.RED);
     }
 
 }

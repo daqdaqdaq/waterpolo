@@ -6,8 +6,10 @@
 package hu.daq.wp.fx;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.MatchProfile;
-import hu.daq.wp.MatchProfiles;
+import javafx.collections.FXCollections;
+
 import javafx.scene.control.ChoiceBox;
 
 /**
@@ -15,15 +17,13 @@ import javafx.scene.control.ChoiceBox;
  * @author DAQ
  */
 public class MatchProfileFX extends ChoiceBox<MatchProfile>{
-    MatchProfiles match;
 
-    public MatchProfileFX(Postgres db) {
-        this.match = new MatchProfiles(db);
-        this.setItems(this.match.getProfiles());
+
+    public MatchProfileFX() {
     }
 
     public void load(){
-        this.match.load();
+        this.setItems(FXCollections.observableList(ServiceHandler.getInstance().getDbService().getMatchProfiles()));
     }
     
     public MatchProfile getSelected(){

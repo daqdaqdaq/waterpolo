@@ -17,10 +17,19 @@ public class MatchOrganizer implements TimeoutListener {
 
     private Integer currentphase;
     private List<MatchPhase> phases;
-
+    private Integer balltimeinsecs;
+            
     public MatchOrganizer() {
         this.currentphase = 0;
         this.phases = new ArrayList<MatchPhase>();
+    }
+
+    public Integer getBallTimeInSecs() {
+        return balltimeinsecs;
+    }
+
+    public void setBallTimeInSecs(Integer balltimeinsecs) {
+        this.balltimeinsecs = balltimeinsecs;
     }
 
     public void addPhase(MatchPhase phase) {
@@ -77,7 +86,7 @@ public class MatchOrganizer implements TimeoutListener {
     
     public Integer getTimeoutsByPhaseType(String name){
         Integer i = (int)(this.phases.stream().filter(E -> {return E.getAvailableTimeouts()>0&&E.getClass().getName().equalsIgnoreCase(name);}).count()); 
-        System.out.println("Num "+name +"s :"+i);
+        //System.out.println("Num "+name +"s :"+i);
         return i;
     }
 

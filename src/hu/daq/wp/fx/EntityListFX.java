@@ -11,8 +11,11 @@ import hu.daq.draganddrop.DropObjectDecorator;
 import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.utils.MappedList;
+import hu.daq.wp.Coach;
+import hu.daq.wp.Entity;
+import hu.daq.wp.Player;
+import hu.daq.wp.Referee;
 import hu.daq.wp.Team;
-import hu.daq.wp.Teams;
 import hu.daq.wp.fx.screens.entityselector.DragEntityMediator;
 import hu.daq.wp.fx.screens.teamselector.DragTeamMediator;
 import java.util.ArrayList;
@@ -37,9 +40,8 @@ import javafx.util.Callback;
  *
  * @author DAQ
  */
-public class EntityListFX extends StackPane implements ObjectReceiver {
+public class EntityListFX extends StackPane implements ObjectReceiver, EntityFXHolder {
 
-    private final Postgres db;
     private final FilteredList<EntityFX> filteredents;
     private final TextField filterfield;
     private final ListView<EntityFX> entitiesview;
@@ -55,16 +57,16 @@ public class EntityListFX extends StackPane implements ObjectReceiver {
     private Button addreferee;
     Governed target;
 
-    public EntityListFX(Postgres db, Governed target) {
+    public EntityListFX(Governed target) {
 
-        this.db = db;
         this.entfx = FXCollections.observableArrayList(new ArrayList<EntityFX>());
         this.filterfield = new TextField();
         this.entitiesview = new ListView<EntityFX>();
-        this.entities = new EntitiesFX(db);
+        this.entities = new EntitiesFX();
         this.filteredents = new FilteredList<EntityFX>(entfx, p -> {
             return true;
         });
+
         this.playercb = new CheckBox("Játékosok");
         this.playercb.setSelected(true);
         this.coachcb = new CheckBox("Edzők");
@@ -81,8 +83,8 @@ public class EntityListFX extends StackPane implements ObjectReceiver {
         this.build();
     }
 
-    public EntityListFX(Postgres db) {
-        this(db, null);
+    public EntityListFX() {
+        this(null);
     }
 
     private void build() {
@@ -210,21 +212,21 @@ public class EntityListFX extends StackPane implements ObjectReceiver {
     }
 
     private void addPlayer() {
-        PlayerFX pf = new PlayerFX(this.db);
+        PlayerFX pf = new PlayerFX(new Player());
         pf.editOn();
         pf.name_field.requestFocus();
         this.entfx.add(pf);
     }
 
     private void addCoach() {
-        CoachFX pf = new CoachFX(this.db);
+        CoachFX pf = new CoachFX(new Coach());
         pf.editOn();
         pf.name_field.requestFocus();
         this.entfx.add(pf);
     }
 
     private void addReferee() {
-        RefereeFX pf = new RefereeFX(this.db);
+        RefereeFX pf = new RefereeFX(new Referee());
         pf.editOn();
         pf.name_field.requestFocus();
         this.entfx.add(pf);
@@ -263,10 +265,15 @@ public class EntityListFX extends StackPane implements ObjectReceiver {
                 ((PlayerFX) dsource).save();
 
                 ((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
-                this.entitiesview.getItems().add(dsource);
+                //this.entitiesview.getItems().add(dsource);
             }
         } catch (Exception ex) {
 
         }
+    }
+
+    @Override
+    public void remove(EntityFX ent) {
+        this.entfx.remove(ent);
     }
 }

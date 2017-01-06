@@ -20,7 +20,7 @@ public class DragTeamMediator implements DragObjectMediator<TeamSimpleFX> {
 
     public DragTeamMediator(TeamSimpleFX team) {
         this.team = team;
-        System.out.println("Mediator's built");
+        //System.out.println("Mediator's built");
     }
 
     @Override

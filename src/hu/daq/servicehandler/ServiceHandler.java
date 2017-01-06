@@ -7,6 +7,7 @@ package hu.daq.servicehandler;
 
 import client.Postgres;
 import hu.daq.UDPSender.SenderThread;
+import hu.daq.dataaccess.DAO;
 import hu.daq.keyevent.KeyEventHandler;
 import hu.daq.settings.SettingsHandler;
 import hu.daq.thriftconnector.connector.ThriftConnector;
@@ -28,6 +29,7 @@ public class ServiceHandler {
 
     private static ServiceHandler instance;
     private Postgres db;
+    private DAO dbservice;
     private TimeEngine te;
     private Object dragsource;
     private ThriftConnector thriftconnector;
@@ -59,8 +61,17 @@ public class ServiceHandler {
 
     public void setDb(Postgres db) {
         this.db = db;
+        this.setDbService(new DAO(this.db));
     }
 
+    public DAO getDbService() {
+        return dbservice;
+    }
+
+    public void setDbService(DAO dbservice) {
+        this.dbservice = dbservice;
+    }    
+    
     public TimeEngine getTimeEngine() {
         return te;
     }
@@ -138,28 +149,5 @@ public class ServiceHandler {
     public SettingsHandler getSettings() {
         return settings;
     }
-
-    public void showError(String headertext, String text) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Hiba");
-        alert.setHeaderText(headertext);
-        alert.setContentText(text);
-        Platform.runLater(() -> {
-            alert.showAndWait();
-        });
-    }
-/*
-    public boolean showConfirm(String headertext, String text) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle(null);
-        alert.setHeaderText(headertext);
-        alert.setContentText(text);
-        final Optional<ButtonType> res;
-        Platform.runLater(() -> {
-            res = alert.showAndWait();
-        
-        });
-        return res.get()==ButtonType.OK;
-      }    
-    */
+    
 }

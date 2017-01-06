@@ -24,12 +24,12 @@ import javafx.scene.control.ListCell;
  */
 public class TeamControlLeftFiveFX extends TeamControlFX {
 
-    public TeamControlLeftFiveFX(Postgres db) {
-        super(db);
+    public TeamControlLeftFiveFX() {
+        super();
     }
 
     public TeamControlLeftFiveFX(Postgres db, int team_id) {
-        super(db, team_id);
+        super(team_id);
     }
 
     public TeamControlLeftFiveFX(Team team) {
@@ -42,7 +42,7 @@ public class TeamControlLeftFiveFX extends TeamControlFX {
     @Override
     protected void loadPlayers() {
         this.active_players.clear();
-        this.active_players.addAll(this.team.getActivePlayers()
+        this.active_players.addAll(ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(this.getTeamId())
                 .stream().map(PlayerControlLeftFiveFX::new)
                 .collect(Collectors.toList()));
 

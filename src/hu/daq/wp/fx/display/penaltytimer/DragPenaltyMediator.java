@@ -21,7 +21,7 @@ public class DragPenaltyMediator implements DragObjectMediator<TeamSimpleFX> {
 
     public DragPenaltyMediator(PenaltyTimer timer) {
         this.timer = timer;
-        System.out.println("Mediator's built");
+        //System.out.println("Mediator's built");
     }
 
     @Override

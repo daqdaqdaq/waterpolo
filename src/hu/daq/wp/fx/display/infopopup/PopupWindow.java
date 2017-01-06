@@ -9,8 +9,11 @@ import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.CountdownWatch;
 import hu.daq.watch.TimeoutListener;
+import java.util.NoSuchElementException;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -27,6 +30,7 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
         if (Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)){
             this.initStyle(StageStyle.TRANSPARENT);
         }
+        this.moveToSecondaryIfExists(this);
         this.setAlwaysOnTop(true);
         this.setOnCloseRequest((ev)->this.cleanupOnClose());
     }
@@ -65,4 +69,19 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
     public void setCloseListener(PopupCloseListener pcl){
         this.pcl = pcl;
     }
+    
+    private void moveToSecondaryIfExists(Stage stage) {
+        Screen secondary;
+        try {
+            secondary = Screen.getScreens().stream().filter(E -> {
+                return !E.equals(Screen.getPrimary());
+            }).findFirst().get();
+            Rectangle2D bounds = secondary.getVisualBounds();
+            stage.setX(bounds.getMinX());
+            stage.setY(bounds.getMinY());
+        } catch (NoSuchElementException ex) {
+            //There is no secondary viewport, fail silently
+        }
+
+    }    
 }

@@ -6,6 +6,8 @@
 package hu.daq.wp.fx;
 
 import client.Postgres;
+import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.wp.Player;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.commonbuttons.AddPlayerButton;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
@@ -59,18 +61,12 @@ public class TeamFX extends VBox {
 
     static int teamsize = 1;
 
-    public TeamFX(Postgres db) {
-        this(new Team(db));
-    }
-
-    public TeamFX(Postgres db, int team_id) {
-        this(db);
+    public TeamFX(int team_id) {
         this.load(team_id);
     }
 
     public TeamFX(Team team) {
         this.team = team;
-        this.db = this.team.getDb();
         //this.player = new Player(db);
         this.setMaxWidth(600);
         this.setMinWidth(600);
@@ -82,10 +78,10 @@ public class TeamFX extends VBox {
         this.save_button = new SaveButton();
         this.add_player_button = new AddPlayerButton();
         this.add_team_button = new AddTeamButton();
-        this.openentitiesbutton = new AddPlayerButton();         
+        this.openentitiesbutton = new AddPlayerButton();
         this.passive_players = FXCollections.observableList(new ArrayList<PlayerFX>());
         this.active_players = FXCollections.observableList(new ArrayList<PlayerFX>());
-        this.esw = new EntitySelectorWindow(this.db);
+        this.esw = new EntitySelectorWindow();
         //Setup the listeners on the active and passive lists to set the incomming players to the aproppriate state
         this.passive_players.addListener((ListChangeListener.Change<? extends PlayerFX> c) -> {
             while (c.next()) {
@@ -148,7 +144,7 @@ public class TeamFX extends VBox {
         this.openentitiesbutton.setOnAction((ActionEvent e) -> {
             this.esw.loadEntities();
             this.esw.show();
-        });        
+        });
         this.save_button.disableProperty().bind(Bindings.not(this.getChanged()));
         /*     
          this.picture.setFitWidth(50);
@@ -180,32 +176,21 @@ public class TeamFX extends VBox {
          */
     }
 
-    public final boolean load(Integer pk) {
-        if (this.team.load(pk)) {
-            this.esw.setSelectedTeam(pk);
-            this.loadPlayers();
-            return true;
-        }
-        return false;
-    }
-
-    public final boolean load(HashMap<String, String> data) {
-        if (this.team.load(data)) {
-            this.esw.setSelectedTeam(this.team.getID());            
-            this.loadPlayers();
-            return true;
-        }
-        return false;
+    public final void load(Integer pk) {
+        this.team = ServiceHandler.getInstance().getDbService().getTeam(pk);
+        this.esw.setSelectedTeam(pk);
+        this.loadPlayers();
     }
 
     public final boolean save() {
         this.savePlayers();
-        return this.team.save();
+        return ServiceHandler.getInstance().getDbService().save(this.team);
     }
 
     public void newTeam() {
-        this.team = new Team(this.db);
-        this.name_field.setText("Új csapat");
+        this.team = new Team();
+        this.team.getTeamname().set("Új csapat");
+        //this.name_field.setText("Új csapat");
 
     }
 
@@ -225,7 +210,7 @@ public class TeamFX extends VBox {
         this.active_players.clear();
         this.passive_players.clear();
         //Map which holds the active and passive players' list
-        Map<Boolean, List<PlayerFX>> m = this.team.getPlayers()
+        Map<Boolean, List<PlayerFX>> m = ServiceHandler.getInstance().getDbService().getPlayersOfTeam(this.team.getID())
                 .stream().map(PlayerFX::new)
                 .collect(Collectors.partitioningBy(x -> x.isActive()));
         this.active_players.addAll(m.get(true));
@@ -249,8 +234,8 @@ public class TeamFX extends VBox {
     }
 
     private void addPlayer() {
-        PlayerFX pf = new PlayerFX(this.team.getDb());
-        pf.player.getTeam_id().setValue(this.team.getTeam_id().getValue());
+        PlayerFX pf = new PlayerFX(new Player());
+        pf.player.getTeam_id().setValue(this.team.getID());
         pf.editOn();
         pf.name_field.requestFocus();
         this.passive_players.add(pf);

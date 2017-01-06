@@ -54,7 +54,7 @@ public class PlayerPicture extends ImageView implements FileReceiver{
     }
     
     public void loadPic(){
-        System.out.println("Loading picture:"+picture_id.toString());
+        //System.out.println("Loading picture:"+picture_id.toString());
         InputStream tmp;
         if (this.picture_id.get() == 0){
             tmp = this.loadDefaultPic();

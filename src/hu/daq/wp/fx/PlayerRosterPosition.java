@@ -8,6 +8,7 @@ package hu.daq.wp.fx;
 import hu.daq.draganddrop.DropObjectDecorator;
 import hu.daq.draganddrop.ObjectReceiver;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.wp.Entity;
 import hu.daq.wp.fx.commonbuttons.DeleteButton;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -25,7 +26,7 @@ import javafx.scene.paint.Color;
  *
  * @author DAQ
  */
-public class PlayerRosterPosition extends HBox implements ObjectReceiver {
+public class PlayerRosterPosition extends HBox implements ObjectReceiver, EntityFXHolder {
 
     private Integer capnum;
     private DeleteButton delbutton;
@@ -39,22 +40,21 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver {
         this.capnum = capnum;
         this.delbutton = new DeleteButton();
         this.playerholder = new StackPane();
-        
+
         Label sign = new Label("Játékos");
-        sign.setTextFill(new Color(0.7,0.7,0.7,1));
+        sign.setTextFill(new Color(0.7, 0.7, 0.7, 1));
         this.playerholder.getChildren().add(sign);
-        this.playerholder.setBackground(new Background(new BackgroundFill(new Color(0.9,0.9,0.9,1),null,null)));
+        this.playerholder.setBackground(new Background(new BackgroundFill(new Color(0.9, 0.9, 0.9, 1), null, null)));
         this.build();
     }
 
     private void build() {
-        DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);        
+        DropObjectDecorator.decorate(this, this, DataFormat.PLAIN_TEXT, TransferMode.MOVE);
         this.setMinHeight(50);
         this.setAlignment(Pos.CENTER);
         this.playerholder.setMinWidth(250);
         this.delbutton.setOnAction(e -> this.removePlayer());
-        
-        
+
         Label capnumlabel = new Label(this.capnum.toString());
         capnumlabel.setPrefWidth(20);
         HBox.setHgrow(capnumlabel, Priority.NEVER);
@@ -69,10 +69,12 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver {
         }
         this.player = player;
         this.playerholder.getChildren().add(this.player);
-        player.getPlayer().setCapnum(this.capnum);
-        player.getPlayer().setTeamid(this.parentobj.getTeamID());
-        player.activate();
-        player.save();
+        if (!player.getPlayer().getCapnum().getValue().equals(this.capnum) || !player.getPlayer().getTeam_id().getValue().equals(this.parentobj.getTeamID()) || !player.getActive().getValue()) {
+            player.getPlayer().setCapnum(this.capnum);
+            player.getPlayer().setTeamid(this.parentobj.getTeamID());
+            player.activate();
+            player.save();
+        }
     }
 
     public void removePlayer() {
@@ -106,13 +108,18 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver {
             source = ServiceHandler.getInstance().getDragSource();
         }
         EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
-        
+
         System.out.println("The source is:" + dsource.toString());
         if (dsource.getType().equals("Player")) {
             System.out.println("The type is:" + dsource.getType());
             ((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
-            this.setPlayer((PlayerFX)dsource);
+            this.setPlayer((PlayerFX) dsource);
         }
 
+    }
+
+    @Override
+    public void remove(EntityFX ent) {
+        this.clearPlayer();
     }
 }

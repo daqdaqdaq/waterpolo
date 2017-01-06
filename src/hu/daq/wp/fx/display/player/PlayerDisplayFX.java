@@ -15,6 +15,7 @@ import hu.daq.wp.fx.display.penalties.PenaltiesFX;
 import java.util.HashMap;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -45,13 +46,11 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     ColumnConstraints goalsconst = new ColumnConstraints();
     Boolean inpenalty;
 
-    public PlayerDisplayFX(Postgres db) {
-        this(new Player(db));
-        
+    public PlayerDisplayFX() {
+   
     }
 
-    public PlayerDisplayFX(Postgres db, int player_id) {
-        this(db);
+    public PlayerDisplayFX(int player_id) {
         this.load(player_id);
     }
 
@@ -100,9 +99,16 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         /*Make the binding to the penalties. If the player has max number of penalties the whole player gets 
          0.5 opacity
          */
-        this.opacityProperty().bind(Bindings.createDoubleBinding(() -> {
-            return penalties.getFinallyout().getValue() ? 0.5 : 1;
-        }, this.penalties.getFinallyout()));
+        this.penalties.getFinallyout().addListener((ObservableValue<? extends Boolean> ob,Boolean ov,Boolean nv)->{
+            if (nv){
+                this.opacityProperty().set(0.5);
+            } else{
+                this.opacityProperty().set(1);
+            }
+        });
+        //this.opacityProperty().bind(Bindings.createDoubleBinding(() -> {
+        //    return penalties.getFinallyout().getValue() ? 0.5 : 1;
+        //}, this.penalties.getFinallyout()));
         this.buildLayout();
     }
 
@@ -119,9 +125,8 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         //Add a penalty and get the number of penalties
         int p = this.penalties.addPenalty();
         //If this player isn't completely out due to the penalty then add the penalty countdown
-        if (!this.penalties.getFinallyout().get()) {
-            this.addOverlay();
-        }
+        this.addOverlay();
+        
         return p;
     }
 
@@ -136,8 +141,8 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.pfxo.jumpToEnd();
     }
             
-    public final boolean load(Integer pk) {
-        return this.player.load(pk);
+    public final void load(Integer pk) {
+        this.player = ServiceHandler.getInstance().getDbService().getPlayer(pk);
     }
 
     public void addGoal() {
@@ -151,10 +156,6 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
 
     }
 
-    public final boolean load(HashMap<String, String> data) {
-        return this.player.load(data);
-
-    }
 
     public Boolean isOut() {
         return this.penalties.getFinallyout().getValue();
@@ -189,7 +190,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     }
 
     public Integer getPlayerID() {
-        return this.player.getPlayer_id().getValue();
+        return this.player.getID();
     }
     
     public Player getPlayerModel(){
