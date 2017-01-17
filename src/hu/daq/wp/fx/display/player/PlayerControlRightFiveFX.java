@@ -36,6 +36,8 @@ public class PlayerControlRightFiveFX extends PlayerControlFiveFX {
 
     @Override
     protected void buildLayout() {
+        this.setMaxWidth(400);
+        this.setMinWidth(400);        
         GridPane gp = new GridPane();
         StackPane.setAlignment(gp, Pos.CENTER);
         this.getChildren().add(gp);
@@ -55,8 +57,8 @@ public class PlayerControlRightFiveFX extends PlayerControlFiveFX {
         gp.add(this.goals_label, 2, 0);
         gp.add(this.name_label, 3, 0);        
 
-        GridPane.setHalignment(this.capnum_label, HPos.CENTER);
-        GridPane.setHalignment(this.name_label, HPos.RIGHT);
+        GridPane.setHalignment(this.capnum_label, HPos.LEFT);
+        GridPane.setHalignment(this.name_label, HPos.LEFT);
         GridPane.setHalignment(this.goals_label, HPos.CENTER);
      
 

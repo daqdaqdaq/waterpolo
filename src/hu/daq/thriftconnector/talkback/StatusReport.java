@@ -42,6 +42,8 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
   private static final org.apache.thrift.protocol.TField BALLTIMELEFT_FIELD_DESC = new org.apache.thrift.protocol.TField("balltimeleft", org.apache.thrift.protocol.TType.BOOL, (short)5);
   private static final org.apache.thrift.protocol.TField PLAYERSTAT_FIELD_DESC = new org.apache.thrift.protocol.TField("playerstat", org.apache.thrift.protocol.TType.LIST, (short)6);
   private static final org.apache.thrift.protocol.TField TSYNC_FIELD_DESC = new org.apache.thrift.protocol.TField("tsync", org.apache.thrift.protocol.TType.STRUCT, (short)7);
+  private static final org.apache.thrift.protocol.TField LEFTTEAMTOS_FIELD_DESC = new org.apache.thrift.protocol.TField("leftteamtos", org.apache.thrift.protocol.TType.STRING, (short)8);
+  private static final org.apache.thrift.protocol.TField RIGHTTEAMTOS_FIELD_DESC = new org.apache.thrift.protocol.TField("rightteamtos", org.apache.thrift.protocol.TType.STRING, (short)9);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -56,6 +58,8 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
   public boolean balltimeleft; // required
   public List<PlayerStat> playerstat; // required
   public TimeSync tsync; // required
+  public String leftteamtos; // required
+  public String rightteamtos; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -65,7 +69,9 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     RIGHTTEAM((short)4, "rightteam"),
     BALLTIMELEFT((short)5, "balltimeleft"),
     PLAYERSTAT((short)6, "playerstat"),
-    TSYNC((short)7, "tsync");
+    TSYNC((short)7, "tsync"),
+    LEFTTEAMTOS((short)8, "leftteamtos"),
+    RIGHTTEAMTOS((short)9, "rightteamtos");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -94,6 +100,10 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
           return PLAYERSTAT;
         case 7: // TSYNC
           return TSYNC;
+        case 8: // LEFTTEAMTOS
+          return LEFTTEAMTOS;
+        case 9: // RIGHTTEAMTOS
+          return RIGHTTEAMTOS;
         default:
           return null;
       }
@@ -158,6 +168,10 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, PlayerStat.class))));
     tmpMap.put(_Fields.TSYNC, new org.apache.thrift.meta_data.FieldMetaData("tsync", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TimeSync.class)));
+    tmpMap.put(_Fields.LEFTTEAMTOS, new org.apache.thrift.meta_data.FieldMetaData("leftteamtos", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.RIGHTTEAMTOS, new org.apache.thrift.meta_data.FieldMetaData("rightteamtos", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(StatusReport.class, metaDataMap);
   }
@@ -172,7 +186,9 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     int rightteam,
     boolean balltimeleft,
     List<PlayerStat> playerstat,
-    TimeSync tsync)
+    TimeSync tsync,
+    String leftteamtos,
+    String rightteamtos)
   {
     this();
     this.matchprofile = matchprofile;
@@ -187,6 +203,8 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     setBalltimeleftIsSet(true);
     this.playerstat = playerstat;
     this.tsync = tsync;
+    this.leftteamtos = leftteamtos;
+    this.rightteamtos = rightteamtos;
   }
 
   /**
@@ -209,6 +227,12 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     if (other.isSetTsync()) {
       this.tsync = new TimeSync(other.tsync);
     }
+    if (other.isSetLeftteamtos()) {
+      this.leftteamtos = other.leftteamtos;
+    }
+    if (other.isSetRightteamtos()) {
+      this.rightteamtos = other.rightteamtos;
+    }
   }
 
   public StatusReport deepCopy() {
@@ -229,6 +253,8 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     this.balltimeleft = false;
     this.playerstat = null;
     this.tsync = null;
+    this.leftteamtos = null;
+    this.rightteamtos = null;
   }
 
   public int getMatchprofile() {
@@ -409,6 +435,54 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     }
   }
 
+  public String getLeftteamtos() {
+    return this.leftteamtos;
+  }
+
+  public StatusReport setLeftteamtos(String leftteamtos) {
+    this.leftteamtos = leftteamtos;
+    return this;
+  }
+
+  public void unsetLeftteamtos() {
+    this.leftteamtos = null;
+  }
+
+  /** Returns true if field leftteamtos is set (has been assigned a value) and false otherwise */
+  public boolean isSetLeftteamtos() {
+    return this.leftteamtos != null;
+  }
+
+  public void setLeftteamtosIsSet(boolean value) {
+    if (!value) {
+      this.leftteamtos = null;
+    }
+  }
+
+  public String getRightteamtos() {
+    return this.rightteamtos;
+  }
+
+  public StatusReport setRightteamtos(String rightteamtos) {
+    this.rightteamtos = rightteamtos;
+    return this;
+  }
+
+  public void unsetRightteamtos() {
+    this.rightteamtos = null;
+  }
+
+  /** Returns true if field rightteamtos is set (has been assigned a value) and false otherwise */
+  public boolean isSetRightteamtos() {
+    return this.rightteamtos != null;
+  }
+
+  public void setRightteamtosIsSet(boolean value) {
+    if (!value) {
+      this.rightteamtos = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case MATCHPROFILE:
@@ -467,6 +541,22 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       }
       break;
 
+    case LEFTTEAMTOS:
+      if (value == null) {
+        unsetLeftteamtos();
+      } else {
+        setLeftteamtos((String)value);
+      }
+      break;
+
+    case RIGHTTEAMTOS:
+      if (value == null) {
+        unsetRightteamtos();
+      } else {
+        setRightteamtos((String)value);
+      }
+      break;
+
     }
   }
 
@@ -493,6 +583,12 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
     case TSYNC:
       return getTsync();
 
+    case LEFTTEAMTOS:
+      return getLeftteamtos();
+
+    case RIGHTTEAMTOS:
+      return getRightteamtos();
+
     }
     throw new IllegalStateException();
   }
@@ -518,6 +614,10 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       return isSetPlayerstat();
     case TSYNC:
       return isSetTsync();
+    case LEFTTEAMTOS:
+      return isSetLeftteamtos();
+    case RIGHTTEAMTOS:
+      return isSetRightteamtos();
     }
     throw new IllegalStateException();
   }
@@ -595,6 +695,24 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       if (!(this_present_tsync && that_present_tsync))
         return false;
       if (!this.tsync.equals(that.tsync))
+        return false;
+    }
+
+    boolean this_present_leftteamtos = true && this.isSetLeftteamtos();
+    boolean that_present_leftteamtos = true && that.isSetLeftteamtos();
+    if (this_present_leftteamtos || that_present_leftteamtos) {
+      if (!(this_present_leftteamtos && that_present_leftteamtos))
+        return false;
+      if (!this.leftteamtos.equals(that.leftteamtos))
+        return false;
+    }
+
+    boolean this_present_rightteamtos = true && this.isSetRightteamtos();
+    boolean that_present_rightteamtos = true && that.isSetRightteamtos();
+    if (this_present_rightteamtos || that_present_rightteamtos) {
+      if (!(this_present_rightteamtos && that_present_rightteamtos))
+        return false;
+      if (!this.rightteamtos.equals(that.rightteamtos))
         return false;
     }
 
@@ -684,6 +802,26 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetLeftteamtos()).compareTo(other.isSetLeftteamtos());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetLeftteamtos()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.leftteamtos, other.leftteamtos);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetRightteamtos()).compareTo(other.isSetRightteamtos());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetRightteamtos()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.rightteamtos, other.rightteamtos);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -737,6 +875,22 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       sb.append("null");
     } else {
       sb.append(this.tsync);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("leftteamtos:");
+    if (this.leftteamtos == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.leftteamtos);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("rightteamtos:");
+    if (this.rightteamtos == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.rightteamtos);
     }
     first = false;
     sb.append(")");
@@ -855,6 +1009,22 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 8: // LEFTTEAMTOS
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.leftteamtos = iprot.readString();
+              struct.setLeftteamtosIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 9: // RIGHTTEAMTOS
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.rightteamtos = iprot.readString();
+              struct.setRightteamtosIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -902,6 +1072,16 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
         struct.tsync.write(oprot);
         oprot.writeFieldEnd();
       }
+      if (struct.leftteamtos != null) {
+        oprot.writeFieldBegin(LEFTTEAMTOS_FIELD_DESC);
+        oprot.writeString(struct.leftteamtos);
+        oprot.writeFieldEnd();
+      }
+      if (struct.rightteamtos != null) {
+        oprot.writeFieldBegin(RIGHTTEAMTOS_FIELD_DESC);
+        oprot.writeString(struct.rightteamtos);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -941,7 +1121,13 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       if (struct.isSetTsync()) {
         optionals.set(6);
       }
-      oprot.writeBitSet(optionals, 7);
+      if (struct.isSetLeftteamtos()) {
+        optionals.set(7);
+      }
+      if (struct.isSetRightteamtos()) {
+        optionals.set(8);
+      }
+      oprot.writeBitSet(optionals, 9);
       if (struct.isSetMatchprofile()) {
         oprot.writeI32(struct.matchprofile);
       }
@@ -969,12 +1155,18 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
       if (struct.isSetTsync()) {
         struct.tsync.write(oprot);
       }
+      if (struct.isSetLeftteamtos()) {
+        oprot.writeString(struct.leftteamtos);
+      }
+      if (struct.isSetRightteamtos()) {
+        oprot.writeString(struct.rightteamtos);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, StatusReport struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(7);
+      BitSet incoming = iprot.readBitSet(9);
       if (incoming.get(0)) {
         struct.matchprofile = iprot.readI32();
         struct.setMatchprofileIsSet(true);
@@ -1013,6 +1205,14 @@ public class StatusReport implements org.apache.thrift.TBase<StatusReport, Statu
         struct.tsync = new TimeSync();
         struct.tsync.read(iprot);
         struct.setTsyncIsSet(true);
+      }
+      if (incoming.get(7)) {
+        struct.leftteamtos = iprot.readString();
+        struct.setLeftteamtosIsSet(true);
+      }
+      if (incoming.get(8)) {
+        struct.rightteamtos = iprot.readString();
+        struct.setRightteamtosIsSet(true);
       }
     }
   }

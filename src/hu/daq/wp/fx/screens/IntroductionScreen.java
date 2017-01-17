@@ -164,6 +164,12 @@ public class IntroductionScreen extends StackPane implements SubScreen {
         this.leftteam.getChildren().clear();
         this.rightteam.getChildren().clear();
         if (rightteam != null && leftteam != null) {
+
+            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(leftteamid).stream().forEach(E -> {
+                PlayerFX p = new PlayerFX(E);
+                this.leftteam.getChildren().add(p);
+
+            });
             Coach coach;
             //Team t = ServiceHandler.getInstance().getDbService().getTeam(leftteamid);
             coach = ServiceHandler.getInstance().getDbService().getCoachOfTeam(leftteamid);
@@ -172,34 +178,30 @@ public class IntroductionScreen extends StackPane implements SubScreen {
                 this.leftteam.getChildren().add(c);
 
             }
-            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(leftteamid).stream().forEach(E -> {
+            
+
+            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(rightteamid).stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
-                this.leftteam.getChildren().add(p);
-
+                this.rightteam.getChildren().add(p);
             });
-
             
             coach = ServiceHandler.getInstance().getDbService().getCoachOfTeam(rightteamid);
             if (coach != null) {
                 CoachFX c = new CoachFX(coach);
                 this.rightteam.getChildren().add(c);
 
-            }
-            ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(rightteamid).stream().forEach(E -> {
-                PlayerFX p = new PlayerFX(E);
-                this.rightteam.getChildren().add(p);
-            });
+            }            
         }
 
     }
 
     private void populateIntroductionList(){
         this.introductionlist.clear();
-        this.introductionlist.add(this.firstreferee.getReferee());
-        this.introductionlist.add(this.secondreferee.getReferee());
-        this.introductionlist.add(this.inspector.getReferee());        
         this.leftteam.getChildren().forEach(E ->{this.introductionlist.add((EntityFX)E);});
         this.rightteam.getChildren().forEach(E ->{this.introductionlist.add((EntityFX)E);});
+        this.introductionlist.add(this.firstreferee.getReferee());
+        this.introductionlist.add(this.secondreferee.getReferee());
+        this.introductionlist.add(this.inspector.getReferee());         
     }
     
     @Override

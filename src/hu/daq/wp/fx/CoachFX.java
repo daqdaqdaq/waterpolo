@@ -6,20 +6,27 @@
 package hu.daq.wp.fx;
 
 import client.Postgres;
+import hu.daq.dialog.DialogBuilder;
 import hu.daq.draganddrop.DragAndDropDecorator;
+import hu.daq.fileservice.FileService;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Coach;
 import hu.daq.wp.Player;
+import hu.daq.wp.fx.commonbuttons.DeleteButton;
 import hu.daq.wp.fx.commonbuttons.EditButton;
 import hu.daq.wp.fx.commonbuttons.SaveButton;
 import hu.daq.wp.fx.controls.NumField;
 import hu.daq.wp.fx.image.PlayerPicture;
 
 import java.util.HashMap;
+import java.util.Optional;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -29,6 +36,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 
@@ -43,11 +51,12 @@ public class CoachFX extends EntityFX<Coach>{
     TextField name_field;
     Button edit_button;
     Button save_button;
+        Button delete_button;
     PlayerPicture picture;
     GridPane basegrid;
     SimpleBooleanProperty duplicated;
     DragAndDropDecorator ddd;
-    
+        HBox buttons;
     
 
     
@@ -66,6 +75,10 @@ public class CoachFX extends EntityFX<Coach>{
         this.setEntity(coach);
         this.edit_button = new EditButton();
         this.save_button = new SaveButton();    
+        this.delete_button = new DeleteButton();
+        this.buttons = new HBox(3);
+        this.buttons.setAlignment(Pos.CENTER_RIGHT);
+        this.buttons.getChildren().addAll(this.edit_button, this.delete_button);        
         this.basegrid = new GridPane();
         this.picture = new PlayerPicture(this,this.coach.getCoach_pic()); // Adding the coach's picture and binding to the coach object
         this.picture.setPreserveRatio(true);
@@ -81,11 +94,7 @@ public class CoachFX extends EntityFX<Coach>{
         this.name_field.textProperty().bindBidirectional(this.coach.getName());
         this.name_label.textProperty().bindBidirectional(this.coach.getName());   
         this.deleted.bind(this.coach.getDeleted());
-        this.deleted.addListener((ob, ov, nv) -> {
-            if (nv.equals(Boolean.TRUE)) {
-                this.removeMe();
-            }
-        });        
+
     }     
     //Build the layot and make the bindings
     private void build(){
@@ -100,13 +109,23 @@ public class CoachFX extends EntityFX<Coach>{
                 editOff();
             }
         });
+        this.delete_button.setOnAction((ActionEvent event) -> {
+            Optional<ButtonType> response = DialogBuilder.getConfirmDialog("Edző törlése", "Biztosan törölni akarod?").showAndWait();
+            if (response.get().equals(ButtonType.OK)) {
+                FileService.getInst().deleteFile(this.coach.getCoach_pic().get());
+                ServiceHandler.getInstance().getDbService().deleteCoach(this.coach);
+            }
+        });        
         this.picture.loadPic();
         this.basegrid.setHgap(5);
         this.basegrid.setVgap(5);
+        GridPane.setHalignment(this.name_field, HPos.LEFT);
+        GridPane.setHalignment(this.name_label, HPos.LEFT);
+        GridPane.setHalignment(this.buttons, HPos.RIGHT);        
         this.basegrid.setPadding(new Insets(5));
         this.basegrid.add(this.picture, 0, 0, 1, 2);
         this.basegrid.add(this.name_label, 1, 0, 3, 1);
-        this.basegrid.add(this.edit_button, 4, 0);
+        this.basegrid.add(this.buttons, 4, 0);
         this.getChildren().add(this.basegrid);
     }
     
@@ -114,7 +133,7 @@ public class CoachFX extends EntityFX<Coach>{
         this.basegrid.getChildren().remove(this.name_label);
         this.basegrid.add(this.name_field, 1, 0, 3, 1);
         this.basegrid.getChildren().remove(this.edit_button);
-        this.basegrid.add(this.save_button, 4, 1);
+        this.basegrid.add(this.buttons, 4, 0);
         
     }
     
@@ -122,7 +141,7 @@ public class CoachFX extends EntityFX<Coach>{
         this.basegrid.getChildren().remove(this.name_field);
         this.basegrid.add(this.name_label, 1, 0, 3, 1);
         this.basegrid.getChildren().remove(this.save_button);
-        this.basegrid.add(this.edit_button, 4, 1);    
+        this.basegrid.add(this.buttons, 4, 0);  
     }
     
     

@@ -30,7 +30,7 @@ public class EntitySelectorWindow extends Stage {
     private void build() {
         Scene scene = new Scene(elf, 400, 600);
         this.setScene(scene);
-        this.setAlwaysOnTop(true);
+        this.setAlwaysOnTop(false);
         //primaryStage.setFullScreen(true);
     }
 

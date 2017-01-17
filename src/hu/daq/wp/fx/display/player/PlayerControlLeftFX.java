@@ -50,6 +50,8 @@ public class PlayerControlLeftFX extends PlayerControlFX {
         buttons.addVisibleButton(this.showplayerbutton);
         buttons.addHiddenButton(this.removegoalbutton);
         buttons.addHiddenButton(this.removepenaltybutton);
+        buttons.addHiddenButton(this.setgoalbutton);
+        buttons.addHiddenButton(this.setpenaltybutton);        
         HBox buttonholder = new HBox();
         buttonholder.setSpacing(10);
         //System.out.println("Adding buttons...");

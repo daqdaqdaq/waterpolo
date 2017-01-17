@@ -24,6 +24,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -31,7 +32,7 @@ import javafx.util.Callback;
  *
  * @author DAQ
  */
-public class TeamsScreen extends BorderPane implements SubScreen, Instructable{
+public class TeamsScreen extends HBox implements SubScreen, Instructable{
     
     private MainPageCommon parent;
     private FilteredList<Team> filteredteams;
@@ -108,9 +109,11 @@ public class TeamsScreen extends BorderPane implements SubScreen, Instructable{
         VBox vb = new VBox();
         HBox hb = new HBox(2);
         hb.getChildren().addAll(this.filterfield, this.reloadbutton);
+        HBox.setHgrow(this.filterfield, Priority.ALWAYS);
         vb.getChildren().addAll(hb, this.teamsview);
-        this.setLeft(vb);
-        this.setCenter(this.tf);
+        this.getChildren().addAll(vb,this.tf);
+        //this.setLeft(vb);
+        //this.setCenter(this.tf);
 
     }
 

@@ -76,8 +76,8 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.goals.set(0);
         this.inpenalty = false;
         //Size constraints
-        capnumconst.setPercentWidth(13);
-        nameconst.setPercentWidth(52);
+        capnumconst.setPercentWidth(10);
+        nameconst.setPercentWidth(55);
         penaltiesconst.setPercentWidth(20);
         goalsconst.setPercentWidth(15);
 
@@ -89,8 +89,9 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
 
     protected void build() {
         this.capnum_label.textProperty().bind(Bindings.createStringBinding(() -> {
-            return this.player.getCapnum().getValue().toString() + ".";
+            return this.player.getCapnum().getValue().toString()+ ".";
         }, this.player.getCapnum()));
+
         this.name_label.textProperty().bind(this.player.getShortname());
         //this.name_label.setPrefWidth(150);
         this.goals_label.textProperty().bind(Bindings.createStringBinding(() -> {

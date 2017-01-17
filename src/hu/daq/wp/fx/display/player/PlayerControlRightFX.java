@@ -49,7 +49,9 @@ public class PlayerControlRightFX extends PlayerControlFX {
         buttons.addVisibleButton(this.penaltybutton);
         buttons.addVisibleButton(this.showplayerbutton);
         buttons.addHiddenButton(this.removegoalbutton);
-        buttons.addHiddenButton(this.removepenaltybutton);        
+        buttons.addHiddenButton(this.removepenaltybutton);   
+        buttons.addHiddenButton(this.setgoalbutton);
+        buttons.addHiddenButton(this.setpenaltybutton);        
         HBox buttonholder = new HBox();
         buttonholder.setSpacing(10);
         buttonholder.setAlignment(Pos.CENTER);

@@ -8,6 +8,7 @@ package hu.daq.wp.fx.display.timeouts;
 import hu.daq.wp.fx.display.penalties.CircleFactory;
 import hu.daq.wp.matchorganizer.MatchOrganizer;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -95,4 +96,7 @@ public class TimeoutDisplay extends StackPane {
         this.overtimes.get(num - 1).setFill(Color.RED);
     }
 
+    public String getTimeouts(){
+        return this.matchlegs.stream().map(E->{return E.getFill().equals(Color.RED)?"1":"0";}).collect(Collectors.joining());
+    }
 }

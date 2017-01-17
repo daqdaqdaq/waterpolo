@@ -11,6 +11,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 
 /**
  *
@@ -35,11 +36,14 @@ public class PlayerDisplayRightFiveFX extends PlayerDisplayFX {
 
     @Override
     protected void buildLayout() {
+        this.setMaxWidth(450);
+        this.setMinWidth(450);
         capnumconst.setPercentWidth(13);
         nameconst.setPercentWidth(67);
         penaltiesconst.setPercentWidth(5);
         goalsconst.setPercentWidth(15);         
         GridPane gp = new GridPane();
+        StackPane.setAlignment(gp, Pos.CENTER);
         this.getChildren().add(gp);
         gp.setAlignment(Pos.CENTER);
         gp.setPadding(new Insets(5));
@@ -49,7 +53,6 @@ public class PlayerDisplayRightFiveFX extends PlayerDisplayFX {
         gp.add(this.goals_label, 2, 0);
         GridPane.setHalignment(this.capnum_label, HPos.CENTER);
         GridPane.setHalignment(this.name_label, HPos.LEFT);
-        GridPane.setHalignment(this.penalties, HPos.CENTER);
         GridPane.setHalignment(this.goals_label, HPos.CENTER);
         //BorderPane.setAlignment(this.capnum_label, Pos.CENTER);
         //BorderPane.setAlignment(this.name_label, Pos.CENTER_RIGHT);

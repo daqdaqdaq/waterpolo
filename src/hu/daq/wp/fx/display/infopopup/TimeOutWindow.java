@@ -49,6 +49,7 @@ public class TimeOutWindow extends PopupWindow{
         Scene scene = new Scene(this.background, 800, 600);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
+        this.moveToSecondaryIfExists(this);            
         this.di = new DummyInstructable();        
     }
     

@@ -46,6 +46,7 @@ public class PersonInfo extends PopupWindow {
     
     public PersonInfo() {
         super();
+
         this.vb = new VBox();
         this.background = new StackPane();
         
@@ -54,9 +55,10 @@ public class PersonInfo extends PopupWindow {
       
         this.pict = new PlayerPicture(this.di, new SimpleIntegerProperty(0));
         this.build();
-        Scene scene = new Scene(background, 1024, 768);
+        Scene scene = new Scene(background, 1000, 730);
         scene.setFill(Color.TRANSPARENT);
         this.setScene(scene);
+        this.moveToSecondaryIfExists(this);        
         this.di = new DummyInstructable();
     }
 
@@ -90,7 +92,7 @@ public class PersonInfo extends PopupWindow {
         this.pict.loadPic();
         this.vb.getChildren().add(1, this.pict);
         this.teamname.setText(t.getTeamname().get());
-        this.playername.setText(player.getName().get());
+        this.playername.setText(player.getCapnum().getValue().toString()+". "+player.getName().get());
     }
 
     public void loadCoach(Integer coachid){

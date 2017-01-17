@@ -17,7 +17,7 @@ import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.timeengine.TimeEngine;
 import hu.daq.watch.TimeoutListener;
-import hu.daq.wp.fx.MatchProfileFX;
+import hu.daq.wp.fx.MatchProfilesFX;
 import hu.daq.wp.fx.commonbuttons.AddTeamButton;
 import hu.daq.wp.fx.commonbuttons.EndMatchButton;
 import hu.daq.wp.fx.commonbuttons.LeftButton;
@@ -81,7 +81,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
     private final Button attackerpenaltybutton;
     private final Button defenderpenaltybutton;
     private final Button doublepenaltybutton;    
-    private MatchProfileFX matchprofile;
+    private MatchProfilesFX matchprofile;
     private TimeEngine timeengine;
     private ToggleGroup showplayertoggle;
     private FiversControlWindow fivers;
@@ -98,7 +98,7 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         this.leftteamtime = new TimeButton();
         this.stopmatch = new EndMatchButton();
         this.addteam = new AddTeamButton();
-        this.matchprofile = new MatchProfileFX();
+        this.matchprofile = new MatchProfilesFX();
         this.controlpanel = new ControlPanel();
         this.fivers = new FiversControlWindow();
         this.prevphase = new LeftButton();
@@ -299,7 +299,8 @@ public class MatchScreen extends BorderPane implements SubScreen, Organizable, P
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).readyMatch(this.leftteam.getTeamID(), this.rightteam.getTeamID(), this.matchprofile.getSelected().getID());
         ServiceHandler.getInstance().setOrganizer(OrganizerBuilder.build(this.matchprofile.getSelected(), this));
         this.controlpanel.getBallTime().setTimeToCount(ServiceHandler.getInstance().getOrganizer().getBallTimeInSecs());
-        ServiceHandler.getInstance().getOrganizer().setCurrentPhase(-1);
+        ServiceHandler.getInstance().getOrganizer().setCurrentPhase(0);
+        ServiceHandler.getInstance().getOrganizer().setupPhase();
         this.scparent.setPlayingTeams(this.leftteam.getTeamID(), this.rightteam.getTeamID());
         this.leftteam.enable();
         this.rightteam.enable();

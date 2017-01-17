@@ -7,6 +7,7 @@ package hu.daq.wp.fx.screens;
 
 import hu.daq.login.LoginService;
 import javafx.scene.Node;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.controlsfx.dialog.LoginDialog;
@@ -18,12 +19,12 @@ import org.controlsfx.dialog.LoginDialog;
 public class MainPage extends TabPane implements MainPageCommon{
 
     private Boolean loggedin;
-    private LoginDialog protector;
+    private Dialog protector;
     private Integer leftteam;
     private Integer rightteam;
 
 
-    public MainPage(LoginDialog protector) {
+    public MainPage(Dialog protector) {
         this.loggedin = false;
         this.protector = protector;
 

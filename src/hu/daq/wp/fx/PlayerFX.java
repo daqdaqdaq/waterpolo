@@ -6,7 +6,9 @@
 package hu.daq.wp.fx;
 
 import client.Postgres;
+import hu.daq.dialog.DialogBuilder;
 import hu.daq.draganddrop.DragAndDropDecorator;
+import hu.daq.fileservice.FileService;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.wp.Player;
 import hu.daq.wp.fx.commonbuttons.DeleteButton;
@@ -16,10 +18,14 @@ import hu.daq.wp.fx.controls.NumField;
 import hu.daq.wp.fx.image.PlayerPicture;
 
 import java.util.HashMap;
+import java.util.Optional;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -77,7 +83,8 @@ public class PlayerFX extends EntityFX<Player> {
         this.save_button = new SaveButton();
         this.delete_button = new DeleteButton();
         this.buttons = new HBox(3);
-        this.buttons.getChildren().addAll(this.edit_button,this.delete_button);
+        this.buttons.setAlignment(Pos.CENTER_RIGHT);
+        this.buttons.getChildren().addAll(this.edit_button, this.delete_button);
         this.basegrid = new GridPane();
         this.picture = new PlayerPicture(this, this.player.getPlayer_pic()); // Adding the player's picture and binding to the player object
         this.picture.setPreserveRatio(true);
@@ -96,10 +103,10 @@ public class PlayerFX extends EntityFX<Player> {
         this.shortname_label.textProperty().bindBidirectional(this.player.getShortname());
         this.deleted.bind(this.player.getDeleted());
         /*this.deleted.addListener((ob, ov, nv) -> {
-            if (nv.equals(Boolean.TRUE)) {
-                this.removeMe();
-            }
-        });*/
+         if (nv.equals(Boolean.TRUE)) {
+         this.removeMe();
+         }
+         });*/
     }
 
 //Build the layot and make the bindings
@@ -118,11 +125,21 @@ public class PlayerFX extends EntityFX<Player> {
             }
         });
         this.delete_button.setOnAction((ActionEvent event) -> {
-            ServiceHandler.getInstance().getDbService().deletePlayer(this.player);
-        });        
+            Optional<ButtonType> response = DialogBuilder.getConfirmDialog("Játékos törlése", "Biztosan törölni akarod?").showAndWait();
+            if (response.get().equals(ButtonType.OK)) {
+                FileService.getInst().deleteFile(this.player.getPlayer_pic().get());
+                ServiceHandler.getInstance().getDbService().deletePlayer(this.player);
+                
+            }
+        });
         this.picture.loadPic();
         this.basegrid.setHgap(5);
         this.basegrid.setVgap(5);
+        GridPane.setHalignment(this.name_field, HPos.LEFT);
+        GridPane.setHalignment(this.name_label, HPos.LEFT);
+        GridPane.setHalignment(this.shortname_field, HPos.LEFT);
+        GridPane.setHalignment(this.shortname_label, HPos.LEFT);        
+        GridPane.setHalignment(this.buttons, HPos.RIGHT);
         this.basegrid.setPadding(new Insets(5));
         this.basegrid.add(this.picture, 0, 0, 1, 2);
         this.basegrid.add(this.name_label, 1, 0, 3, 1);

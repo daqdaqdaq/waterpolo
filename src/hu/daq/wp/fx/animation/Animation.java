@@ -33,23 +33,29 @@ public class Animation {
 
         DropShadow ds = new DropShadow();
         ds.setOffsetX(0);
-        ds.setOffsetY(0.5);
+        ds.setOffsetY(0.2);
         ds.setBlurType(BlurType.GAUSSIAN);
         ds.setColor(Color.RED);
-        ds.setSpread(0.4);
-        ds.setRadius(1);
+        ds.setSpread(0.1);
+        ds.setRadius(0.5);
         goal.setEffect(ds);        
         FadeTransition fadein = new FadeTransition(Duration.millis(1000), goal);
         fadein.setFromValue(0);
         fadein.setToValue(1);
         fadein.setCycleCount(1);
-        TranslateTransition move = new TranslateTransition(Duration.millis(500),goal);
-        move.setToY(100);
-        move.setAutoReverse(true);
-        move.setCycleCount(2);
+        TranslateTransition movedown = new TranslateTransition(Duration.millis(500),goal);
+        movedown.setToY(400);
+        movedown.setAutoReverse(false);
+        movedown.setCycleCount(1);
+        TranslateTransition moveup = new TranslateTransition(Duration.millis(500),goal);
+        moveup.setToY(200);
+        moveup.setAutoReverse(false);
+        moveup.setCycleCount(1); 
+        SequentialTransition move = new SequentialTransition();
+        move.getChildren().addAll(movedown,moveup);
         ScaleTransition scale = new ScaleTransition(Duration.millis(1000), goal);
-        scale.setToX(20);
-        scale.setToY(20);
+        scale.setToX(30);
+        scale.setToY(30);
         scale.setCycleCount(1);
         
         ParallelTransition parallel = new ParallelTransition();

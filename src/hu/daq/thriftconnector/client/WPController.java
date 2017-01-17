@@ -93,6 +93,14 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public void setGoal(Integer playerid) {
+        try {
+            this.client.setgoal(this.token, playerid);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+    
     public void removeGoal(Integer playerid) {
         try {
             this.client.removegoal(this.token, playerid);
@@ -100,7 +108,9 @@ public class WPController extends ThriftClient {
             Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 
+    
     public void addFivemGoal(Integer playerid) {
         try {
             this.client.fivemgoal(this.token, playerid);
@@ -330,4 +340,6 @@ public class WPController extends ThriftClient {
     public WPDisplay.Iface getClient() {
         return this.client;
     }
+
+
 }

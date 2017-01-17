@@ -30,7 +30,7 @@ public class OrganizerBuilder {
         MatchOrganizer mo = new MatchOrganizer();
         //Meccs elötti állapot
         mo.addPhase(new PreMatch(screen));
-        mo.setBallTimeInSecs(source.getInt("balltimelength"));
+        mo.setBallTimeInSecs(source.getInt("balltimelength")/1000);
         Integer numlegs = source.getInt("numlegs");
         
         for (int i=0; i<numlegs; i++){
@@ -63,7 +63,8 @@ public class OrganizerBuilder {
     }
     
     public static MatchOrganizer build(MatchProfile mp, Organizable screen) throws JSONException{
-        System.out.println(mp.getProfile().getValue());
-        return build(new JSONObject(mp.getProfile().getValue()),screen);
+        MatchOrganizer mo = build(mp.getProfileRaw(),screen);
+        mo.setId(mp.getID());
+        return mo;
     }
 }

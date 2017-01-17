@@ -14,7 +14,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
+
+
 
 
 
@@ -75,6 +79,16 @@ public class FileService {
         } catch (NumberFormatException ex){
             throw new IOException("Storing file has failed.");
         }    
+    }
+    
+    public void deleteFile(Integer id){
+            String sendstr = "delete from file where file_id="+id.toString();
+            try{
+                db.execquery(sendstr);
+                this.filecahce.remove(id);
+            } catch (Exception ex){
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, sendstr);
+            }    
     }
 
 }

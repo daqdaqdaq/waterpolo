@@ -32,7 +32,9 @@ public abstract class TeamDisplayFiveFX extends TeamDisplayFX {
 
     public void addPlayer(Integer playerid) {
         try {
-            this.playerlist.getChildren().add(this.getPlayer(playerid));
+            if (!this.playerlist.getChildren().remove(this.getPlayer(playerid))){
+                this.playerlist.getChildren().add(this.getPlayer(playerid));
+            }
         } catch (Exception ex) {
             //Fail silently
         }

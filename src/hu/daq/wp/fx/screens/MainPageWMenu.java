@@ -6,10 +6,16 @@
 package hu.daq.wp.fx.screens;
 
 import hu.daq.login.LoginService;
+import hu.daq.servicehandler.ServiceHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.application.Application;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -18,6 +24,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.controlsfx.dialog.LoginDialog;
 
 /**
@@ -25,9 +32,9 @@ import org.controlsfx.dialog.LoginDialog;
  * @author DAQ
  */
 public class MainPageWMenu extends StackPane implements MainPageCommon {
-
+    Application app;
     private Boolean loggedin;
-    private LoginDialog protector;
+    private Dialog protector;
     private Integer leftteam;
     private Integer rightteam;
     private MenuBar menubar;
@@ -35,7 +42,7 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
     private HashMap<String,SubScreen> screens;
     private Menu menu;
 
-    public MainPageWMenu(LoginDialog protector) {
+    public MainPageWMenu(Dialog protector) {
         this.loggedin = false;
         this.protector = protector;
         this.screens = new HashMap<String,SubScreen>();
@@ -52,10 +59,10 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
 
     @Override
     public void addScreen(SubScreen nd, String caption) {
-        if (!this.loggedin) {
-            protector.showAndWait();
+        /*if (!this.loggedin) {
+            protector.showAndWait().filter(response -> response == ButtonType.CANCEL).ifPresent(response -> this.closeApp());
             this.loggedin = true;
-        }
+        }*/
         if (!nd.isAdminOnly() || LoginService.getInst().isAdmin()) {
             nd.addContainer(this);
             nd.initScreen();
@@ -71,6 +78,7 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
     private void switchToScreen(String screencaption) {
         this.content.getChildren().clear();
         this.content.getChildren().add((Node)this.screens.get(screencaption));
+        ((Stage) this.getScene().getWindow()).sizeToScene();
     }
 
     @Override
@@ -89,4 +97,17 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
     public Integer getRightTeam() {
         return this.rightteam;
     }
+    
+    public void closeApp(){
+        ServiceHandler.getInstance().cleanupServices();
+        ((Stage)this.getScene().getWindow()).close();
+    }
+    
+    public void showLogin(){
+        if (!this.loggedin) {
+            protector.showAndWait().filter(response -> response == ButtonType.CANCEL).ifPresent(response -> this.closeApp());
+            this.loggedin = true;
+        }     
+    }
+    
 }

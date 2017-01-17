@@ -36,7 +36,8 @@ public class PlayerDisplayLeftFiveFX extends PlayerDisplayFX{
 
     @Override
     protected void buildLayout() {
-        
+        this.setMaxWidth(450);
+        this.setMinWidth(450);
         capnumconst.setPercentWidth(13);
         nameconst.setPercentWidth(67);
         penaltiesconst.setPercentWidth(5);

@@ -49,9 +49,9 @@ public class PlayerDisplayLeftFX extends PlayerDisplayFX{
         this.capnum_label.setFont(sizeing);
         this.name_label.setFont(sizeing);
         this.goals_label.setFont(sizeing);        
-        capnumconst.setPercentWidth(32);
-        penaltiesconst.setPercentWidth(38);
-        goalsconst.setPercentWidth(30);        
+        capnumconst.setPercentWidth(30);
+        penaltiesconst.setPercentWidth(42);
+        goalsconst.setPercentWidth(28);        
         GridPane gp = new GridPane();
         StackPane.setAlignment(gp, Pos.CENTER);
         this.getChildren().add(gp);

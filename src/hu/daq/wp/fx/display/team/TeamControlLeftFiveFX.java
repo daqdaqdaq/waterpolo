@@ -55,9 +55,10 @@ public class TeamControlLeftFiveFX extends TeamControlFX {
     public void addPlayer(Integer playerid) {
         try {
             //System.out.println(this.getPlayer(playerid));
-
-            this.playerlist.getChildren().add(this.getPlayer(playerid));
-            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).addFivemPlayer(playerid);            
+            if (!this.playerlist.getChildren().remove(this.getPlayer(playerid))) {
+                this.playerlist.getChildren().add(this.getPlayer(playerid));
+            }
+            ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).addFivemPlayer(playerid);
         } catch (Exception ex) {
             System.out.println("Add player failed");
             //Fail silently

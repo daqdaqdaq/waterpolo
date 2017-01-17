@@ -5,6 +5,8 @@
  */
 package hu.daq.wp.matchorganizer;
 
+import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.thriftconnector.talkback.WPTalkBackClient;
 import hu.daq.watch.TimeoutListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +20,25 @@ public class MatchOrganizer implements TimeoutListener {
     private Integer currentphase;
     private List<MatchPhase> phases;
     private Integer balltimeinsecs;
+    private Integer id;
             
     public MatchOrganizer() {
         this.currentphase = 0;
         this.phases = new ArrayList<MatchPhase>();
     }
+    
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     public Integer getBallTimeInSecs() {
         return balltimeinsecs;
     }
-
+   
     public void setBallTimeInSecs(Integer balltimeinsecs) {
         this.balltimeinsecs = balltimeinsecs;
     }
@@ -77,6 +88,7 @@ public class MatchOrganizer implements TimeoutListener {
 
     @Override
     public void timeout() {
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
         this.nextPhase();
     }
 

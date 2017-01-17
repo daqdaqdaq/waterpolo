@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.json.JSONException;
 
 /**
  *
@@ -281,6 +284,7 @@ public class DAO {
             e.id.set(Integer.parseInt(rec.get("matchprofile_id")));
             e.profilename.set(rec.get("profilename"));
             e.profile.set(rec.get("profile"));
+            e.setProfile(rec.get("profile"));
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -293,19 +297,29 @@ public class DAO {
         }
         String sendstr;
         if (e.id.getValue().equals(0)) {
-            sendstr = "insert into matchprofile (profilename,profile) values("
-                    + "'" + e.profilename.getValueSafe() + "', "
-                    + e.profile.getValue()
-                    + ") returning *";
+            try {
+                sendstr = "insert into matchprofile (profilename,profile) values("
+                        + "'" + e.profilename.getValueSafe() + "', "
+                        + "'" + e.getProfile() + "'"
+                        + ") returning *";
+            } catch (JSONException ex) {
+                System.out.println("Failed:" + ex.toString());
+                return false;
+            }
         } else {
-            sendstr = "update matchprofile set (profilename,profile) =("
-                    + "'" + e.profilename.getValueSafe() + "', "
-                    + e.profile.getValue().toString()
-                    + ") where matchprofile_id=" + e.id.getValue().toString()
-                    + " returning *";
+            try {
+                sendstr = "update matchprofile set (profilename,profile) =("
+                        + "'" + e.profilename.getValueSafe() + "', "
+                        + "'" + e.getProfile() + "'"
+                        + ") where matchprofile_id=" + e.id.getValue().toString()
+                        + " returning *";
+            } catch (JSONException ex) {
+                System.out.println("Failed:" + ex.toString());
+                return false;
+            }
         }
         try {
-            Integer id = Integer.parseInt(db.query(sendstr).get(0).get("referee_id"));
+            Integer id = Integer.parseInt(db.query(sendstr).get(0).get("matchprofile_id"));
             if (!id.equals(e.id.get())) {
                 e.id.set(id);
             }

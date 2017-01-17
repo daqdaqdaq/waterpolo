@@ -45,6 +45,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
 
     GlyphButton goalbutton;
     GlyphButton penaltybutton;
+    GlyphButton setgoalbutton;
+    GlyphButton setpenaltybutton;    
     GlyphButton removegoalbutton;
     GlyphButton removepenaltybutton;    
     ToggleGlyphButton showplayerbutton;
@@ -67,6 +69,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
+        this.setgoalbutton = new GoalButton();
+        this.setpenaltybutton = new PenaltyButton();         
         this.removegoalbutton = new RemoveGoalButton();
         this.removepenaltybutton = new RemovePenaltyButton();  
         this.showplayerbutton = new ShowPlayerButton();
@@ -89,6 +93,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
+        this.setgoalbutton = new GoalButton();
+        this.setpenaltybutton = new PenaltyButton();         
         this.removegoalbutton = new RemoveGoalButton();
         this.removepenaltybutton = new RemovePenaltyButton();  
         this.showplayerbutton = new ShowPlayerButton();        
@@ -109,6 +115,8 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
         this.goals_label.setFont(sizeing);        
         this.goalbutton = new GoalButton();
         this.penaltybutton = new PenaltyButton();
+        this.setgoalbutton = new GoalButton();
+        this.setpenaltybutton = new PenaltyButton();        
         this.removegoalbutton = new RemoveGoalButton();
         this.removepenaltybutton = new RemovePenaltyButton();  
         this.showplayerbutton = new ShowPlayerButton();        
@@ -161,11 +169,20 @@ public abstract class PlayerControlFX extends PlayerDisplayFX implements ObjectR
             ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).addPenalty(this.getPlayerID());
             this.addPenalty();
         });
+
+        this.setpenaltybutton.setOnAction((E) -> {
+            ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).setPenalty(this.getPlayerID(),0);
+            this.addPenalty();
+        });        
         
         this.goalbutton.setOnAction((E) -> {
             ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).addGoal(this.getPlayerID());
             this.addGoal();
         });
+        this.setgoalbutton.setOnAction((E) -> {
+            ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).setGoal(this.getPlayerID());
+            this.addGoal();
+        });        
         this.removepenaltybutton.setOnAction((E) -> {
             ((WPController)ServiceHandler.getInstance().getThriftConnector().getClient()).removePenalty(this.getPlayerID());
             this.removePenalty();

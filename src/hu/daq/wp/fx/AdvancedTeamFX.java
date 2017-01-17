@@ -75,11 +75,11 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver {
     CoachPosition coach;
 
     private EntitySelectorWindow esw;
-    
+
     public AdvancedTeamFX() {
         this(new Team());
     }
-    
+
     public AdvancedTeamFX(int team_id) {
         this(ServiceHandler.getInstance().getDbService().getTeam(team_id));
         //this.load(team_id);
@@ -125,7 +125,6 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver {
             }
         });
 
-
         this.save_button = new SaveButton();
         this.add_player_button = new AddPlayerButton();
         this.add_team_button = new AddTeamButton();
@@ -148,12 +147,12 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver {
         this.buildRoster();
     }
 
-    public void setEntity(Team entity){
+    public void setEntity(Team entity) {
         this.team = entity;
         this.name_field.textProperty().bindBidirectional(this.team.getTeamname());
-        
+
     }
-    
+
     public void setToNotify(Instructable tonotify) {
         this.tonotify = tonotify;
     }
@@ -294,6 +293,11 @@ public class AdvancedTeamFX extends VBox implements ObjectReceiver {
         pf.name_field.requestFocus();
         this.passive_players.add(pf);
 
+    }
+
+    public void removePlayer(EntityFX player) {
+        this.passive_players.remove(player);
+        this.passive_playerlist.getItems().remove(player);
     }
 
     public Integer getTeamID() {

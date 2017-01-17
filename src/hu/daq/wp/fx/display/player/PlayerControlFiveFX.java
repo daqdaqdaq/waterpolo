@@ -82,6 +82,8 @@ public abstract class PlayerControlFiveFX extends PlayerDisplayFX {
     @Override
     protected void build() {
         this.setMaxHeight(USE_COMPUTED_SIZE);
+        this.setMaxWidth(250);
+        this.setMinWidth(250);
         this.capnum_label.textProperty().bind(Bindings.createStringBinding(() -> {
             return this.player.getCapnum().getValue().toString() + ".";
         }, this.player.getCapnum()));
@@ -95,10 +97,10 @@ public abstract class PlayerControlFiveFX extends PlayerDisplayFX {
          */
 
         
-        buttonholderconst.setPercentWidth(30);
-        capnumconst.setPercentWidth(5);
+        buttonholderconst.setPercentWidth(20);
+        capnumconst.setPercentWidth(10);
         nameconst.setPercentWidth(60);
-        goalsconst.setPercentWidth(5);
+        goalsconst.setPercentWidth(10);
 
         
         this.goalbutton.setOnAction((E) -> {

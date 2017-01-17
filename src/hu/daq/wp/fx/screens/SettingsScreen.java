@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.screens;
 
+import hu.daq.wp.fx.MatchProfileFX;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
@@ -17,14 +18,16 @@ public class SettingsScreen extends StackPane implements SubScreen {
     private MainPageCommon parent;
 
     private final Boolean adminonly;
+    private MatchProfileFX profiles;
 
     public SettingsScreen() {
         this.adminonly = false;
+        this.profiles = new MatchProfileFX();
         this.build();
     }
     
     private void build(){
-        this.getChildren().add( new Label("Settings"));
+        this.getChildren().add( this.profiles);
     }
     
     @Override
@@ -40,7 +43,7 @@ public class SettingsScreen extends StackPane implements SubScreen {
 
     @Override
     public void initScreen() {
-
+        this.profiles.load();
     }
 
     @Override

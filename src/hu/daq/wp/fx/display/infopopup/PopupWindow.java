@@ -25,20 +25,21 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
 
     CountdownWatch cw;
     PopupCloseListener pcl;
-    
+
     public PopupWindow() {
-        if (Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)){
+        if (Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)) {
             this.initStyle(StageStyle.TRANSPARENT);
         }
-        this.moveToSecondaryIfExists(this);
         this.setAlwaysOnTop(true);
-        this.setOnCloseRequest((ev)->this.cleanupOnClose());
+        this.setOnCloseRequest((ev) -> this.cleanupOnClose());
     }
 
     public PopupWindow(int duration) {
         this();
         this.setTimer(duration);
     }
+
+ 
 
     public void setTimer(int duration) {
         if (this.cw == null) {
@@ -53,35 +54,48 @@ public abstract class PopupWindow extends Stage implements TimeoutListener {
 
     public void showIt() {
         this.show();
-        if (this.cw != null) cw.start();
+        if (this.cw != null) {
+            cw.start();
+        }
     }
 
     @Override
     public void timeout() {
         this.close();
     }
-    
-    private void cleanupOnClose(){
+
+    private void cleanupOnClose() {
         System.out.println("Popup closing...");
-        if (this.pcl!=null) this.pcl.cleanupAfterPopup();
+        if (this.pcl != null) {
+            this.pcl.cleanupAfterPopup();
+        }
     }
-    
-    public void setCloseListener(PopupCloseListener pcl){
+
+    public void setCloseListener(PopupCloseListener pcl) {
         this.pcl = pcl;
     }
-    
-    private void moveToSecondaryIfExists(Stage stage) {
+
+    protected void moveToSecondaryIfExists(Stage stage) {
         Screen secondary;
         try {
             secondary = Screen.getScreens().stream().filter(E -> {
                 return !E.equals(Screen.getPrimary());
             }).findFirst().get();
             Rectangle2D bounds = secondary.getVisualBounds();
+            
             stage.setX(bounds.getMinX());
-            stage.setY(bounds.getMinY());
+            stage.setY(bounds.getMinY());         
+            stage.centerOnScreen();
+            //System.out.println(bounds.getMinX()+","+bounds.getMaxX()+","+bounds.getMinY()+","+bounds.getMaxY()+","+stage.getWidth());
+            //stage.setX(this.calculateCenter(bounds.getMinX(), bounds.getMaxX())-(stage.getScene().getWidth()/2) );
+            //stage.setY(this.calculateCenter(bounds.getMinY(), bounds.getMaxY())-(stage.getScene().getHeight()/2));
         } catch (NoSuchElementException ex) {
             //There is no secondary viewport, fail silently
         }
+    }
 
-    }    
+    private double calculateCenter(double mi, double ma){
+        return mi+(Math.abs(ma-mi)/2);
+    }
+    
 }

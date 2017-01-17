@@ -12,6 +12,7 @@ import com.sun.javafx.tk.Toolkit;
 import hu.daq.UDPSender.TimeSender;
 import hu.daq.servicehandler.ServiceHandler;
 import hu.daq.thriftconnector.talkback.PenaltyTime;
+import hu.daq.thriftconnector.talkback.StatusReport;
 import hu.daq.thriftconnector.talkback.TimeSync;
 import hu.daq.thriftconnector.talkback.WPTalkBackClient;
 import hu.daq.timeengine.TimeEngine;
@@ -324,7 +325,16 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         }
         this.pauseMatch();
     }
-
+    
+    public void setGoal(Integer playerid) {
+        try {
+           
+            this.getPlayer(playerid).addGoal();
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void removeGoal(Integer playerid) {
         try {
             this.getPlayer(playerid).removeGoal();
@@ -507,12 +517,17 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseReceived(tsync);
     }    
     
-    
+    public StatusReport reportStatus(){
+        StatusReport sr = new StatusReport();
+        this.mp.getPhaseNum();
+  
+        return sr;
+    }
     @Override
     public void setupPhase(MatchPhase mp) {
         this.mp = mp;
         this.pauseMatch();
-        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+       // ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
 
         if (mp.getPhaseName().equals("Büntetők")) {
             this.leginfo.setLegName(mp.getPhaseName());
@@ -552,12 +567,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void nextPhase(){
         ServiceHandler.getInstance().getOrganizer().nextPhase();
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).nextPhase();
+        this.syncTime();
 
     }
 
     public void prevPhase(){
         ServiceHandler.getInstance().getOrganizer().prevPhase();
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).prevPhase();
+        this.syncTime();
     }
     
     @Override
@@ -573,6 +590,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.leftteam.clearTeam();
         this.rightteam.clearTeam();
         this.leginfo.resetTime();
+        this.leginfo.setLegName("");
         ServiceHandler.getInstance().getTimeEngine().hibernate();
     }
 
