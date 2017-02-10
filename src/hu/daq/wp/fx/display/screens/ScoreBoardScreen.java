@@ -33,6 +33,7 @@ import hu.daq.wp.matchorganizer.Organizable;
 import hu.daq.wp.matchorganizer.OrganizerBuilder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -101,7 +102,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     private void build() {
         VBox mainbox = new VBox();
-        mainbox.setPadding(new Insets(10,0,10,0));
+        mainbox.setPadding(new Insets(10, 0, 10, 0));
         //mainbox.setStyle("-fx-background-color: #77AACC;");
         //mainbox.setFillWidth(true);
         mainbox.setMinWidth(1024);
@@ -118,21 +119,24 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
         //AnchorPane.setTopAnchor(mainbox, 0.0);
     }
-    private HBox buildOvertimeBox(){
+
+    private HBox buildOvertimeBox() {
         HBox hb = new HBox(120);
         //hb.setMinWidth(1024);
-        
+
         hb.setAlignment(Pos.CENTER);
-        Label pad = new Label(" ");
+        Label pad = new Label("TIMEOUT");
+        pad.setFont(new Font(40));
+        pad.setAlignment(Pos.CENTER);
         TimeoutDisplay leftto = this.leftteam.getTimeoutDisplay();
-        TimeoutDisplay rightto = this.rightteam.getTimeoutDisplay();        
+        TimeoutDisplay rightto = this.rightteam.getTimeoutDisplay();
         HBox.setHgrow(leftto, Priority.NEVER);
-        HBox.setHgrow(rightto, Priority.NEVER);    
-        HBox.setHgrow(pad, Priority.ALWAYS);         
-        hb.getChildren().addAll(leftto,pad,rightto);
+        HBox.setHgrow(rightto, Priority.NEVER);
+        HBox.setHgrow(pad, Priority.ALWAYS);
+        hb.getChildren().addAll(leftto, pad, rightto);
         return hb;
     }
-    
+
     private VBox buildDataBox() {
         VBox vb = new VBox(10);
         vb.setAlignment(Pos.TOP_CENTER);
@@ -151,10 +155,10 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         leftteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
         rightteambox.prefWidthProperty().bind(Bindings.multiply(0.375, databox.widthProperty()));
         HBox.setHgrow(leftteambox, Priority.SOMETIMES);
-        HBox.setHgrow(rightteambox, Priority.SOMETIMES);        
+        HBox.setHgrow(rightteambox, Priority.SOMETIMES);
         databox.getChildren().addAll(leftteambox,
                 rightteambox);
-        VBox.setVgrow(this.balltime, Priority.ALWAYS);         
+        VBox.setVgrow(this.balltime, Priority.ALWAYS);
         vb.getChildren().addAll(centerinfobox, databox, this.balltime);
         return vb;
     }
@@ -173,14 +177,12 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         //VBox.setVgrow(teamname, Priority.NEVER);
         Label teamscore = team.getGoalsLabel();
         //teamscore.setId("morecropedlabel");        
-        teamscore.setFont(new Font(100));        
+        teamscore.setFont(new Font(100));
         //metrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(teamscore.getFont());
         //teamscore.setPadding(new Insets(-metrics.getDescent()+5, 0, -metrics.getAscent()+5, 0));
-        
-        //teamscore.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
 
+        //teamscore.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
         //VBox.setVgrow(teamscore, Priority.NEVER);        
-        
         scoreandname.getChildren().addAll(teamname,
                 teamscore);
         return scoreandname;
@@ -207,7 +209,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
                 //     new DateFX(datetime, new Font(5)),
                 //     new TimeFX(datetime, new Font(5)),
                 this.leginfo
-                );
+        );
         return centerinfobox;
     }
 
@@ -218,7 +220,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         VBox databox = this.buildDataBox();
         VBox leftteambox = this.leftteam.getPlayerListView();
         VBox rightteambox = this.rightteam.getPlayerListView();
-        playersbox.getChildren().addAll(leftteambox,databox,
+        playersbox.getChildren().addAll(leftteambox, databox,
                 rightteambox);
         HBox.setHgrow(databox, Priority.ALWAYS);
         HBox.setHgrow(leftteambox, Priority.NEVER);
@@ -241,8 +243,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         ServiceHandler.getInstance().getOrganizer().setupPhase();
         this.balltime.setTimeToCount(ServiceHandler.getInstance().getOrganizer().getBallTimeInSecs());
         this.leftteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());
-        this.rightteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());     
-       
+        this.rightteam.getTimeoutDisplay().setUp(ServiceHandler.getInstance().getOrganizer());
+
     }
 
     private PlayerDisplayFX getPlayer(Integer playerid) throws Exception {
@@ -258,22 +260,22 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         return player;
     }
 
-    private Boolean isRightPlayer(Integer playerid){
-        return  this.rightteam.getPlayer(playerid)!=null;
+    private Boolean isRightPlayer(Integer playerid) {
+        return this.rightteam.getPlayer(playerid) != null;
     }
 
-    private Boolean isLeftPlayer(Integer playerid){
-        return  this.leftteam.getPlayer(playerid)!=null;
-    }    
-    
-    public void attackerPenalty(){
+    private Boolean isLeftPlayer(Integer playerid) {
+        return this.leftteam.getPlayer(playerid) != null;
+    }
+
+    public void attackerPenalty() {
         this.switchBallTime();
     }
-    
-    public void defenderPenalty(){
+
+    public void defenderPenalty() {
         this.resetBallTime();
     }
-    
+
     public void addPenalty(Integer playerid) {
 
         //this.timeengine.pause();
@@ -282,14 +284,14 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.syncTime();
-       /* if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
-            this.switchBallTimeRight();
+        this.sendSyncTime();
+        /* if (this.balltime.isLeftAttacking()&&this.isLeftPlayer(playerid)){
+         this.switchBallTimeRight();
                     
-        }   
-        if (this.balltime.isRightAttacking()&&this.isRightPlayer(playerid)){
-            this.switchBallTimeLeft();
-        }*/        
+         }   
+         if (this.balltime.isRightAttacking()&&this.isRightPlayer(playerid)){
+         this.switchBallTimeLeft();
+         }*/
     }
 
     public void setPenalty(Integer playerid, Integer milisecs) {
@@ -298,8 +300,16 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.syncTime();
-    }    
+        this.sendSyncTime();
+    }
+
+    public void setNumPenalties(Integer playerid, Integer penalties) {
+        try {
+            this.getPlayer(playerid).setNumPenalties(penalties);
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void removePenalty(Integer playerid) {
         try {
@@ -311,8 +321,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     public void addGoal(Integer playerid) {
         try {
-            this.timeengine.pause();         
-            this.pauseMatch();            
+            this.timeengine.pause();
+            this.pauseMatch();
             this.getPlayer(playerid).addGoal();
             GoalPopup pi = new GoalPopup();
 
@@ -325,16 +335,25 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         }
         this.pauseMatch();
     }
-    
+
     public void setGoal(Integer playerid) {
         try {
-           
+
             this.getPlayer(playerid).addGoal();
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public void setGoal(Integer playerid, Integer goals) {
+        try {
+
+            this.getPlayer(playerid).setGoal(goals);
+        } catch (Exception ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void removeGoal(Integer playerid) {
         try {
             this.getPlayer(playerid).removeGoal();
@@ -376,55 +395,69 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         } else {
             this.balltime.set(milisecs);
         }
-        this.syncTime();
+        this.sendSyncTime();
     }
 
     public void switchBallTimeLeft() {
         //this.timeengine.pause();
         //End all penalties in the defending team
+
+        if (this.balltime.getTimeToCount() > this.leginfo.getRemainingTime()) {
+            this.balltime.reset(this.leginfo.getTime());
+        } else {
+            this.balltime.reset();
+        }    
         this.leftteam.removeAllPenalties();
         this.balltime.switchToLeft();
-        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
-            this.balltime.set(this.leginfo.getRemainingTime());
-        }
-        this.syncTime();
+        this.sendSyncTime();
     }
 
     public void switchBallTimeRight() {
         //this.timeengine.pause();
         //End all penalties in the defending team        
-        this.rightteam.removeAllPenalties();
-        this.balltime.switchToRight();
 
-        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
-            this.balltime.set(this.leginfo.getRemainingTime());
+
+        if (this.balltime.getTimeToCount() > this.leginfo.getRemainingTime()) {
+            this.balltime.reset(this.leginfo.getTime());
+            //this.balltime.set(this.leginfo.getRemainingTime());
+        } else {
+            this.balltime.reset();
         }
-        this.syncTime();
+        this.rightteam.removeAllPenalties();
+        this.balltime.switchToRight();        
+        this.sendSyncTime();
     }
 
     public void switchBallTime() {
         //this.timeengine.pause();
         //End all penalties in the defending team
-        if (this.balltime.isRightAttacking()){
+
+
+        if (this.balltime.getTimeToCount() > this.leginfo.getRemainingTime()) {
+            this.balltime.reset(this.leginfo.getTime());
+            //this.balltime.set(this.leginfo.getRemainingTime());
+        } else {
+            this.balltime.reset();
+        }
+        if (this.balltime.isRightAttacking()) {
             this.leftteam.removeAllPenalties();
         } else {
             this.rightteam.removeAllPenalties();
         }
-        this.balltime.switchTeam();
-        
-        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
-            this.balltime.set(this.leginfo.getRemainingTime());
-        }
-        this.syncTime();
+        this.balltime.switchTeam();        
+        this.sendSyncTime();
     }
 
     public void resetBallTime() {
         //this.timeengine.pause();
-        this.balltime.reset();
-        if (this.balltime.getRemainingTime() > this.leginfo.getRemainingTime()) {
-            this.balltime.set(this.leginfo.getRemainingTime());
+        //this.balltime.reset();
+        if (this.balltime.getTimeToCount() > this.leginfo.getRemainingTime()) {
+            this.balltime.reset(this.leginfo.getTime());
+            //this.balltime.set(this.leginfo.getRemainingTime());
+        } else {
+            this.balltime.reset();
         }
-        this.syncTime();
+        this.sendSyncTime();
 
     }
 
@@ -436,7 +469,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void showCoachInfo(Integer playerid) {
         try {
             this.pi.loadCoach(playerid);
@@ -445,7 +478,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void showRefereeInfo(Integer playerid) {
         try {
             this.pi.loadReferee(playerid);
@@ -453,8 +486,8 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         } catch (Exception ex) {
             Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
-    
+    }
+
     public void hidePlayerInfo() {
         try {
             this.pi.close();
@@ -480,12 +513,12 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
 
     public void requestTimeout(Integer teamid) {
         int timeoutnum = 0;
-        if (this.mp.getClass().getName().equals("hu.daq.wp.matchorganizer.MatchLeg")){
+        if (this.mp.getClass().getName().equals("hu.daq.wp.matchorganizer.MatchLeg")) {
             timeoutnum = mp.getPhaseNum();
-        } 
-        if (this.mp.getClass().getName().equals("hu.daq.wp.matchorganizer.Overtime")){
-            timeoutnum = 10+mp.getPhaseNum();
-        }        
+        }
+        if (this.mp.getClass().getName().equals("hu.daq.wp.matchorganizer.Overtime")) {
+            timeoutnum = 10 + mp.getPhaseNum();
+        }
         if (this.leftteam.getTeamId().equals(teamid)) {
             this.leftteam.requestTimeout(timeoutnum);
         } else {
@@ -493,54 +526,130 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         }
     }
 
-    public void syncTime() {
-        //Building time syncronization structure to send back to the controller app
+    private TimeSync getTimeSync() {
         TimeSync tsync = new TimeSync();
         tsync.setBalltime(this.balltime.getMilis());
         tsync.setLegtime(this.leginfo.getTime());
-        tsync.setAttacking(this.balltime.isRightAttacking()?"R":"L");
-        this.leftteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
-        this.rightteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
+        tsync.setAttacking(this.balltime.isRightAttacking() ? "R" : "L");
+        this.leftteam.getPlayerStatus().stream().forEach(E -> tsync.addToPenalties(E.toPenaltyTime()));
+        this.rightteam.getPlayerStatus().stream().forEach(E -> tsync.addToPenalties(E.toPenaltyTime()));
+        return tsync;
+    }
+
+    public void sendSyncTime() {
+        //Building time syncronization structure to send back to the controller app
+
         //And sending it back via the Thrift connection
-        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).syncTime(tsync);
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).syncTime(this.getTimeSync());
+    }
+
+    public void receiveSyncTime(TimeSync tsync) {
+
+        this.leginfo.setTime(tsync.getLegtime());
+
+        if (tsync.getAttacking().equals("R")) {
+            if (this.balltime.isLeftAttacking()) {
+                this.balltime.switchToRight();
+            }
+
+        }
+        if (tsync.getAttacking().equals("L")) {
+            if (this.balltime.isRightAttacking()) {
+                this.balltime.switchToLeft();
+            }
+
+        }
+        this.balltime.set(tsync.getBalltime());
+
+        if (tsync.getPenalties() != null) {
+            tsync.getPenalties().parallelStream().forEach(E -> {
+                if (E.msecs != 0) {
+                    try {
+                        Platform.runLater(() -> {
+                            this.setPenalty(E.playerid, E.msecs);
+                        });
+                    } catch (NullPointerException ex) {
+                        //no penalties, nothing to do
+                    } catch (Exception ex) {
+                        Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+        }
     }
 
     public void sendPause() {
         //Building time syncronization structure to send back to the controller app
-        TimeSync tsync = new TimeSync();
-        tsync.setBalltime(this.balltime.getMilis());
-        tsync.setLegtime(this.leginfo.getTime());
-        tsync.setAttacking(this.balltime.isRightAttacking()?"R":"L");        
-        this.leftteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
-        this.rightteam.getPlayersInPenalty().entrySet().stream().forEach(E -> tsync.addToPenalties(new PenaltyTime(E.getKey(), E.getValue())));
-        //And sending it back via the Thrift connection
-        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseReceived(tsync);
-    }    
-    
-    public StatusReport reportStatus(){
+        ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).pauseReceived(this.getTimeSync());
+    }
+
+    public StatusReport reportStatus() {
         StatusReport sr = new StatusReport();
-        this.mp.getPhaseNum();
-  
+        sr.setMatchprofile(ServiceHandler.getInstance().getOrganizer().getId());
+        sr.setMatchphase(ServiceHandler.getInstance().getOrganizer().getCurrentPhase());
+        sr.setLeftteam(this.leftteam.getTeamID());
+        sr.setRightteam(this.rightteam.getTeamID());
+        sr.setBalltimeleft(this.balltime.isLeftAttacking());
+        this.leftteam.getPlayerStatus().stream().forEach(E -> sr.addToPlayerstat(E.toPlayerStat()));
+        this.rightteam.getPlayerStatus().stream().forEach(E -> sr.addToPlayerstat(E.toPlayerStat()));
+        sr.setTsync(this.getTimeSync());
+        sr.setLeftteamtos(this.leftteam.getTimeouts());
+        sr.setRightteamtos(this.rightteam.getTimeouts());
+
         return sr;
     }
+
+    public void setStatus(StatusReport sr) {
+        //this.clearTeams();
+        this.timeengine.pause();
+        try {
+            this.loadLeftTeam(sr.getLeftteam());
+            this.loadRightTeam(sr.getRightteam());            
+            this.loadMatchProfile(sr.getMatchprofile());
+            ServiceHandler.getInstance().getOrganizer().setCurrentPhase(sr.getMatchphase());
+            ServiceHandler.getInstance().getOrganizer().setupPhase();
+
+            if (sr.balltimeleft) {
+                this.balltime.switchToLeft();
+            } else {
+                this.balltime.switchToRight();
+            }
+            sr.getPlayerstat().stream().forEach(E -> {
+
+                this.setGoal(E.getPlayerid(), E.getNumgoals());
+                this.setNumPenalties(E.getPlayerid(), E.getNumpenalties());
+            });
+
+            this.receiveSyncTime(sr.getTsync());
+            this.leftteam.getTimeoutDisplay().setTimeouts(sr.getLeftteamtos());
+            this.rightteam.getTimeoutDisplay().setTimeouts(sr.getRightteamtos());
+            this.sendSyncTime();
+        } catch (JSONException ex) {
+            Logger.getLogger(ScoreBoardScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     @Override
     public void setupPhase(MatchPhase mp) {
         this.mp = mp;
         this.pauseMatch();
-       // ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
+        // ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
 
         if (mp.getPhaseName().equals("Büntetők")) {
-            this.leginfo.setLegName(mp.getPhaseName());
-            this.fiverswindow.loadLeftTeam(this.leftteam.getTeamId());
-            this.fiverswindow.loadRightTeam(this.rightteam.getTeamId());
-            this.fiverswindow.showIt();
+            if (this.leftteam.getTeamgoals().getValue().equals(this.rightteam.getTeamgoals().getValue())) {
+                this.leginfo.setLegName(mp.getPhaseName());
+                this.fiverswindow.loadLeftTeam(this.leftteam.getTeamId());
+                this.fiverswindow.loadRightTeam(this.rightteam.getTeamId());
+                this.fiverswindow.showIt();
+            }
         } else {
-            System.out.println("Setting up new phase: "+mp.toString());
-            if (mp.wantDistinctTimeEngine()){
+            System.out.println("Setting up new phase: " + mp.toString());
+            if (mp.wantDistinctTimeEngine()) {
                 //If the phase needs its own independent timeengine then give it one and start immediatelly
                 TimeEngine ti = new TimeEngine();
                 ti.init();
-                this.leginfo.setTimeEngine(ti);                
+                this.leginfo.setTimeEngine(ti);
                 ti.start();
             } else {
                 this.leginfo.setTimeEngine(this.timeengine);
@@ -548,35 +657,38 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
             this.leginfo.setTimeToCount(mp.getDuration());
             this.leginfo.resetTime();
             this.resetBallTime();
-            this.syncTime();
+            this.sendSyncTime();
             this.leginfo.setLegName(mp.getPhaseName());
             this.leftteam.setAvailableTimeouts(mp.getAvailableTimeouts());
             this.rightteam.setAvailableTimeouts(mp.getAvailableTimeouts());
         }
-        this.syncTime();
+        this.sendSyncTime();
         System.out.println("New phase set up");
 
     }
-    
-    
-    public void setLegTime(int milisec){
+
+    public void setLegTime(int milisec) {
         this.leginfo.setTime(milisec);
-        this.syncTime();        
+        this.sendSyncTime();
     }
-    
-    public void nextPhase(){
-        ServiceHandler.getInstance().getOrganizer().nextPhase();
+
+    public int getLegTime() {
+        return this.leginfo.getTime();
+    }
+
+    public void nextPhase() {
+        ServiceHandler.getInstance().getOrganizer().nextPhase(false);
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).nextPhase();
-        this.syncTime();
+        this.sendSyncTime();
 
     }
 
-    public void prevPhase(){
+    public void prevPhase() {
         ServiceHandler.getInstance().getOrganizer().prevPhase();
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).prevPhase();
-        this.syncTime();
+        this.sendSyncTime();
     }
-    
+
     @Override
     public void setTimeoutListener(TimeoutListener tl) {
         this.leginfo.setTimeoutListener(tl);
@@ -591,7 +703,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
         this.rightteam.clearTeam();
         this.leginfo.resetTime();
         this.leginfo.setLegName("");
-        ServiceHandler.getInstance().getTimeEngine().hibernate();
+        //ServiceHandler.getInstance().getTimeEngine().hibernate();
     }
 
     public void soundHorn() {
@@ -602,7 +714,7 @@ public class ScoreBoardScreen extends BorderPane implements ControlledScreen, Or
     public void timeout() {
         this.pauseMatch();
         this.soundHorn();
-        if (this.leginfo.getRemainingTime()>0){
+        if (this.leginfo.getRemainingTime() > 0) {
             this.switchBallTime();
         }
     }

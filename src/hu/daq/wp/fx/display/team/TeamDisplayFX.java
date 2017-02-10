@@ -7,6 +7,7 @@ package hu.daq.wp.fx.display.team;
 
 import client.Postgres;
 import hu.daq.servicehandler.ServiceHandler;
+import hu.daq.utils.PlayerStatus;
 import hu.daq.wp.Team;
 import hu.daq.wp.fx.EntityFX;
 import hu.daq.wp.fx.display.infopopup.TimeOutWindow;
@@ -14,6 +15,7 @@ import hu.daq.wp.fx.display.player.PlayerDisplayFX;
 import hu.daq.wp.fx.display.timeouts.TimeoutDisplay;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,7 +40,7 @@ import javafx.scene.text.TextBoundsType;
  *
  * @author DAQ
  */
-public abstract class TeamDisplayFX extends EntityFX<Team>{
+public abstract class TeamDisplayFX extends EntityFX<Team> {
 
     Team team;
     Label goalslabel;
@@ -51,7 +53,7 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
 
     public TeamDisplayFX() {
         this(new Team());
-        
+
     }
 
     public TeamDisplayFX(int team_id) {
@@ -77,15 +79,15 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
         tod = new TimeoutDisplay();
 
     }
-   @Override
+
+    @Override
     protected void setEntity(Team entity) {
         this.team = entity;
         this.teamnamelabel.textProperty().bind(this.getTeamName());
         this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
-        
+
     }
-    
-    
+
     public Integer getTeamId() {
         return this.team.getID();
     }
@@ -93,7 +95,9 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
     public final boolean load(Integer pk) {
         System.out.println("Loading:" + pk);
         this.setEntity(ServiceHandler.getInstance().getDbService().getTeam(pk));
-
+        this.goalslabel.textProperty().unbind();
+        this.teamgoals = new SimpleIntegerProperty(0);
+        this.goalslabel.textProperty().bind(Bindings.createStringBinding(() -> this.teamgoals.getValue().toString(), this.teamgoals));
         this.loadPlayers();
         this.active_players.stream().forEach((PlayerDisplayFX E) -> {
             E.getGoals().addListener((ObservableValue<? extends Number> observable, Number ov, Number nv) -> {
@@ -130,17 +134,17 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
     }
 
     public PlayerDisplayFX getPlayer(Integer id) {
-        return this.active_players.stream().filter(E -> E.getPlayerID() == id).findAny().orElse(null);
+        return this.active_players.stream().filter(E -> {return E.getPlayerID().equals(id);}).findAny().orElse(null);
     }
 
-    public HashMap<Integer, Integer> getPlayersInPenalty() {
-        HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
+    public List<PlayerStatus> getPlayerStatus() {
+        ArrayList<PlayerStatus> res = new ArrayList<PlayerStatus>();
         //this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
         //New version put every player into the penalties struct. 0 time to the players who aren't in penalty
-        this.active_players.stream().forEach(E -> res.put(E.getPlayerID(), E.getPenaltyTime()));
+        this.active_players.stream().forEach(E -> res.add(new PlayerStatus(E.getPlayerID(),E.getPenaltyTime(),E.getNumPenalties(), E.getGoals().getValue())));
         return res;
     }
-
+    
     public void removeAllPenalties() {
         this.active_players.stream().filter(E -> (E.getPenaltyTime() > 0)).forEach(E -> {
             E.endPenalty();
@@ -178,6 +182,10 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
     public TimeoutDisplay getTimeoutDisplay() {
         return tod;
     }
+    
+    public String getTimeouts(){
+        return this.tod.getTimeouts();
+    }
 
     @Override
     public String getID() {
@@ -201,7 +209,7 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
 
     @Override
     public Integer getTeamID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.team.getID();
     }
 
     @Override
@@ -218,7 +226,5 @@ public abstract class TeamDisplayFX extends EntityFX<Team>{
     protected void onDelete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
- 
 
 }

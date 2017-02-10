@@ -45,7 +45,8 @@ public class TeamListFX extends StackPane {
         
         this.filterfield = new TextField();
         this.teamsview = new ListView<TeamSimpleFX>();
-        this.teamsfx = new MappedList<TeamSimpleFX, Team>(FXCollections.observableList(ServiceHandler.getInstance().getDbService().getTeams()),(E)->{return new TeamSimpleFX(E);});
+        //this.teamsfx = new MappedList<TeamSimpleFX, Team>(FXCollections.observableList(ServiceHandler.getInstance().getDbService().getTeams()),(E)->{return new TeamSimpleFX(E);});
+        this.teamsfx = new MappedList<TeamSimpleFX, Team>(ServiceHandler.getInstance().getDbService().getTeams(),(E)->{return new TeamSimpleFX(E);});
         this.filteredteams = new FilteredList<TeamSimpleFX>(teamsfx , p -> {return true;});
        
         this.target = target;

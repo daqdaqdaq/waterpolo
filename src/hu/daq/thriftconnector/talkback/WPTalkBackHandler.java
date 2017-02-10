@@ -23,7 +23,7 @@ public class WPTalkBackHandler implements WPTalkBack.Iface {
 
     @Override
     public void legtimeout(String token) throws TException {
-        ServiceHandler.getInstance().getOrganizer().nextPhase();
+        ServiceHandler.getInstance().getOrganizer().nextPhase(true);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class WPTalkBackHandler implements WPTalkBack.Iface {
 
     @Override
     public void synctime(String token, TimeSync times) throws TException {
-        ms.syncTime(times);
+        ms.receiveSyncTime(times);
     }
 
 }

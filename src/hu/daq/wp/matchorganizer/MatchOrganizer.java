@@ -60,7 +60,7 @@ public class MatchOrganizer implements TimeoutListener {
         this.jumpToPhase(this.phases.size() - 1);
     }
 
-    public void nextPhase() {
+    public void nextPhase(boolean normal) {
         //if it's not the last phase and if there is any phases at all
         if (this.currentphase < (this.phases.size() - 1) && this.phases.size() != 0) {
 
@@ -68,7 +68,9 @@ public class MatchOrganizer implements TimeoutListener {
                 this.currentphase = 0;
             } else {
                 if (this.currentphase >= 0) {
-                    this.phases.get(this.currentphase).endPhase();
+                    if (normal){
+                        this.phases.get(this.currentphase).endPhase();
+                    }
                 }
                 this.currentphase++;
             }
@@ -89,11 +91,15 @@ public class MatchOrganizer implements TimeoutListener {
     @Override
     public void timeout() {
         ((WPTalkBackClient) ServiceHandler.getInstance().getThriftConnector().getClient()).sendLegTimeout();
-        this.nextPhase();
+        this.nextPhase(true);
     }
 
     public void setCurrentPhase(Integer phasenum) {
         this.currentphase = phasenum;
+    }
+    
+    public Integer getCurrentPhase(){
+        return this.currentphase;
     }
     
     public Integer getTimeoutsByPhaseType(String name){

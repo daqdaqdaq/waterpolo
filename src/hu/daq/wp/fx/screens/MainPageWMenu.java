@@ -59,10 +59,10 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
 
     @Override
     public void addScreen(SubScreen nd, String caption) {
-        /*if (!this.loggedin) {
+        if (!this.loggedin) {
             protector.showAndWait().filter(response -> response == ButtonType.CANCEL).ifPresent(response -> this.closeApp());
             this.loggedin = true;
-        }*/
+        }
         if (!nd.isAdminOnly() || LoginService.getInst().isAdmin()) {
             nd.addContainer(this);
             nd.initScreen();
@@ -76,8 +76,11 @@ public class MainPageWMenu extends StackPane implements MainPageCommon {
     }
 
     private void switchToScreen(String screencaption) {
+        Node node = (Node)this.screens.get(screencaption);
         this.content.getChildren().clear();
-        this.content.getChildren().add((Node)this.screens.get(screencaption));
+        this.content.getChildren().add(node);
+        this.content.setPrefHeight(node.getBoundsInParent().getHeight());
+        this.content.setPrefWidth(node.getBoundsInParent().getWidth());        
         ((Stage) this.getScene().getWindow()).sizeToScene();
     }
 

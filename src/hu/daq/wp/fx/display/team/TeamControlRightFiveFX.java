@@ -74,4 +74,8 @@ public class TeamControlRightFiveFX extends TeamControlFX {
         this.addPlayer(Integer.parseInt(object));
     }
 
+    public void clearAllPlayer(){
+        this.playerlist.getChildren().clear();
+    
+    }    
 }

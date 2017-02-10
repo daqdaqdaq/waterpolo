@@ -99,7 +99,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     
     public void switchTeam() {
         //this.pause();
-        this.cw.reset();
+        //this.cw.reset();
         this.leftpointer = !this.leftpointer;
         this.rightpointer = !this.rightpointer;
         this.highlightTeam();
@@ -107,7 +107,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     
     public void switchToLeft() {
         //this.pause();
-        this.cw.reset();
+        //this.cw.reset();
         this.leftpointer = true;
         this.rightpointer = false;
         this.highlightTeam();
@@ -115,7 +115,7 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     
     public void switchToRight() {
         //this.pause();
-        this.cw.reset();
+        //this.cw.reset();
         this.leftpointer = false;
         this.rightpointer = true;
         this.highlightTeam();
@@ -165,6 +165,11 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
         //this.pause();
         this.cw.reset();
     }
+
+    public void reset(int milis) {
+        //this.pause();
+        this.cw.reset(milis);
+    }
     
     public void set(int milisec) {
         //this.cw.pause();
@@ -177,6 +182,10 @@ public class BallTimeDisplay extends StackPane implements TimeoutListener {
     
     public int getRemainingTime() {
         return this.cw.getRemainingTime();
+    }
+    
+    public int getTimeToCount(){
+        return this.cw.getTimeToCount();
     }
     
     public BaseWatch getWatch() {

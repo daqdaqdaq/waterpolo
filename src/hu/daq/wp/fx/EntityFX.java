@@ -28,7 +28,7 @@ public abstract class EntityFX<T extends Entity> extends StackPane implements In
     protected SimpleBooleanProperty deleted = new SimpleBooleanProperty();
 
     public EntityFX() {
-        this.deleted.set(true);
+        this.deleted.set(false);
         this.deleted.addListener((ob, ov, nv) -> {
             if (nv.equals(Boolean.TRUE)) {
                 this.removeMe();
@@ -72,24 +72,32 @@ public abstract class EntityFX<T extends Entity> extends StackPane implements In
     }
 
     protected boolean searchAndDestroy(Parent n) {
-
+        if (n == null) {
+            return false;
+        }
+        System.out.println("Parent: " + n);
         if (n instanceof EntityListFX) {
+            System.out.println("Instance of EntityListFX");
             ((EntityListFX) n).remove(this);
             return true;
         }
         if (n instanceof AdvancedTeamFX) {
+            System.out.println("AdvancedTeamFX");
             ((AdvancedTeamFX) n).removePlayer(this);
             return true;
         }
         if (n instanceof PlayerRosterPosition) {
+            System.out.println("Instance of PlayerRoster");
             ((PlayerRosterPosition) n).clearPlayer();
             return true;
         }
         if (n instanceof CoachPosition) {
+            System.out.println("Instance of CoachPosition");
             ((CoachPosition) n).clearCoach();
             return true;
         }
         if (n instanceof RefereePosition) {
+            System.out.println("Instance of RefereePosition");
             ((RefereePosition) n).clearCoach();
             return true;
         }

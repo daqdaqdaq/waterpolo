@@ -51,6 +51,11 @@ public class TeamDisplayRightFX extends TeamDisplayFX{
                 .stream().map(PlayerDisplayRightFX::new).forEach(E -> al.put(E.getCapnum(), E));
                 
         for (int i=1;i<=14;i++){
+            try {
+                System.out.println(al.get(i).getPlayerID()+":"+al.get(i));
+            } catch (Exception e){
+            
+            }
             this.active_players.add(al.getOrDefault(i, new PlayerDisplayRightFXDummy(i)));
         }
         

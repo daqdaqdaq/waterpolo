@@ -20,7 +20,7 @@ public class PenaltiesFX extends HBox {
     private final static Integer MAX_NUM_PENALTIES = 3;
     private int penalties;
     private ShapeFactory sf;
-    private SimpleBooleanProperty finallyout  = new SimpleBooleanProperty(Boolean.FALSE);
+    private SimpleBooleanProperty finallyout = new SimpleBooleanProperty(Boolean.FALSE);
 
     public PenaltiesFX(ShapeFactory sf, double width) {
         this.penalties = 0;
@@ -33,22 +33,21 @@ public class PenaltiesFX extends HBox {
         //System.out.println("Building penalties");
         //this.setMinHeight(100);
 
-        
         //cumulated size of the penalty indicator shapes
         //double psize = this.heightProperty().multiply(0.8).get();
         double psize = 20;
-        
+
         /*if (width>this.heightProperty().getValue()){
-            width = this.heightProperty().getValue()*0.90;
-        }*/
+         width = this.heightProperty().getValue()*0.90;
+         }*/
         //System.out.println("The width is "+width );
         //spacing beetween the indicators
         //double spacing = (this.widthProperty().getValue() - width) / (MAX_NUM_PENALTIES + 1);
         this.setSpacing(5);
-        for (int i = 0; i <MAX_NUM_PENALTIES; i++) {
+        for (int i = 0; i < MAX_NUM_PENALTIES; i++) {
             Shape pen = sf.getShape(psize);
             pen.setFill(Color.LIGHTGREEN);
-          
+
             //System.out.println("Adding shape "+psize);
             this.getChildren().add(pen);
         }
@@ -69,7 +68,7 @@ public class PenaltiesFX extends HBox {
 
     public Integer removePenalty() {
         if (this.penalties > 0) {
-            ((Shape) this.getChildren().get(this.penalties-1)).setFill(Color.LIGHTGREEN);
+            ((Shape) this.getChildren().get(this.penalties - 1)).setFill(Color.LIGHTGREEN);
             this.penalties--;
             if (this.finallyout.getValue()) {
                 this.finallyout.setValue(Boolean.FALSE);
@@ -82,4 +81,7 @@ public class PenaltiesFX extends HBox {
         return finallyout;
     }
 
+    public Integer getNumPenalties(){
+        return this.penalties;
+    }
 }

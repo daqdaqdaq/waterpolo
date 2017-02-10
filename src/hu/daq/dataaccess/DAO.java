@@ -19,6 +19,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.json.JSONException;
 
 /**
@@ -29,6 +31,7 @@ public class DAO {
 
     Postgres db;
     HashMap<String, Entity> cache;
+    ObservableList<Team> teams;
 
     public DAO(Postgres db) {
         this.db = db;
@@ -54,7 +57,7 @@ public class DAO {
             e.team_id.set(Integer.parseInt(rec.get("team_id")));
             e.active.set(Boolean.parseBoolean(rec.get("active")));
             e.player_pic.set(Integer.parseInt(rec.get("player_pic")));
-
+            this.putToCache(e);
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -77,7 +80,7 @@ public class DAO {
     }
 
     public void deletePlayer(Player player) {
-
+        player.getDeleted().set(true);
         this.deletePlayer(player.getID());
     }
 
@@ -137,7 +140,7 @@ public class DAO {
             e.name.set(rec.get("name"));
             e.team_id.set(Integer.parseInt(rec.get("team_id")));
             e.coach_pic.set(Integer.parseInt(rec.get("coach_pic")));
-
+            this.putToCache(e);
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -194,6 +197,7 @@ public class DAO {
     }
 
     public void deleteCoach(Coach coach) {
+        coach.getDeleted().set(true);
         this.deleteCoach(coach.getID());
     }
 
@@ -211,7 +215,7 @@ public class DAO {
             e.id.set(Integer.parseInt(rec.get("referee_id")));
             e.name.set(rec.get("name"));
             e.referee_pic.set(Integer.parseInt(rec.get("referee_pic")));
-
+            this.putToCache(e);
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -267,6 +271,7 @@ public class DAO {
     }
 
     public void deleteReferee(Referee referee) {
+        referee.getDeleted().set(true);
         this.deleteReferee(referee.getID());
     }
 
@@ -285,6 +290,7 @@ public class DAO {
             e.profilename.set(rec.get("profilename"));
             e.profile.set(rec.get("profile"));
             e.setProfile(rec.get("profile"));
+            this.putToCache(e);
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -349,6 +355,7 @@ public class DAO {
     }
 
     public void deleteMatchProfile(MatchProfile e) {
+        e.getDeleted().set(true);
         this.deleteMatchProfile(e.getID());
     }
 
@@ -365,6 +372,7 @@ public class DAO {
             rec = this.db.query(sendstr).get(0);
             e.id.set(Integer.parseInt(rec.get("team_id")));
             e.teamname.set(rec.get("teamname"));
+            this.putToCache(e);
         } catch (Exception ex) {
             // throw new Exception("Load Player "+id.toString()+" failed");
         }
@@ -416,6 +424,7 @@ public class DAO {
     }
 
     public void deleteTeam(Team team) {
+        team.getDeleted().set(true);
         this.deletePlayer(team.getID());
     }
 
@@ -524,18 +533,21 @@ public class DAO {
         return relist;
     }
 
-    public ArrayList<Team> getTeams() {
-        ArrayList<Team> relist = new ArrayList<Team>();
+    public ObservableList<Team> getTeams() {
+        if (this.teams == null){
+            this.teams = FXCollections.observableArrayList(new ArrayList<Team>());
+        }
+        //ArrayList<Team> relist = ;
         String sendstr = "select * from team order by teamname";
         try {
-            relist.addAll(db.query(sendstr).stream().map(E -> {
+            this.teams.setAll(db.query(sendstr).stream().map(E -> {
                 Team t = this.getTeam(Integer.parseInt(E.get("team_id")));
                 return t;
             }).collect(Collectors.toList()));
         } catch (Exception e) {
             System.out.println("baj" + e.toString());
         }
-        return relist;
+        return this.teams;
     }
 
     public ArrayList<MatchProfile> getMatchProfiles() {

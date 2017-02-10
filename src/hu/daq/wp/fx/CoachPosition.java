@@ -60,6 +60,9 @@ public class CoachPosition extends HBox implements ObjectReceiver, EntityFXHolde
         if (this.coach != null) {
             this.removeCoach();
         }
+        if (this.parentobj.getTeamID().equals(0)){
+            this.parentobj.save();
+        }
         this.coach = coach;
         this.coachholder.getChildren().add(this.coach);
         if (!coach.getCoach().getTeam_id().getValue().equals(this.parentobj.getTeamID())) {

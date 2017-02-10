@@ -47,5 +47,9 @@ public abstract class TeamDisplayFiveFX extends TeamDisplayFX {
             //Fail silently
         }
     }
+    
+    public void clearAllPlayer(){
+        this.playerlist.getChildren().clear();
+    }
 
 }

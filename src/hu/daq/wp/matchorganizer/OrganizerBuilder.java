@@ -35,7 +35,7 @@ public class OrganizerBuilder {
         
         for (int i=0; i<numlegs; i++){
             //build and add a leg
-            mo.addPhase(new MatchLeg(source.getInt("legduration"), legnames.get(numlegs), screen, i+1));
+            mo.addPhase(new MatchLeg(source.getInt("legduration"), legnames.getOrDefault(numlegs, "Játékrész"), screen, i+1));
             //put a break between the legs
             if (i<numlegs-1){
                 if (i==1){

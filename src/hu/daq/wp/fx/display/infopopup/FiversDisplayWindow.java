@@ -126,4 +126,12 @@ public class FiversDisplayWindow extends PopupWindow {
         this.sizeToScene();
     }
     
+    @Override
+    public void close(){
+        this.leftteam.clearAllPlayer();
+        this.rightteam.clearAllPlayer();
+        super.close();
+        
+    } 
+    
 }

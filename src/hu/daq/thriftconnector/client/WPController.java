@@ -6,6 +6,7 @@
 package hu.daq.thriftconnector.client;
 
 import hu.daq.thriftconnector.client.ReconnectingThriftClient.Options;
+import hu.daq.thriftconnector.talkback.StatusReport;
 import hu.daq.thriftconnector.thrift.ClientData;
 import hu.daq.thriftconnector.thrift.FailedOperation;
 import hu.daq.thriftconnector.thrift.WPDisplay;
@@ -34,6 +35,9 @@ public class WPController extends ThriftClient {
 
     @Override
     public String connect(String token) throws FailedOperation {
+        if (this.transport.isOpen()){
+            this.disconnect();
+        }
         if (!this.transport.isOpen()) {
             try {
                 this.transport.open();
@@ -64,6 +68,11 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public String connect() throws FailedOperation {
+        return this.connect(this.token);
+    }
+    
+    
     @Override
     public void disconnect() {
         //try to send the a logout to the server thus a server can disconnect the talkback client
@@ -337,6 +346,25 @@ public class WPController extends ThriftClient {
         }
     }
 
+    public void sendStatus(StatusReport sr) {
+        try {
+            this.client.sendstatusreport(token, sr);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+
+    public StatusReport getStatus() {
+        try {
+            this.connect(token);
+            return this.client.statusreport(token);
+        } catch (TException ex) {
+            Logger.getLogger(WPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }     
+    
+    
     public WPDisplay.Iface getClient() {
         return this.client;
     }

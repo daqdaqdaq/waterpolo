@@ -48,9 +48,9 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
         this.adminonly = false;
         this.filterfield = new TextField();
         this.teamsview = new ListView<Team>();
-        this.rawteams = FXCollections.observableArrayList();
+        //this.rawteams = FXCollections.observableArrayList();
         
-        this.filteredteams = new FilteredList<Team>(this.rawteams, p -> true);
+        //this.filteredteams = new FilteredList<Team>(this.rawteams, p -> true);
         this.tf = new AdvancedTeamFX();
         this.tf.setToNotify(this);
         this.reloadbutton = new ResetButton();
@@ -60,7 +60,7 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
     private void build() {
         this.reloadbutton.setOnAction((E)->this.loadTeams());
         //wrap the filtered teams list into a sorted list
-        SortedList<Team> slt = new SortedList<Team>(this.filteredteams);
+        /*SortedList<Team> slt = new SortedList<Team>(this.filteredteams);
         slt.setComparator((l, r) -> l.getTeamname().getValueSafe().compareTo(r.getTeamname().getValueSafe()));
         //if the filterfiled is changeing adjust the filter predicate
         this.filterfield.textProperty().addListener((observable, ov, nv) -> {
@@ -68,7 +68,7 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
                 return nv == null || nv.isEmpty() || t.getTeamname().getValueSafe().toLowerCase().contains(nv.toLowerCase());
             });
         });
-  
+        */
         this.teamsview.setCellFactory(new Callback<ListView<Team>, ListCell<Team>>() {
 
             @Override
@@ -105,7 +105,7 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
             }
 
         });
-        this.teamsview.setItems(slt);
+        //this.teamsview.setItems(slt);
         VBox vb = new VBox();
         HBox hb = new HBox(2);
         hb.getChildren().addAll(this.filterfield, this.reloadbutton);
@@ -118,7 +118,9 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
     }
 
     public void loadTeams() {
-        this.rawteams.setAll(ServiceHandler.getInstance().getDbService().getTeams());
+        this.rawteams = ServiceHandler.getInstance().getDbService().getTeams();
+        this.filteredteams = new FilteredList<Team>(this.rawteams, p -> true);
+        
         //this.filteredteams = new FilteredList<Team>(FXCollections.observableArrayList(ServiceHandler.getInstance().getDbService().getTeams()), p -> true);
     }
 
@@ -136,6 +138,15 @@ public class TeamsScreen extends HBox implements SubScreen, Instructable{
     @Override
     public void initScreen() {
         this.loadTeams();
+        SortedList<Team> slt = new SortedList<Team>(this.filteredteams);
+        slt.setComparator((l, r) -> l.getTeamname().getValueSafe().compareTo(r.getTeamname().getValueSafe()));
+        //if the filterfiled is changeing adjust the filter predicate
+        this.filterfield.textProperty().addListener((observable, ov, nv) -> {
+            this.filteredteams.setPredicate(t -> {
+                return nv == null || nv.isEmpty() || t.getTeamname().getValueSafe().toLowerCase().contains(nv.toLowerCase());
+            });
+        });        
+        this.teamsview.setItems(slt);
     }
 
     @Override

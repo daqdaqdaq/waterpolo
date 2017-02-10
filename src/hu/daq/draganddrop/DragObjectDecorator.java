@@ -25,9 +25,9 @@ public class DragObjectDecorator {
     public static void decorate(Node underlying, DragObjectMediator mediator, TransferMode tm) {
 
         underlying.setOnDragDetected((final MouseEvent de) -> {
-            System.out.println("Detecting dragable state...");
+            //System.out.println("Detecting dragable state...");
             if (mediator.isDragable()){
-                System.out.println("Drag started..."+(String)mediator.extractDragObject());
+                //System.out.println("Drag started..."+(String)mediator.extractDragObject());
                 Dragboard db = underlying.startDragAndDrop(TransferMode.ANY);
                 ClipboardContent cc = new ClipboardContent();
                 cc.putString((String)mediator.extractDragObject());

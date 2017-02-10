@@ -129,4 +129,9 @@ public class FiversControlWindow extends PopupWindow {
     
     }
     
+    public void clearAllPlayer(){
+        this.leftteam.clearAllPlayer();
+        this.rightteam.clearAllPlayer();
+    }
+    
 }

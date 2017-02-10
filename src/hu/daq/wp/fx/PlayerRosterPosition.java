@@ -67,6 +67,9 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver, Entity
         if (this.player != null) {
             this.removePlayer();
         }
+        if (this.parentobj.getTeamID().equals(0)){
+            this.parentobj.save();
+        }
         this.player = player;
         this.playerholder.getChildren().add(this.player);
         if (!player.getPlayer().getCapnum().getValue().equals(this.capnum) || !player.getPlayer().getTeam_id().getValue().equals(this.parentobj.getTeamID()) || !player.getActive().getValue()) {
@@ -109,9 +112,9 @@ public class PlayerRosterPosition extends HBox implements ObjectReceiver, Entity
         }
         EntityFX dsource = ((ListCell<EntityFX>) source).getItem();
 
-        System.out.println("The source is:" + dsource.toString());
+        //System.out.println("The source is:" + dsource.toString());
         if (dsource.getType().equals("Player")) {
-            System.out.println("The type is:" + dsource.getType());
+            //System.out.println("The type is:" + dsource.getType());
             ((ListCell<EntityFX>) source).getListView().getItems().remove(dsource);
             this.setPlayer((PlayerFX) dsource);
         }

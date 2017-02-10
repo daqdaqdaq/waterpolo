@@ -27,7 +27,7 @@ public abstract class Entity {
     protected ChangeListener changelistener;
 
     public Entity() {
-
+        this.changed.set(false);
         this.deleted.set(false);
         this.changelistener = (o, ov, nv) -> {
             //System.out.println(o.toString() + "changed");

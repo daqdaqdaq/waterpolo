@@ -39,13 +39,14 @@ public class ReadyMatch implements Command {
         
         try {
             Platform.runLater(() -> {
-                
+                sbc.clearTeams();
                 sbc.loadLeftTeam(this.leftteamid);
                 sbc.loadRightTeam(this.rightteamid);
                 try {
                     sbc.loadMatchProfile(this.matchprofileid);
                 } catch (JSONException ex) {
                     this.extemp = ex;
+                    System.out.println(ex);
                 }
             });
             if (this.extemp != null) throw extemp;

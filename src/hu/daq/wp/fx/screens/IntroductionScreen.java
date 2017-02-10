@@ -87,20 +87,28 @@ public class IntroductionScreen extends StackPane implements SubScreen {
         });
 
         this.rightbutton.setOnAction((ev) -> {
-            if (this.introductionlist.size()==0){
+            if (this.introductionlist.isEmpty()){
                 this.populateIntroductionList();
             }
             this.showNext();
         });
 
         this.leftbutton.setOnAction((ev) -> {
-            if (this.introductionlist.size()==0){
+            if (this.introductionlist.isEmpty()){
                 this.populateIntroductionList();
             }            
             this.showPrev();
         });
 
         this.finishbutton.setOnAction((ev) -> {
+            this.currentpos = -1;
+            this.introductionlist.clear();
+            this.leftteam.getChildren().clear();
+            this.rightteam.getChildren().clear();
+            this.firstreferee.clearCoach();
+            this.secondreferee.clearCoach();
+            this.inspector.clearCoach();
+            this.currentname.setText("");
             ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).hidePlayerInfo();
         });
 
@@ -161,9 +169,9 @@ public class IntroductionScreen extends StackPane implements SubScreen {
     }
 
     public void loadTeams(Integer leftteamid, Integer rightteamid) {
-        this.leftteam.getChildren().clear();
-        this.rightteam.getChildren().clear();
-        if (rightteam != null && leftteam != null) {
+        //this.leftteam.getChildren().clear();
+        //this.rightteam.getChildren().clear();
+        if (rightteamid != null && leftteamid != null) {
 
             ServiceHandler.getInstance().getDbService().getActivePlayersOfTeam(leftteamid).stream().forEach(E -> {
                 PlayerFX p = new PlayerFX(E);
@@ -192,7 +200,7 @@ public class IntroductionScreen extends StackPane implements SubScreen {
 
             }            
         }
-
+        //this.populateIntroductionList();
     }
 
     private void populateIntroductionList(){

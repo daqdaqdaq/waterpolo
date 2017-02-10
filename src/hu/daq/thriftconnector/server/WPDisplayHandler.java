@@ -33,9 +33,11 @@ import hu.daq.wp.fx.display.commands.PauseMatch;
 import hu.daq.wp.fx.display.commands.Penalty;
 import hu.daq.wp.fx.display.commands.PrevPhase;
 import hu.daq.wp.fx.display.commands.ReadyMatch;
+import hu.daq.wp.fx.display.commands.ReceiveStatus;
 import hu.daq.wp.fx.display.commands.RemoveFivemGoal;
 import hu.daq.wp.fx.display.commands.RemoveGoal;
 import hu.daq.wp.fx.display.commands.RemovePenalty;
+import hu.daq.wp.fx.display.commands.ReportStatus;
 import hu.daq.wp.fx.display.commands.RequestTimeout;
 import hu.daq.wp.fx.display.commands.SetGoal;
 import hu.daq.wp.fx.display.commands.SetPenalty;
@@ -440,7 +442,19 @@ public class WPDisplayHandler implements WPDisplay.Iface {
 
     @Override
     public StatusReport statusreport(String token) throws FailedOperation, TException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (cs.checkToken(token)) {
+            Command comm = new ReportStatus();
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }            
+            
+            return (StatusReport)r.get("sr");
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }
+        
     }
 
     @Override
@@ -567,7 +581,17 @@ public class WPDisplayHandler implements WPDisplay.Iface {
 
     @Override
     public void sendstatusreport(String token, StatusReport report) throws FailedOperation, TException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (cs.checkToken(token)) {
+            cs.switchScreen("scoreboard");
+            Command comm = new ReceiveStatus(report);
+            ResultWrapper r = cs.sendCommand(comm);
+            if (r.isError()) {
+                throw new FailedOperation(((ErrorWrapper) r).getError().toString());
+            }
+        } else {
+
+            throw new FailedOperation("Unauthorized!");
+        }         
     }
 
 

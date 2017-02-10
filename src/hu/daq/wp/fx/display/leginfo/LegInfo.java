@@ -45,7 +45,8 @@ public class LegInfo extends VBox implements RemoteTransmitter{
         this.legname.setPadding(Insets.EMPTY);
         //We set it to a fake amount and let the WatchFactory generate a correct display format
         this.legtime.setTimeToCount(0, 1, 1);
-        this.td = WatchFactory.getSimpleWatchDisplay(this.legtime);
+        this.td = WatchFactory.getWatchDisplay(legtime);
+                //.getSimpleWatchDisplay(this.legtime);
         td.enableTimeSetPopOver();
         td.attachTransmitter(this);
         //HBox td = new HBox();
@@ -115,6 +116,7 @@ public class LegInfo extends VBox implements RemoteTransmitter{
     public int getRemainingTime() {
         return this.legtime.getRemainingTime();
     }
+    
     @Override
     public void transmit(int milisec) {
         ((WPController) ServiceHandler.getInstance().getThriftConnector().getClient()).setLegTime(milisec);

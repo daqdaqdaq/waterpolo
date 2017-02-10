@@ -5,6 +5,7 @@
  */
 package hu.daq.wp.fx.display.commands;
 
+import hu.daq.thriftconnector.talkback.StatusReport;
 import hu.daq.wp.fx.display.control.Command;
 import hu.daq.wp.fx.display.control.ControlledScreen;
 import hu.daq.wp.fx.display.control.ErrorWrapper;
@@ -16,27 +17,31 @@ import javafx.application.Platform;
  *
  * @author DAQ
  */
-public class NextPhase implements Command {
+public class ReceiveStatus implements Command {
 
-    
-    public NextPhase() {
- 
+    StatusReport sr;
+
+    public ReceiveStatus(StatusReport sr) {
+        this.sr = sr;
     }
 
     @Override
     public ResultWrapper execute(ControlledScreen cs) {
         ScoreBoardScreen sbc = (ScoreBoardScreen) cs;
         try {
+            ResultWrapper rw = new ResultWrapper();            
             Platform.runLater(() -> {
-                sbc.nextPhase();
-                
+                sbc.setStatus(sr);
             });
+
+
+            return rw ;
         } catch (Exception e) {
             ErrorWrapper err = new ErrorWrapper();
             err.putError(e);
             return err;
         }
-        return new ResultWrapper();
+
     }
 
 }

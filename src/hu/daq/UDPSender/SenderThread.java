@@ -59,7 +59,7 @@ public class SenderThread extends Thread {
         while (this.run) {
             //System.out.println("Running..."+this.stringtosend);
             if (this.stringtosend.size() > 0) {
-                //System.out.println("Sending..." + this.stringtosend.get(0));
+                System.out.println("Sending..." + this.stringtosend.get(0));
                 try {
                     this.buf = this.stringtosend.get(0).getBytes();
                     if (this.stringtosend.get(0).startsWith("D")){
@@ -73,7 +73,7 @@ public class SenderThread extends Thread {
                 }
             }
             try {
-                sleep(50);
+                sleep(30);
             } catch (InterruptedException e) {
             }
         }

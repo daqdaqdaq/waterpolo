@@ -132,9 +132,8 @@ public class CoachFX extends EntityFX<Coach>{
     public void editOn(){
         this.basegrid.getChildren().remove(this.name_label);
         this.basegrid.add(this.name_field, 1, 0, 3, 1);
-        this.basegrid.getChildren().remove(this.edit_button);
-        this.basegrid.add(this.buttons, 4, 0);
-        
+        this.basegrid.getChildren().remove(this.buttons);        
+        this.basegrid.add(this.save_button, 4, 0);
     }
     
     public void editOff(){

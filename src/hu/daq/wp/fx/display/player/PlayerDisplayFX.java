@@ -47,7 +47,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     Boolean inpenalty;
 
     public PlayerDisplayFX() {
-   
+
     }
 
     public PlayerDisplayFX(int player_id) {
@@ -59,7 +59,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.setId("playerdisplay");
         this.player = player;
         this.setMaxWidth(490);
-        this.setMinWidth(490);        
+        this.setMinWidth(490);
         this.setMaxHeight(40);
         this.setMinHeight(40);
         Font sizeing = new Font(35);
@@ -71,7 +71,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.goals_label.setFont(sizeing);
         this.penalties = new PenaltiesFX(new CircleFactory(), 80);
         //this.penalties.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(1))));
-        
+
         this.penalties.setFillHeight(true);
         this.goals.set(0);
         this.inpenalty = false;
@@ -89,7 +89,7 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
 
     protected void build() {
         this.capnum_label.textProperty().bind(Bindings.createStringBinding(() -> {
-            return this.player.getCapnum().getValue().toString()+ ".";
+            return this.player.getCapnum().getValue().toString() + ".";
         }, this.player.getCapnum()));
 
         this.name_label.textProperty().bind(this.player.getShortname());
@@ -100,10 +100,10 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         /*Make the binding to the penalties. If the player has max number of penalties the whole player gets 
          0.5 opacity
          */
-        this.penalties.getFinallyout().addListener((ObservableValue<? extends Boolean> ob,Boolean ov,Boolean nv)->{
-            if (nv){
+        this.penalties.getFinallyout().addListener((ObservableValue<? extends Boolean> ob, Boolean ov, Boolean nv) -> {
+            if (nv) {
                 this.opacityProperty().set(0.5);
-            } else{
+            } else {
                 this.opacityProperty().set(1);
             }
         });
@@ -113,21 +113,32 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.buildLayout();
     }
 
-    public int setPenalty(int milisec){
-        if (!this.inpenalty){
+    public int setPenalty(int milisec) {
+
+        if (!this.inpenalty) {
             this.addPenalty();
         }
         this.inpenalty = true;
         this.pfxo.setTime(milisec);
+
         return 0;
     }
-    
+
     public int addPenalty() {
         //Add a penalty and get the number of penalties
         int p = this.penalties.addPenalty();
         //If this player isn't completely out due to the penalty then add the penalty countdown
         this.addOverlay();
-        
+
+        return p;
+    }
+
+    public int setNumPenalties(Integer penalties) {
+        //Add a penalty and get the number of penalties
+        int p = 0;
+        for (int i = 0; i < penalties; i++) {
+            p = this.penalties.addPenalty();
+        }
         return p;
     }
 
@@ -137,11 +148,11 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         return this.penalties.removePenalty();
     }
 
-    public void endPenalty(){
+    public void endPenalty() {
         this.inpenalty = false;
         this.pfxo.jumpToEnd();
     }
-            
+
     public final void load(Integer pk) {
         this.player = ServiceHandler.getInstance().getDbService().getPlayer(pk);
     }
@@ -150,13 +161,16 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         this.goals.setValue(this.goals.getValue() + 1);
     }
 
+    public void setGoal(Integer goals) {
+        this.goals.setValue(goals);
+    }
+
     public void removeGoal() {
-        if (this.goals.getValue()>0){
+        if (this.goals.getValue() > 0) {
             this.goals.setValue(this.goals.getValue() - 1);
         }
 
     }
-
 
     public Boolean isOut() {
         return this.penalties.getFinallyout().getValue();
@@ -193,11 +207,11 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
     public Integer getPlayerID() {
         return this.player.getID();
     }
-    
-    public Player getPlayerModel(){
+
+    public Player getPlayerModel() {
         return this.player;
     }
-    
+
     protected void addOverlay() {
         this.inpenalty = true;
         //this.pfxo = new PlayerFXDisplayOverlay(this, ServiceHandler.getInstance().getTimeEngine(), 20);
@@ -214,8 +228,12 @@ public abstract class PlayerDisplayFX extends StackPane implements Comparable, T
         //System.out.println("Time is running out");
 
     }
-    
-    public int getPenaltyTime(){
-        return this.pfxo.getTime();
+
+    public int getPenaltyTime() {
+        return this.pfxo != null ? this.pfxo.getTime() : 0;
+    }
+
+    public Integer getNumPenalties() {
+        return this.penalties.getNumPenalties();
     }
 }

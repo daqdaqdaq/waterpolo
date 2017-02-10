@@ -9,6 +9,7 @@ import hu.daq.wp.fx.display.penalties.CircleFactory;
 import hu.daq.wp.matchorganizer.MatchOrganizer;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -97,6 +98,15 @@ public class TimeoutDisplay extends StackPane {
     }
 
     public String getTimeouts(){
-        return this.matchlegs.stream().map(E->{return E.getFill().equals(Color.RED)?"1":"0";}).collect(Collectors.joining());
+        return this.matchlegs.stream()
+                .map(E->{return E.getFill().equals(Color.RED)?"1":"0";})
+                .collect(Collectors.joining());
+    }
+    
+    public void setTimeouts(String timeouts){
+        char c = '1';
+        IntStream.range(0, timeouts.length()-1)
+                .filter(E -> timeouts.charAt(E)==c)
+                .forEach(E -> this.addMatchTimeout(E));
     }
 }

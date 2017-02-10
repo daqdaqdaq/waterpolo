@@ -33,6 +33,12 @@ public class TimeSender extends UDPSenderConnector {
         this.ot.tsec.addListener((ObservableValue<? extends Number> ob, Number ov, Number nv) -> {
             this.processTime();
         });
+        this.ot.sec.addListener((ObservableValue<? extends Number> ob, Number ov, Number nv) -> {
+            if (ov.doubleValue()>=10.0&&nv.doubleValue()<10.0){
+                this.sendClearscreen();
+                this.processTime();
+            }
+        });
 
     }
 
@@ -41,6 +47,7 @@ public class TimeSender extends UDPSenderConnector {
         //calculate the secs
         
         Integer secs = this.ot.sec.getValue();
+    
 
         //convert to string and if it's under 10 concat the tenth secs 
         String s = secs.toString() + (secs < 10 ? "." + this.ot.tsec.getValue().toString() : "");
@@ -55,4 +62,9 @@ public class TimeSender extends UDPSenderConnector {
         //this.tosend.set((this.watch.getTimeEngineRunning().get()&&s!="0.0" ? "N" : "I") + s);
     }
 
+    //Because the working method of the pyramids, we need to send 9.9 to clear the bigger fonts before sending anything below 10
+    private void sendClearscreen(){
+        this.tosend.set("N00");
+    
+    }
 }

@@ -53,20 +53,20 @@ public class DragAndDropDecorator {
     
     
     private void catchFile(DragEvent ev){
-        System.out.println("Catching file...");
+        //System.out.println("Catching file...");
         Dragboard db =ev.getDragboard();
         if (db.hasFiles()){
-            System.out.println("File found...");
+            //System.out.println("File found...");
             this.catchedfiles.clear();
             if (this.singlefilemode){
-                System.out.println("Single file...");
+                //System.out.println("Single file...");
                 this.catchedfiles.addAll(this.filter.filterFiles(db.getFiles().get(0)));
             } else {
-                System.out.println("Multi file");
+                //System.out.println("Multi file");
                 this.catchedfiles.addAll(this.filter.filterFiles(db.getFiles()));
             }
             if (filereceiver!=null){
-                System.out.println("Calling handler...");
+                //System.out.println("Calling handler...");
                 filereceiver.handleFiles(this.catchedfiles);
             }
         }

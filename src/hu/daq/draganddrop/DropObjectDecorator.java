@@ -18,12 +18,12 @@ import javafx.scene.input.TransferMode;
 public class DropObjectDecorator {
 
     public static void decorate(Node underlying, ObjectReceiver receiver, DataFormat tocatch, TransferMode tm) {
-        System.out.println("decorting drop");
+        //System.out.println("decorting drop");
         
         underlying.setOnDragDropped((DragEvent ev) -> {
-            System.out.println("Drag dropped");
+            //System.out.println("Drag dropped");
             Dragboard db = ev.getDragboard();
-            System.out.println("Data is: "+db.getContent(DataFormat.PLAIN_TEXT)+" "+db.getString());
+            //System.out.println("Data is: "+db.getContent(DataFormat.PLAIN_TEXT)+" "+db.getString());
             receiver.handleObject(ev.getGestureSource(), db.getString());
            
             ev.setDropCompleted(true);
@@ -31,13 +31,13 @@ public class DropObjectDecorator {
         });
 
         underlying.setOnDragOver((final DragEvent de) -> {
-            System.out.println("Drag over");
+            //System.out.println("Drag over");
             de.acceptTransferModes(tm);
             de.consume();
         });
 
         underlying.setOnDragEntered((DragEvent event) -> {
-            System.out.println("Drag entered");
+            //System.out.println("Drag entered");
             underlying.setId("draghover");
             //underlying.setStyle("-fx-background-color: palegreen");
             event.consume();
@@ -47,7 +47,7 @@ public class DropObjectDecorator {
         //    underlying.setStyle("-fx-background-color: palegreen");
         //});
         underlying.setOnDragExited((DragEvent event) -> {
-            System.out.println("Drag exited");
+            //System.out.println("Drag exited");
             underlying.setId(null);
             event.consume();
         });
